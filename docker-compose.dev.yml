@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 后端服务 - 开发模式
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nhanes-backend-dev
+    restart: unless-stopped
+    ports:
+      - "5000:5000" # 开发模式下直接暴露后端端口
+    volumes:
+      # 代码热重载
+      - ./backend:/app
+      # 数据目录
+      - ./backend/Dataresource:/app/Dataresource
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+    networks:
+      - nhanes-dev-network
+    command: [ "python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000", "--reload" ]
+
+  # 前端服务 - 开发模式
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: nhanes-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000" # React开发服务器端口
+    volumes:
+      # 代码热重载
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/package.json:/app/package.json
+      # 忽略node_modules，使用容器内的
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - CHOKIDAR_USEPOLLING=true
+      - FAST_REFRESH=true
+    networks:
+      - nhanes-dev-network
+    depends_on:
+      - backend
+
+networks:
+  nhanes-dev-network:
+    driver: bridge
+    name: nhanes-dev-network

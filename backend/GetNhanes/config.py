@@ -49,6 +49,13 @@ def get_base_path():
     """
     global _BASE_PATH
 
+    # 优先检查环境变量
+    env_path = os.environ.get('NHANES_DATA_PATH')
+    if env_path and os.path.exists(env_path):
+        _BASE_PATH = env_path
+        print(f"使用环境变量指定的路径: {_BASE_PATH}")
+        return _BASE_PATH
+
     # 如果内存中没有配置，尝试从文件加载
     if _BASE_PATH is None:
         try:
@@ -58,12 +65,18 @@ def get_base_path():
                 # 验证路径是否仍然存在
                 if not os.path.exists(_BASE_PATH):
                     print(f"警告: 配置的路径不再存在: {_BASE_PATH}")
+                    # 尝试使用默认的Docker路径
+                    docker_path = "/app/nhanes_data"
+                    if os.path.exists(docker_path):
+                        _BASE_PATH = docker_path
+                        print(f"使用Docker默认路径: {_BASE_PATH}")
+                        return _BASE_PATH
         except (FileNotFoundError, json.JSONDecodeError):
             pass
 
     # 如果仍然没有配置，则抛出异常
     if _BASE_PATH is None:
-        raise RuntimeError("NHANES基础路径未配置，请先调用set_base_path()")
+        raise RuntimeError("NHANES基础路径未配置，请先调用set_base_path()或设置环境变量NHANES_DATA_PATH")
 
     return _BASE_PATH
 

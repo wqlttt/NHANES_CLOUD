@@ -36,7 +36,13 @@ from DataVisualization.heatmap import generate_heatmap
 from DataVisualization.histogram import generate_histogram
 from DataVisualization.scatterplot import generate_scatterplot
 
-from GetNhanes.coreCalculated import *
+# 延迟导入GetNhanes模块，避免启动时的路径错误
+try:
+    from GetNhanes.coreCalculated import *
+    print("成功导入GetNhanes核心计算模块")
+except Exception as e:
+    print(f"警告: 无法导入GetNhanes核心计算模块: {e}")
+    print("数据提取功能可能不可用，但其他功能仍然正常")
 
 # Configuration
 ALLOWED_EXTENSIONS = {'csv'}
@@ -78,6 +84,13 @@ def allowed_file(filename):
 @app.route('/process_nhanes', methods=['POST'])
 def process_nhanes():
     try:
+        # 检查get_nhanes_data函数是否可用
+        if 'get_nhanes_data' not in globals():
+            return jsonify({
+                'success': False, 
+                'error': 'NHANES数据提取功能暂时不可用，请检查数据路径配置'
+            }), 503
+            
         data = request.json
         items = data.get('items', [])
         
@@ -119,7 +132,7 @@ def process_nhanes():
 # 二级指标提取
 @app.route('/download/<indicator>_results.csv', methods=['GET'])
 def download_result_data(indicator):
-    directory = r'E:\\NHANES_WQLT\\backend\\Dataresource\\ResultData'
+    directory = os.path.join(os.path.dirname(__file__), 'Dataresource', 'ResultData')
     return download_file(directory, indicator, '_results')
 
 # 死亡指标提取
@@ -206,7 +219,7 @@ def get_mortality_data(mortality_year):
 # 协变量指标提取
 @app.route('/download/<selectedIndicator3>_covariates.csv', methods=['GET'])
 def download_covariates_data(selectedIndicator3):
-    directory = r'E:\\NHANES_WQLT\\backend\\Dataresource\\covariatesData'
+    directory = os.path.join(os.path.dirname(__file__), 'Dataresource', 'covariatesData')
     return download_file(directory, selectedIndicator3, '_covariates')
 
 # 获取CSV文件 - 数据可视化上传接口
@@ -1322,5 +1335,14 @@ def list_available_indicators():
             'error': f'获取指标列表失败: {str(e)}'
         }), 500
 
+# 健康检查端点
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({
+        'status': 'healthy',
+        'service': 'nhanes-backend',
+        'timestamp': pd.Timestamp.now().isoformat()
+    })
+
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=False)
