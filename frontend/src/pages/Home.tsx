@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Typography,
     Card,
@@ -24,6 +25,7 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
     const [isMobile, setIsMobile] = useState(false);
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -40,49 +42,97 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
     const mainFeatures = [
         {
-            title: '数据提取',
-            subtitle: 'Data Extraction',
-            description: '从NHANES数据库中提取所需变量和样本，支持多种筛选条件和导出格式',
+            title: t('home.features.dataExtraction.title'),
+            subtitle: t('home.features.dataExtraction.subtitle'),
+            description: t('home.features.dataExtraction.description'),
             icon: <DatabaseOutlined style={{ fontSize: '52px', color: '#1890ff' }} />,
             features: [
-                { name: '自定义提取', detail: '灵活选择年份、文件名和指标' },
-                { name: '预设变量组', detail: '快速选择常用变量组合' },
-                { name: '二级指标提取', detail: '人口学、体格测量等分类指标' },
-                { name: '死亡数据提取', detail: '获取死亡跟踪随访数据' }
+                {
+                    name: t('home.features.dataExtraction.features.customExtraction.name'),
+                    detail: t('home.features.dataExtraction.features.customExtraction.detail')
+                },
+                {
+                    name: t('home.features.dataExtraction.features.presetVariables.name'),
+                    detail: t('home.features.dataExtraction.features.presetVariables.detail')
+                },
+                {
+                    name: t('home.features.dataExtraction.features.secondaryIndicators.name'),
+                    detail: t('home.features.dataExtraction.features.secondaryIndicators.detail')
+                },
+                {
+                    name: t('home.features.dataExtraction.features.mortalityData.name'),
+                    detail: t('home.features.dataExtraction.features.mortalityData.detail')
+                }
             ],
-            stats: { samples: '100万+', variables: '15000+', cycles: '20+' },
+            stats: {
+                samples: t('home.features.dataExtraction.stats.samples'),
+                variables: t('home.features.dataExtraction.stats.variables'),
+                cycles: t('home.features.dataExtraction.stats.cycles')
+            },
             action: () => onNavigate('extraction'),
             color: '#1890ff',
             gradient: 'linear-gradient(135deg, #1890ff 0%, #40a9ff 100%)'
         },
         {
-            title: '数据可视化',
-            subtitle: 'Data Visualization',
-            description: '创建专业的统计图表和数据可视化，直观展示数据模式和趋势',
+            title: t('home.features.visualization.title'),
+            subtitle: t('home.features.visualization.subtitle'),
+            description: t('home.features.visualization.description'),
             icon: <BarChartOutlined style={{ fontSize: '52px', color: '#52c41a' }} />,
             features: [
-                { name: '多种图表类型', detail: '柱状图、散点图、折线图等' },
-                { name: '交互式配置', detail: '拖拽式变量配置界面' },
-                { name: '实时预览', detail: '即时查看图表效果' },
-                { name: '高质量导出', detail: '支持多种格式输出' }
+                {
+                    name: t('home.features.visualization.features.chartTypes.name'),
+                    detail: t('home.features.visualization.features.chartTypes.detail')
+                },
+                {
+                    name: t('home.features.visualization.features.interactiveConfig.name'),
+                    detail: t('home.features.visualization.features.interactiveConfig.detail')
+                },
+                {
+                    name: t('home.features.visualization.features.realTimePreview.name'),
+                    detail: t('home.features.visualization.features.realTimePreview.detail')
+                },
+                {
+                    name: t('home.features.visualization.features.highQualityExport.name'),
+                    detail: t('home.features.visualization.features.highQualityExport.detail')
+                }
             ],
-            stats: { charts: '15+', formats: '5+', resolution: '4K' },
+            stats: {
+                charts: t('home.features.visualization.stats.charts'),
+                formats: t('home.features.visualization.stats.formats'),
+                resolution: t('home.features.visualization.stats.resolution')
+            },
             action: () => onNavigate('visualization'),
             color: '#52c41a',
             gradient: 'linear-gradient(135deg, #52c41a 0%, #73d13d 100%)'
         },
         {
-            title: '数据分析',
-            subtitle: 'Statistical Analysis',
-            description: '执行专业的统计分析方法，获得科学可靠的研究结论和洞察',
+            title: t('home.features.analysis.title'),
+            subtitle: t('home.features.analysis.subtitle'),
+            description: t('home.features.analysis.description'),
             icon: <FundOutlined style={{ fontSize: '52px', color: '#faad14' }} />,
             features: [
-                { name: '描述性统计', detail: '均值、标准差、分布分析' },
-                { name: '假设检验', detail: 'T检验、卡方检验等' },
-                { name: '回归建模', detail: '线性、逻辑回归分析' },
-                { name: '生存分析', detail: 'Cox回归、Kaplan-Meier' }
+                {
+                    name: t('home.features.analysis.features.descriptiveStats.name'),
+                    detail: t('home.features.analysis.features.descriptiveStats.detail')
+                },
+                {
+                    name: t('home.features.analysis.features.hypothesisTesting.name'),
+                    detail: t('home.features.analysis.features.hypothesisTesting.detail')
+                },
+                {
+                    name: t('home.features.analysis.features.regression.name'),
+                    detail: t('home.features.analysis.features.regression.detail')
+                },
+                {
+                    name: t('home.features.analysis.features.survivalAnalysis.name'),
+                    detail: t('home.features.analysis.features.survivalAnalysis.detail')
+                }
             ],
-            stats: { methods: '20+', models: '10+', precision: '99.9%' },
+            stats: {
+                methods: t('home.features.analysis.stats.methods'),
+                models: t('home.features.analysis.stats.models'),
+                precision: t('home.features.analysis.stats.precision')
+            },
             action: () => onNavigate('analysis'),
             color: '#faad14',
             gradient: 'linear-gradient(135deg, #faad14 0%, #ffd666 100%)'
@@ -106,37 +156,40 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                     marginBottom: '16px',
                     fontSize: isMobile ? '24px' : undefined
                 }}>
-                    NHANES 数据处理系统
+                    {t('home.title')}
                 </Title>
                 <Text style={{ fontSize: isMobile ? '14px' : '16px', color: '#666' }}>
-                    美国国家健康与营养检查调查数据库处理平台
+                    {t('home.subtitle')}
                 </Text>
             </div>
 
             {/* 主要功能模块 */}
             <div>
-                <Row gutter={[16, 24]} justify="center">
+                <Row gutter={[24, 24]} justify="center" align="stretch" style={{ margin: '0 -12px' }}>
                     {mainFeatures.map((feature, index) => (
-                        <Col key={index} xs={24} sm={24} md={12} lg={8} xl={8}>
+                        <Col key={index} xs={24} sm={24} md={8} lg={8} xl={8} style={{ display: 'flex' }}>
                             <Card
                                 style={{
                                     textAlign: 'center',
-                                    height: isMobile ? 'auto' : '520px',
-                                    minHeight: isMobile ? '400px' : undefined,
+                                    width: '100%',
                                     borderRadius: '16px',
                                     border: `2px solid ${feature.color}`,
                                     background: '#fff',
                                     transition: 'all 0.3s ease',
                                     cursor: 'pointer',
-                                    boxShadow: `0 8px 32px ${feature.color}20`
+                                    boxShadow: `0 8px 32px ${feature.color}20`,
+                                    margin: 0,
+                                    display: 'flex',
+                                    flexDirection: 'column'
                                 }}
                                 hoverable
                                 bodyStyle={{
-                                    padding: isMobile ? '20px 16px' : '28px 20px',
-                                    height: isMobile ? 'auto' : '100%',
+                                    padding: '24px',
+                                    height: '100%',
                                     display: 'flex',
                                     flexDirection: 'column',
-                                    justifyContent: 'space-between'
+                                    justifyContent: 'space-between',
+                                    gap: '16px'
                                 }}
                                 onClick={feature.action}
                             >
@@ -191,56 +244,81 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                     </Text>
 
                                     {/* 功能特性列表 */}
-                                    <Space direction="vertical" size="small" style={{ width: '100%', marginBottom: '16px' }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '8px',
+                                        width: '100%',
+                                        marginBottom: '24px'
+                                    }}>
                                         {feature.features.map((item, idx) => (
-                                            <div key={idx} style={{
-                                                padding: isMobile ? '8px 10px' : '10px 12px',
-                                                background: '#f5f5f5',
-                                                borderRadius: '8px',
-                                                border: `1px solid ${feature.color}25`,
-                                                textAlign: 'left'
-                                            }}>
+                                            <div
+                                                key={idx}
+                                                className="feature-item"
+                                                style={{
+                                                    padding: '12px 16px',
+                                                    background: '#f8f8f8',
+                                                    borderRadius: '8px',
+                                                    border: `1px solid ${feature.color}15`,
+                                                    textAlign: 'left',
+                                                    cursor: 'pointer',
+                                                    minHeight: '64px',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    justifyContent: 'center'
+                                                }}>
                                                 <div style={{
-                                                    fontSize: isMobile ? '12px' : '13px',
+                                                    fontSize: '14px',
                                                     fontWeight: 600,
-                                                    color: '#333',
-                                                    marginBottom: '2px'
+                                                    color: feature.color,
+                                                    marginBottom: '4px'
                                                 }}>
                                                     {item.name}
                                                 </div>
                                                 <div style={{
-                                                    fontSize: isMobile ? '10px' : '11px',
+                                                    fontSize: '12px',
                                                     color: '#666',
-                                                    lineHeight: '1.3'
+                                                    lineHeight: '1.5',
+                                                    whiteSpace: 'normal',
+                                                    wordBreak: 'break-word'
                                                 }}>
                                                     {item.detail}
                                                 </div>
                                             </div>
                                         ))}
-                                    </Space>
+                                    </div>
 
                                     {/* 统计数据 */}
                                     <div style={{
                                         display: 'flex',
-                                        justifyContent: 'space-around',
-                                        padding: isMobile ? '10px' : '12px',
-                                        background: `${feature.color}08`,
-                                        borderRadius: '8px',
-                                        marginBottom: '16px'
+                                        justifyContent: 'space-between',
+                                        marginBottom: '24px',
+                                        gap: '12px'
                                     }}>
                                         {Object.entries(feature.stats).map(([key, value]) => (
-                                            <div key={key} style={{ textAlign: 'center' }}>
+                                            <div key={key} style={{
+                                                textAlign: 'center',
+                                                flex: 1,
+                                                padding: '12px 8px',
+                                                background: `${feature.color}05`,
+                                                borderRadius: '8px',
+                                                position: 'relative',
+                                                overflow: 'hidden'
+                                            }}>
                                                 <div style={{
-                                                    fontSize: isMobile ? '12px' : '14px',
+                                                    fontSize: '22px',
                                                     fontWeight: 'bold',
-                                                    color: feature.color
+                                                    color: feature.color,
+                                                    marginBottom: '4px',
+                                                    lineHeight: 1
                                                 }}>
                                                     {value}
                                                 </div>
                                                 <div style={{
-                                                    fontSize: isMobile ? '9px' : '10px',
+                                                    fontSize: '12px',
                                                     color: '#666',
-                                                    textTransform: 'capitalize'
+                                                    textTransform: 'capitalize',
+                                                    fontWeight: 500
                                                 }}>
                                                     {key}
                                                 </div>
@@ -252,20 +330,23 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                 {/* 操作按钮 */}
                                 <Button
                                     type="primary"
-                                    size={isMobile ? 'middle' : 'large'}
+                                    size="large"
                                     style={{
                                         background: feature.gradient,
                                         borderColor: feature.color,
-                                        marginTop: '16px',
-                                        height: isMobile ? '36px' : '44px',
-                                        fontSize: isMobile ? '13px' : '15px',
+                                        height: '48px',
+                                        fontSize: '15px',
                                         fontWeight: 600,
                                         borderRadius: '8px',
-                                        width: '100%'
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '8px'
                                     }}
-                                    icon={<ArrowRightOutlined />}
+                                    icon={<ArrowRightOutlined style={{ fontSize: '16px' }} />}
                                 >
-                                    进入{feature.title}
+                                    {t(`home.features.${feature === mainFeatures[0] ? 'dataExtraction' : feature === mainFeatures[1] ? 'visualization' : 'analysis'}.button`)}
                                 </Button>
                             </Card>
                         </Col>
@@ -287,40 +368,40 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                     marginBottom: '16px',
                     color: '#333',
                     fontSize: isMobile ? '16px' : undefined
-                }}>功能简介</Title>
+                }}>{t('home.introduction.title')}</Title>
                 <Row gutter={[isMobile ? 16 : 24, 16]}>
                     <Col xs={24} md={8}>
                         <Text strong style={{
                             color: '#1890ff',
                             fontSize: isMobile ? '14px' : undefined
-                        }}>数据提取：</Text>
+                        }}>{t('home.introduction.dataExtraction.title')}</Text>
                         <br />
                         <Text style={{
                             color: '#666',
                             fontSize: isMobile ? '13px' : undefined
-                        }}>快速筛选和导出NHANES数据库中的目标数据</Text>
+                        }}>{t('home.introduction.dataExtraction.description')}</Text>
                     </Col>
                     <Col xs={24} md={8}>
                         <Text strong style={{
                             color: '#52c41a',
                             fontSize: isMobile ? '14px' : undefined
-                        }}>数据可视化：</Text>
+                        }}>{t('home.introduction.visualization.title')}</Text>
                         <br />
                         <Text style={{
                             color: '#666',
                             fontSize: isMobile ? '13px' : undefined
-                        }}>生成专业的统计图表，直观展示数据规律</Text>
+                        }}>{t('home.introduction.visualization.description')}</Text>
                     </Col>
                     <Col xs={24} md={8}>
                         <Text strong style={{
                             color: '#faad14',
                             fontSize: isMobile ? '14px' : undefined
-                        }}>数据分析：</Text>
+                        }}>{t('home.introduction.analysis.title')}</Text>
                         <br />
                         <Text style={{
                             color: '#666',
                             fontSize: isMobile ? '13px' : undefined
-                        }}>执行各种统计分析方法，获得科学结论</Text>
+                        }}>{t('home.introduction.analysis.description')}</Text>
                     </Col>
                 </Row>
             </div>

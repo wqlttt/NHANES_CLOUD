@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Layout, Menu, Typography, Space, Button, Drawer } from 'antd';
 import { DatabaseOutlined, BarChartOutlined, FundOutlined, HomeOutlined, GlobalOutlined, MenuOutlined } from '@ant-design/icons';
 import Home from './pages/Home';
@@ -12,33 +13,11 @@ const { Title } = Typography;
 
 type PageKey = 'home' | 'extraction' | 'visualization' | 'analysis';
 
-// 语言配置
-const languages = {
-  zh: {
-    title: 'NHANES 数据处理系统',
-    home: '首页',
-    extraction: '数据提取',
-    visualization: '数据可视化',
-    analysis: '数据分析',
-    switchLang: 'EN'
-  },
-  en: {
-    title: 'NHANES Data Processing System',
-    home: 'Home',
-    extraction: 'Data Extraction',
-    visualization: 'Data Visualization',
-    analysis: 'Data Analysis',
-    switchLang: '中文'
-  }
-};
-
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageKey>('home');
-  const [language, setLanguage] = useState<'zh' | 'en'>('zh');
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
-
-  const currentLang = languages[language];
+  const { t, i18n } = useTranslation();
 
   // 检测屏幕尺寸变化
   useEffect(() => {
@@ -58,27 +37,28 @@ const App: React.FC = () => {
     {
       key: 'home',
       icon: <HomeOutlined />,
-      label: currentLang.home,
+      label: t('home.features.dataExtraction.title'),
     },
     {
       key: 'extraction',
       icon: <DatabaseOutlined />,
-      label: currentLang.extraction,
+      label: t('home.features.dataExtraction.title'),
     },
     {
       key: 'visualization',
       icon: <BarChartOutlined />,
-      label: currentLang.visualization,
+      label: t('home.features.visualization.title'),
     },
     {
       key: 'analysis',
       icon: <FundOutlined />,
-      label: currentLang.analysis,
+      label: t('home.features.analysis.title'),
     },
   ];
 
   const toggleLanguage = () => {
-    setLanguage(language === 'zh' ? 'en' : 'zh');
+    const nextLang = i18n.language === 'zh' ? 'en' : 'zh';
+    i18n.changeLanguage(nextLang);
   };
 
   const handleMenuClick = (key: string) => {
@@ -130,7 +110,7 @@ const App: React.FC = () => {
               color: '#1890ff',
               fontSize: isMobile ? '16px' : '20px'
             }}>
-              {isMobile ? 'NHANES' : currentLang.title}
+              {isMobile ? 'NHANES' : t('home.title')}
             </Title>
           </Space>
           <Space>
@@ -144,7 +124,7 @@ const App: React.FC = () => {
               }}
               size={isMobile ? 'small' : 'middle'}
             >
-              {currentLang.switchLang}
+              {i18n.language === 'zh' ? 'EN' : '中文'}
             </Button>
           </Space>
         </div>
@@ -171,7 +151,7 @@ const App: React.FC = () => {
 
         {/* 移动端抽屉菜单 */}
         <Drawer
-          title={currentLang.title}
+          title={t('home.title')}
           placement="left"
           closable={true}
           onClose={() => setDrawerVisible(false)}

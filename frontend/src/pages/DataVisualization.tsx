@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Typography,
     Card,
@@ -39,11 +40,11 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 // 图表类型配置 - 匹配后端支持的类型
-const chartTypes = [
-    { value: 'histogram', label: '直方图', icon: <BarChartOutlined /> },
-    { value: 'scatter', label: '散点图', icon: <DotChartOutlined /> },
-    { value: 'heatmap', label: '热力图', icon: <PieChartOutlined /> },
-    { value: 'boxplot', label: '箱型图', icon: <LineChartOutlined /> },
+const getChartTypes = (t: any) => [
+    { value: 'histogram', label: t('dataVisualization.chartType.histogram'), icon: <BarChartOutlined /> },
+    { value: 'scatter', label: t('dataVisualization.chartType.scatter'), icon: <DotChartOutlined /> },
+    { value: 'heatmap', label: t('dataVisualization.chartType.heatmap'), icon: <PieChartOutlined /> },
+    { value: 'boxplot', label: t('dataVisualization.chartType.boxplot'), icon: <LineChartOutlined /> },
 ];
 
 // 接口类型定义
@@ -83,6 +84,8 @@ interface ChartResult {
 }
 
 const DataVisualization: React.FC = () => {
+    const { t } = useTranslation();
+    const chartTypes = getChartTypes(t);
     const [form] = Form.useForm();
     const [chartType, setChartType] = useState('histogram');
     const [loading, setLoading] = useState(false);
@@ -130,7 +133,7 @@ const DataVisualization: React.FC = () => {
             if (result.success) {
                 setUploadedFile(file);
                 setFileInfo(result);
-                message.success(`文件上传成功！${result.message}`);
+                message.success(t('dataVisualization.upload.success', { message: result.message }));
 
                 // 清空之前的图表结果
                 setChartResult(null);
@@ -139,11 +142,11 @@ const DataVisualization: React.FC = () => {
                 // 重置表单变量选择
                 form.resetFields(['xVar', 'yVar', 'groupVar']);
             } else {
-                message.error(`文件上传失败：${result.error}`);
+                message.error(t('dataVisualization.upload.error', { error: result.error }));
             }
         } catch (error) {
             console.error('文件上传错误:', error);
-            message.error('文件上传失败，请检查网络连接');
+            message.error(t('dataVisualization.upload.networkError'));
         } finally {
             setUploadLoading(false);
         }
@@ -154,7 +157,7 @@ const DataVisualization: React.FC = () => {
     // 生成图表
     const handleGenerateChart = async () => {
         if (!uploadedFile) {
-            message.error('请先上传CSV文件');
+            message.error(t('dataVisualization.generate.errors.noFile'));
             return;
         }
 
@@ -163,18 +166,18 @@ const DataVisualization: React.FC = () => {
 
         // 验证必要参数
         if (!xVar && chartType !== 'histogram') {
-            message.error('请选择X轴变量');
+            message.error(t('dataVisualization.generate.errors.noXVar'));
             return;
         }
 
         if ((chartType === 'scatter' || chartType === 'heatmap') && !yVar) {
-            message.error('散点图和热力图需要选择Y轴变量');
+            message.error(t('dataVisualization.generate.errors.noYVar'));
             return;
         }
 
         // 验证自定义标题
         if (chartTitleType === 'custom' && !customTitle?.trim()) {
-            message.error('请输入自定义图表标题');
+            message.error(t('dataVisualization.settings.customTitle.required'));
             return;
         }
 
@@ -214,13 +217,15 @@ const DataVisualization: React.FC = () => {
             // 自动生成标题
             let autoTitle = '';
             if (chartType === 'histogram') {
-                autoTitle = `${xVar} 分布直方图`;
+                autoTitle = t('dataVisualization.chartTitles.histogram', { x: xVar });
             } else if (chartType === 'scatter') {
-                autoTitle = `${xVar} vs ${yVar} 散点图`;
+                autoTitle = t('dataVisualization.chartTitles.scatter', { x: xVar, y: yVar });
             } else if (chartType === 'heatmap') {
-                autoTitle = `${xVar} vs ${yVar} 热力图`;
+                autoTitle = t('dataVisualization.chartTitles.heatmap', { x: xVar, y: yVar });
             } else if (chartType === 'boxplot') {
-                autoTitle = yVar ? `${xVar} 按 ${yVar} 分组箱型图` : `${xVar} 箱型图`;
+                autoTitle = yVar
+                    ? t('dataVisualization.chartTitles.boxplotGrouped', { x: xVar, y: yVar })
+                    : t('dataVisualization.chartTitles.boxplot', { x: xVar });
             }
             if (autoTitle) {
                 formData.append('title', autoTitle);
@@ -240,16 +245,16 @@ const DataVisualization: React.FC = () => {
                 setChartResult(result);
                 setChartGenerated(true);
                 setActiveTab('result');
-                message.success('图表生成成功！');
+                message.success(t('dataVisualization.generate.success'));
             } else {
-                message.error(`图表生成失败：${result.error}`);
+                message.error(t('dataVisualization.generate.errors.failed', { error: result.error }));
             }
         } catch (error: any) {
             console.error('图表生成错误:', error);
             if (error.name === 'AbortError') {
-                message.warning('图表生成已取消');
+                message.warning(t('dataVisualization.generate.errors.cancelled'));
             } else {
-                message.error('图表生成失败，请检查网络连接');
+                message.error(t('dataVisualization.generate.errors.networkError'));
             }
         } finally {
             setLoading(false);
@@ -266,7 +271,7 @@ const DataVisualization: React.FC = () => {
     const handleCancelGeneration = () => {
         if (abortController) {
             abortController.abort();
-            message.info('正在取消图表生成...');
+            message.info(t('dataVisualization.generate.errors.cancelling'));
         }
     };
 
@@ -306,17 +311,17 @@ const DataVisualization: React.FC = () => {
     // 渲染图表结果
     const renderChart = () => {
         if (!chartGenerated || !chartResult) {
-            return <Empty description="暂无图表数据" />;
+            return <Empty description={t('dataVisualization.result.noData')} />;
         }
 
         return (
             <div style={{ width: '100%', textAlign: 'center' }}>
                 <Image
                     src={chartResult.plot}
-                    alt={`${chartResult.chart_type}图表`}
+                    alt={`${chartResult.chart_type}${t('dataVisualization.chartType.title')}`}
                     style={{ maxWidth: '100%', height: 'auto' }}
                     preview={{
-                        mask: '点击预览大图'
+                        mask: t('dataVisualization.result.previewImage')
                     }}
                 />
             </div>
@@ -325,33 +330,22 @@ const DataVisualization: React.FC = () => {
 
     // 获取图表类型对应的变量需求说明
     const getVariableRequirement = (type: string) => {
-        switch (type) {
-            case 'histogram':
-                return 'X轴变量（数值型）';
-            case 'scatter':
-                return 'X轴和Y轴变量（数值型）';
-            case 'heatmap':
-                return 'X轴和Y轴变量（数值型）';
-            case 'boxplot':
-                return 'Y轴变量（数值型），X轴变量可选（分类型）';
-            default:
-                return '请选择变量';
-        }
+        return t(`dataVisualization.chartType.requirements.${type}`);
     };
 
     return (
         <div>
-            <Title level={2}>数据可视化</Title>
+            <Title level={2}>{t('dataVisualization.title')}</Title>
             <Text type="secondary">
-                上传CSV文件，创建各种类型的统计图表
+                {t('dataVisualization.subtitle')}
             </Text>
 
             <Card style={{ marginTop: 24 }}>
                 <Tabs activeKey={activeTab} onChange={setActiveTab}>
-                    <TabPane tab="图表配置" key="config">
+                    <TabPane tab={t('dataVisualization.config.tab')} key="config">
                         <Row gutter={24}>
                             <Col span={12}>
-                                <Card title="1. 数据源" size="small" style={{ marginBottom: 16 }}>
+                                <Card title={t('dataVisualization.upload.title')} size="small" style={{ marginBottom: 16 }}>
                                     <Space direction="vertical" style={{ width: '100%' }}>
                                         <Upload
                                             accept=".csv"
@@ -364,21 +358,21 @@ const DataVisualization: React.FC = () => {
                                                 size="small"
                                                 loading={uploadLoading}
                                             >
-                                                选择CSV文件
+                                                {t('dataVisualization.upload.button')}
                                             </Button>
                                         </Upload>
 
                                         {fileInfo && (
                                             <Alert
-                                                message="文件信息"
+                                                message={t('dataVisualization.upload.fileInfo')}
                                                 description={
                                                     <div>
-                                                        <Text strong>文件名：</Text>{fileInfo.filename}<br />
-                                                        <Text strong>数据行数：</Text>{fileInfo.file_stats.total_rows}<br />
-                                                        <Text strong>列数：</Text>{fileInfo.file_stats.total_columns}
-                                                        (数值型: {fileInfo.file_stats.numeric_columns_count},
-                                                        分类型: {fileInfo.file_stats.categorical_columns_count})<br />
-                                                        <Text strong>文件大小：</Text>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB
+                                                        <Text strong>{t('dataVisualization.upload.fileName')}</Text>{fileInfo.filename}<br />
+                                                        <Text strong>{t('dataVisualization.upload.rowCount')}</Text>{fileInfo.file_stats.total_rows}<br />
+                                                        <Text strong>{t('dataVisualization.upload.columnCount')}</Text>{fileInfo.file_stats.total_columns}
+                                                        ({t('dataVisualization.upload.numeric')}: {fileInfo.file_stats.numeric_columns_count},
+                                                        {t('dataVisualization.upload.categorical')}: {fileInfo.file_stats.categorical_columns_count})<br />
+                                                        <Text strong>{t('dataVisualization.upload.fileSize')}</Text>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB
                                                     </div>
                                                 }
                                                 type="info"
@@ -388,7 +382,7 @@ const DataVisualization: React.FC = () => {
                                         )}
 
                                         <Text type="secondary" style={{ fontSize: '12px' }}>
-                                            支持格式：CSV文件，最大50MB
+                                            {t('dataVisualization.upload.supportFormat')}
                                         </Text>
                                     </Space>
                                 </Card>
@@ -399,9 +393,9 @@ const DataVisualization: React.FC = () => {
                                         title={
                                             <Space>
                                                 <FileTextOutlined />
-                                                <span>数据预览</span>
+                                                <span>{t('dataVisualization.preview.title')}</span>
                                                 <Text type="secondary" style={{ fontSize: '12px' }}>
-                                                    (显示前10行数据)
+                                                    {t('dataVisualization.preview.showFirst')}
                                                 </Text>
                                             </Space>
                                         }
@@ -419,17 +413,17 @@ const DataVisualization: React.FC = () => {
                                             <Row justify="space-between" align="middle">
                                                 <Col>
                                                     <Space>
-                                                        <Text>总数据: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong> 行</Text>
+                                                        <Text>{t('dataVisualization.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong> {t('dataVisualization.preview.rows')}</Text>
                                                         <Text>|</Text>
-                                                        <Text>总列数: <strong>{fileInfo.file_stats.total_columns}</strong> 列</Text>
+                                                        <Text>{t('dataVisualization.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong> {t('dataVisualization.preview.columns')}</Text>
                                                         <Text>|</Text>
-                                                        <Text>文件大小: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
+                                                        <Text>{t('dataVisualization.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
                                                     </Space>
                                                 </Col>
                                                 <Col>
                                                     <Space>
-                                                        <Tag color="blue">数值型: {fileInfo.file_stats.numeric_columns_count}</Tag>
-                                                        <Tag color="green">分类型: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                        <Tag color="blue">{t('dataVisualization.upload.numeric')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                        <Tag color="green">{t('dataVisualization.upload.categorical')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
                                                     </Space>
                                                 </Col>
                                             </Row>
@@ -468,17 +462,17 @@ const DataVisualization: React.FC = () => {
                                             <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
                                                 <FileTextOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
                                                 <br />
-                                                <Text type="secondary">数据预览暂不可用</Text>
+                                                <Text type="secondary">{t('dataVisualization.preview.unavailable')}</Text>
                                                 <br />
                                                 <Text type="secondary" style={{ fontSize: '12px' }}>
-                                                    请确保上传的CSV文件格式正确
+                                                    {t('dataVisualization.preview.checkFormat')}
                                                 </Text>
                                             </div>
                                         )}
                                     </Card>
                                 )}
 
-                                <Card title="2. 图表类型" size="small" style={{ marginBottom: 16 }}>
+                                <Card title={t('dataVisualization.chartType.title')} size="small" style={{ marginBottom: 16 }}>
                                     <Radio.Group
                                         value={chartType}
                                         onChange={(e) => setChartType(e.target.value)}
@@ -497,7 +491,7 @@ const DataVisualization: React.FC = () => {
                                     </Radio.Group>
 
                                     <Alert
-                                        message={getVariableRequirement(chartType)}
+                                        message={t(`dataVisualization.chartType.requirements.${chartType}`)}
                                         type="info"
                                         style={{ marginTop: 8, fontSize: '12px' }}
                                     />
@@ -505,17 +499,20 @@ const DataVisualization: React.FC = () => {
                             </Col>
 
                             <Col span={12}>
-                                <Card title="3. 变量配置" size="small" style={{ marginBottom: 16 }}>
+                                <Card title={t('dataVisualization.variables.title')} size="small" style={{ marginBottom: 16 }}>
                                     <Form form={form} layout="vertical" size="small">
                                         <Form.Item
-                                            label="X轴变量"
+                                            label={t('dataVisualization.variables.xAxis')}
                                             name="xVar"
                                             rules={[
-                                                { required: chartType !== 'boxplot', message: '请选择X轴变量' }
+                                                {
+                                                    required: chartType !== 'boxplot',
+                                                    message: t('dataVisualization.variables.required', { axis: 'X' })
+                                                }
                                             ]}
                                         >
                                             <Select
-                                                placeholder="选择X轴变量"
+                                                placeholder={t('dataVisualization.variables.selectX')}
                                                 disabled={!fileInfo}
                                             >
                                                 {chartType === 'boxplot'
@@ -526,18 +523,18 @@ const DataVisualization: React.FC = () => {
                                         </Form.Item>
 
                                         <Form.Item
-                                            label="Y轴变量"
+                                            label={t('dataVisualization.variables.yAxis')}
                                             name="yVar"
                                             rules={[
                                                 {
                                                     required: ['scatter', 'heatmap'].includes(chartType) ||
                                                         (chartType === 'boxplot'),
-                                                    message: '请选择Y轴变量'
+                                                    message: t('dataVisualization.variables.required', { axis: 'Y' })
                                                 }
                                             ]}
                                         >
                                             <Select
-                                                placeholder="选择Y轴变量"
+                                                placeholder={t('dataVisualization.variables.selectY')}
                                                 disabled={!fileInfo}
                                             >
                                                 {chartType === 'boxplot'
@@ -547,9 +544,9 @@ const DataVisualization: React.FC = () => {
                                             </Select>
                                         </Form.Item>
 
-                                        <Form.Item label="分组变量（可选）" name="groupVar">
+                                        <Form.Item label={t('dataVisualization.variables.group')} name="groupVar">
                                             <Select
-                                                placeholder="选择分组变量"
+                                                placeholder={t('dataVisualization.variables.selectGroup')}
                                                 allowClear
                                                 disabled={!fileInfo}
                                             >
@@ -559,9 +556,9 @@ const DataVisualization: React.FC = () => {
                                     </Form>
                                 </Card>
 
-                                <Card title="4. 图表设置" size="small">
+                                <Card title={t('dataVisualization.settings.title')} size="small">
                                     <Form form={form} layout="vertical" size="small">
-                                        <Form.Item label="图表标题" name="chartTitleType" initialValue="auto">
+                                        <Form.Item label={t('dataVisualization.settings.chartTitle')} name="chartTitleType" initialValue="auto">
                                             <Select
                                                 defaultValue="auto"
                                                 size="small"
@@ -571,8 +568,8 @@ const DataVisualization: React.FC = () => {
                                                     }
                                                 }}
                                             >
-                                                <Option value="auto">自动生成</Option>
-                                                <Option value="custom">自定义标题</Option>
+                                                <Option value="auto">{t('dataVisualization.settings.titleType.auto')}</Option>
+                                                <Option value="custom">{t('dataVisualization.settings.titleType.custom')}</Option>
                                             </Select>
                                         </Form.Item>
 
@@ -586,14 +583,14 @@ const DataVisualization: React.FC = () => {
                                             {({ getFieldValue }) => {
                                                 return getFieldValue('chartTitleType') === 'custom' ? (
                                                     <Form.Item
-                                                        label="自定义标题"
+                                                        label={t('dataVisualization.settings.customTitle.label')}
                                                         name="customTitle"
                                                         rules={[
-                                                            { required: true, message: '请输入图表标题' }
+                                                            { required: true, message: t('dataVisualization.settings.customTitle.required') }
                                                         ]}
                                                     >
                                                         <Input
-                                                            placeholder="请输入图表标题"
+                                                            placeholder={t('dataVisualization.settings.customTitle.placeholder')}
                                                             size="small"
                                                             maxLength={50}
                                                         />
@@ -602,7 +599,7 @@ const DataVisualization: React.FC = () => {
                                             }}
                                         </Form.Item>
 
-                                        <Form.Item label="颜色主题" name="colorTheme" initialValue="blue">
+                                        <Form.Item label={t('dataVisualization.settings.colorTheme.label')} name="colorTheme" initialValue="blue">
                                             <Select defaultValue="blue" size="small">
                                                 <Option value="blue">
                                                     <Space>
@@ -612,7 +609,7 @@ const DataVisualization: React.FC = () => {
                                                             backgroundColor: '#1890ff',
                                                             borderRadius: 2
                                                         }} />
-                                                        蓝色系
+                                                        {t('dataVisualization.settings.colorTheme.blue')}
                                                     </Space>
                                                 </Option>
                                                 <Option value="green">
@@ -623,7 +620,7 @@ const DataVisualization: React.FC = () => {
                                                             backgroundColor: '#52c41a',
                                                             borderRadius: 2
                                                         }} />
-                                                        绿色系
+                                                        {t('dataVisualization.settings.colorTheme.green')}
                                                     </Space>
                                                 </Option>
                                                 <Option value="orange">
@@ -634,7 +631,7 @@ const DataVisualization: React.FC = () => {
                                                             backgroundColor: '#fa8c16',
                                                             borderRadius: 2
                                                         }} />
-                                                        橙色系
+                                                        {t('dataVisualization.settings.colorTheme.orange')}
                                                     </Space>
                                                 </Option>
                                                 <Option value="purple">
@@ -645,7 +642,7 @@ const DataVisualization: React.FC = () => {
                                                             backgroundColor: '#722ed1',
                                                             borderRadius: 2
                                                         }} />
-                                                        紫色系
+                                                        {t('dataVisualization.settings.colorTheme.purple')}
                                                     </Space>
                                                 </Option>
                                             </Select>
@@ -668,7 +665,7 @@ const DataVisualization: React.FC = () => {
                                         size="large"
                                         disabled={!fileInfo || loading}
                                     >
-                                        生成图表
+                                        {t('dataVisualization.generate.button')}
                                     </Button>
 
                                     {loading && showTimeoutWarning && (
@@ -679,7 +676,7 @@ const DataVisualization: React.FC = () => {
                                                 onClick={handleCancelGeneration}
                                                 size="large"
                                             >
-                                                取消生成
+                                                {t('dataVisualization.generate.cancel')}
                                             </Button>
                                             <Button
                                                 type="default"
@@ -687,26 +684,26 @@ const DataVisualization: React.FC = () => {
                                                 onClick={handleRetryGeneration}
                                                 size="large"
                                             >
-                                                重新生成
+                                                {t('dataVisualization.generate.retry')}
                                             </Button>
                                         </Space>
                                     )}
 
                                     {!loading && (
                                         <Text type="secondary">
-                                            上传CSV文件并配置参数后，点击生成图表
+                                            {t('dataVisualization.generate.hint')}
                                         </Text>
                                     )}
                                 </Space>
 
                                 {showTimeoutWarning && (
                                     <Alert
-                                        message="生成时间较长"
+                                        message={t('dataVisualization.generate.timeoutWarning.title')}
                                         description={
                                             <div>
-                                                图表生成正在处理中，可能由于数据量较大或网络较慢。
+                                                {t('dataVisualization.generate.timeoutWarning.description')}
                                                 <br />
-                                                您可以选择继续等待、取消当前操作或重新生成。
+                                                {t('dataVisualization.generate.timeoutWarning.options')}
                                             </div>
                                         }
                                         type="warning"
@@ -718,18 +715,18 @@ const DataVisualization: React.FC = () => {
                         </div>
                     </TabPane>
 
-                    <TabPane tab="图表结果" key="result">
+                    <TabPane tab={t('dataVisualization.result.tab')} key="result">
                         <Row gutter={24}>
                             <Col span={18}>
                                 <Card
-                                    title="图表展示"
+                                    title={t('dataVisualization.result.display')}
                                     extra={
                                         <Space>
                                             <Button icon={<DownloadOutlined />} size="small" disabled={!chartResult}>
-                                                下载图片
+                                                {t('dataVisualization.result.download.image')}
                                             </Button>
                                             <Button icon={<DownloadOutlined />} size="small" disabled={!fileInfo}>
-                                                下载数据
+                                                {t('dataVisualization.result.download.data')}
                                             </Button>
                                         </Space>
                                     }
@@ -738,12 +735,12 @@ const DataVisualization: React.FC = () => {
                                         <div style={{ textAlign: 'center', padding: '100px 0' }}>
                                             <Spin size="large" />
                                             <div style={{ marginTop: 16 }}>
-                                                <Text>正在生成图表...</Text>
+                                                <Text>{t('dataVisualization.generate.loading')}</Text>
                                                 {showTimeoutWarning && (
                                                     <div style={{ marginTop: 16 }}>
                                                         <Alert
-                                                            message="生成时间较长"
-                                                            description="图表生成需要较长时间，请耐心等待或返回配置页面取消操作"
+                                                            message={t('dataVisualization.generate.timeoutWarning.title')}
+                                                            description={t('dataVisualization.generate.timeoutWarning.waitMessage')}
                                                             type="warning"
                                                             showIcon
                                                             action={
@@ -753,14 +750,14 @@ const DataVisualization: React.FC = () => {
                                                                         danger
                                                                         onClick={handleCancelGeneration}
                                                                     >
-                                                                        取消生成
+                                                                        {t('dataVisualization.generate.cancel')}
                                                                     </Button>
                                                                     <Button
                                                                         size="small"
                                                                         type="primary"
                                                                         onClick={handleRetryGeneration}
                                                                     >
-                                                                        重新生成
+                                                                        {t('dataVisualization.generate.retry')}
                                                                     </Button>
                                                                 </Space>
                                                             }
@@ -776,38 +773,38 @@ const DataVisualization: React.FC = () => {
                             </Col>
 
                             <Col span={6}>
-                                <Card title="图表信息" size="small">
+                                <Card title={t('dataVisualization.result.info.title')} size="small">
                                     <Space direction="vertical" style={{ width: '100%' }}>
                                         <div>
-                                            <Text strong>图表类型：</Text>
+                                            <Text strong>{t('dataVisualization.result.info.type')}</Text>
                                             <br />
-                                            <Text>{chartTypes.find(t => t.value === chartType)?.label || '未知'}</Text>
+                                            <Text>{chartTypes.find(t => t.value === chartType)?.label || t('common.unknown')}</Text>
                                         </div>
 
                                         <div>
-                                            <Text strong>数据源：</Text>
+                                            <Text strong>{t('dataVisualization.result.info.dataSource')}</Text>
                                             <br />
-                                            <Text>{fileInfo?.filename || '未上传文件'}</Text>
+                                            <Text>{fileInfo?.filename || t('dataVisualization.result.info.noFile')}</Text>
                                         </div>
 
                                         <div>
-                                            <Text strong>样本量：</Text>
+                                            <Text strong>{t('dataVisualization.result.info.sampleSize')}</Text>
                                             <br />
-                                            <Text>{fileInfo?.file_stats.total_rows?.toLocaleString() || '0'} 行</Text>
+                                            <Text>{fileInfo?.file_stats.total_rows?.toLocaleString() || '0'} {t('dataVisualization.result.info.rows')}</Text>
                                         </div>
 
                                         <div>
-                                            <Text strong>生成时间：</Text>
+                                            <Text strong>{t('dataVisualization.result.info.generateTime')}</Text>
                                             <br />
-                                            <Text>{chartResult ? new Date().toLocaleString() : '暂未生成'}</Text>
+                                            <Text>{chartResult ? new Date().toLocaleString() : t('dataVisualization.result.info.notGenerated')}</Text>
                                         </div>
 
                                         {chartResult && (
                                             <div>
-                                                <Text strong>使用变量：</Text>
+                                                <Text strong>{t('dataVisualization.result.info.variables')}</Text>
                                                 <br />
                                                 <Text>
-                                                    X: {chartResult.variables_used.x_var || '无'}
+                                                    X: {chartResult.variables_used.x_var || t('common.none')}
                                                     {chartResult.variables_used.y_var &&
                                                         `, Y: ${chartResult.variables_used.y_var}`
                                                     }
@@ -818,22 +815,22 @@ const DataVisualization: React.FC = () => {
                                 </Card>
 
                                 {fileInfo && (
-                                    <Card title="数据摘要" size="small" style={{ marginTop: 16 }}>
+                                    <Card title={t('dataVisualization.result.summary.title')} size="small" style={{ marginTop: 16 }}>
                                         <Space direction="vertical" style={{ width: '100%' }}>
                                             <div>
-                                                <Text strong>总列数：</Text>
+                                                <Text strong>{t('dataVisualization.result.summary.totalColumns')}</Text>
                                                 <Text> {fileInfo.file_stats.total_columns}</Text>
                                             </div>
                                             <div>
-                                                <Text strong>数值列：</Text>
+                                                <Text strong>{t('dataVisualization.result.summary.numericColumns')}</Text>
                                                 <Text> {fileInfo.file_stats.numeric_columns_count}</Text>
                                             </div>
                                             <div>
-                                                <Text strong>分类列：</Text>
+                                                <Text strong>{t('dataVisualization.result.summary.categoricalColumns')}</Text>
                                                 <Text> {fileInfo.file_stats.categorical_columns_count}</Text>
                                             </div>
                                             <div>
-                                                <Text strong>文件大小：</Text>
+                                                <Text strong>{t('dataVisualization.result.summary.fileSize')}</Text>
                                                 <Text> {(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</Text>
                                             </div>
                                         </Space>
