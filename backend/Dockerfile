@@ -1,5 +1,5 @@
-# 使用官方Python镜像
-FROM python:3.9-slim
+# 使用国内镜像源
+FROM ccr.ccs.tencentyun.com/library/python:3.9-slim
 
 # 设置工作目录
 WORKDIR /app
@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
 # 复制requirements文件
 COPY requirements.txt .
 
-# 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+# 安装Python依赖 (使用国内镜像源)
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 # 复制应用代码
 COPY . .
