@@ -1048,26 +1048,74 @@ const DataExtraction: React.FC = () => {
     };
 
     // 下载自定义单个文件
-    const downloadCustomFile = (record: CustomExtractionItem) => {
+    const downloadCustomFile = async (record: CustomExtractionItem) => {
         setDownloadingState('custom', true);
 
-        console.log('下载自定义文件:', {
-            type: 'custom',
-            data: {
-                years: record.years,
-                fileName: record.fileName,
-                indicators: record.indicators.split(',')
-            }
-        });
-
-        // 模拟API调用
-        setTimeout(() => {
-            setDownloadingState('custom', false);
-            Modal.success({
-                title: t('dataExtraction.messages.downloadSuccess'),
-                content: t('dataExtraction.messages.downloadSuccessContent')
+        try {
+            console.log('下载自定义文件:', {
+                type: 'custom',
+                data: {
+                    years: record.years,
+                    fileName: record.fileName,
+                    indicators: record.indicators.split(',')
+                }
             });
-        }, 2000);
+
+            // 构造请求数据 - 为每个年份创建一个项目
+            const items = record.years.map(year => ({
+                year: year,
+                file: record.fileName,
+                indicator: record.indicators
+            }));
+
+            // 调用后端API
+            const response = await fetch('http://localhost:5000/process_nhanes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ items })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.csv_data) {
+                // 创建CSV文件下载
+                const blob = new Blob(['\uFEFF' + result.csv_data], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${record.fileName}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // 清理URL对象
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+
+                setDownloadingState('custom', false);
+                Modal.success({
+                    title: t('dataExtraction.messages.downloadSuccess'),
+                    content: t('dataExtraction.messages.downloadSuccessContent')
+                });
+            } else {
+                throw new Error(result.error || '数据处理失败');
+            }
+        } catch (error) {
+            console.error('下载自定义文件失败:', error);
+            setDownloadingState('custom', false);
+            Modal.error({
+                title: '下载失败',
+                content: `下载自定义文件时发生错误: ${error instanceof Error ? error.message : '未知错误'}`
+            });
+        }
     };
 
     // 下载常见指标
@@ -1150,7 +1198,7 @@ const DataExtraction: React.FC = () => {
     };
 
     // 批量下载所有自定义文件
-    const downloadAllCustomFiles = () => {
+    const downloadAllCustomFiles = async () => {
         if (customExtractions.length === 0) {
             Modal.warning({
                 title: t('common.noData'),
@@ -1161,25 +1209,78 @@ const DataExtraction: React.FC = () => {
 
         setDownloadingState('batchCustom', true);
 
-        console.log('批量下载自定义文件:', {
-            type: 'batch_custom',
-            data: {
-                files: customExtractions.map(item => ({
-                    years: item.years,
-                    fileName: item.fileName,
-                    indicators: item.indicators.split(',')
-                }))
-            }
-        });
-
-        // 模拟批量下载过程
-        setTimeout(() => {
-            setDownloadingState('batchCustom', false);
-            Modal.success({
-                title: t('dataExtraction.messages.batchDownloadSuccess'),
-                content: t('dataExtraction.messages.batchDownloadSuccessContent', { count: customExtractions.length })
+        try {
+            console.log('批量下载自定义文件:', {
+                type: 'batch_custom',
+                data: {
+                    files: customExtractions.map(item => ({
+                        years: item.years,
+                        fileName: item.fileName,
+                        indicators: item.indicators.split(',')
+                    }))
+                }
             });
-        }, 3000);
+
+            // 构造所有请求项目
+            const allItems: Array<{ year: string, file: string, indicator: string }> = [];
+            customExtractions.forEach(record => {
+                record.years.forEach(year => {
+                    allItems.push({
+                        year: year,
+                        file: record.fileName,
+                        indicator: record.indicators
+                    });
+                });
+            });
+
+            // 调用后端API进行批量处理
+            const response = await fetch('http://localhost:5000/process_nhanes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ items: allItems })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result.success && result.csv_data) {
+                // 创建批量CSV文件下载
+                const blob = new Blob(['\uFEFF' + result.csv_data], {
+                    type: 'text/csv;charset=utf-8;'
+                });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `batch_custom_extraction_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                // 清理URL对象
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+
+                setDownloadingState('batchCustom', false);
+                Modal.success({
+                    title: t('dataExtraction.messages.batchDownloadSuccess'),
+                    content: t('dataExtraction.messages.batchDownloadSuccessContent', { count: customExtractions.length })
+                });
+            } else {
+                throw new Error(result.error || '批量数据处理失败');
+            }
+        } catch (error) {
+            console.error('批量下载自定义文件失败:', error);
+            setDownloadingState('batchCustom', false);
+            Modal.error({
+                title: '批量下载失败',
+                content: `批量下载自定义文件时发生错误: ${error instanceof Error ? error.message : '未知错误'}`
+            });
+        }
     };
 
     // 获取死亡数据的函数
