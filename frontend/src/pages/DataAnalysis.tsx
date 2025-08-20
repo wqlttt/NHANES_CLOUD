@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Typography,
     Card,
@@ -40,30 +41,30 @@ const { TabPane } = Tabs;
 const { TextArea } = Input;
 
 // 分析方法配置
-const analysisTypes = [
+const getAnalysisTypes = (t: any) => [
     {
         key: 'linear_regression',
-        name: '线性回归',
+        name: t('dataAnalysis.methods.linear_regression.name'),
         icon: <LineChartOutlined />,
-        description: '建立连续型因变量与自变量间的线性关系',
+        description: t('dataAnalysis.methods.linear_regression.description'),
     },
     {
         key: 'logistic_regression',
-        name: '逻辑回归',
+        name: t('dataAnalysis.methods.logistic_regression.name'),
         icon: <ExperimentOutlined />,
-        description: '建立二分类因变量与自变量间的逻辑关系',
+        description: t('dataAnalysis.methods.logistic_regression.description'),
     },
     {
         key: 'cox_regression',
-        name: 'Cox回归分析',
+        name: t('dataAnalysis.methods.cox_regression.name'),
         icon: <FundOutlined />,
-        description: 'Cox比例风险模型，用于生存分析',
+        description: t('dataAnalysis.methods.cox_regression.description'),
     },
     {
         key: 'multinomial_logistic_regression',
-        name: '多分类逻辑回归',
+        name: t('dataAnalysis.methods.multinomial_logistic_regression.name'),
         icon: <ExperimentOutlined />,
-        description: '多分类逻辑回归，适用于CKMStage等多分类因变量',
+        description: t('dataAnalysis.methods.multinomial_logistic_regression.description'),
     },
 ];
 
@@ -144,6 +145,7 @@ interface MultinomialLogisticRegressionResult {
 
 
 const DataAnalysis: React.FC = () => {
+    const { t } = useTranslation();
     const [selectedAnalysis, setSelectedAnalysis] = useState('linear_regression');
     const [form] = Form.useForm();
     const [analyzing, setAnalyzing] = useState(false);
@@ -180,7 +182,7 @@ const DataAnalysis: React.FC = () => {
             if (result.success) {
                 setUploadedFile(file);
                 setFileInfo(result);
-                message.success(`文件上传成功！${result.message}`);
+                message.success(t('dataVisualization.upload.success', { message: result.message }));
 
                 // 清空之前的分析结果
                 setResults(null);
@@ -192,11 +194,11 @@ const DataAnalysis: React.FC = () => {
                 // 重置表单
                 form.resetFields();
             } else {
-                message.error(`文件上传失败：${result.error}`);
+                message.error(t('dataVisualization.upload.error', { error: result.error }));
             }
         } catch (error) {
             console.error('文件上传错误:', error);
-            message.error('文件上传失败，请检查网络连接');
+            message.error(t('dataVisualization.upload.networkError'));
         } finally {
             setUploadLoading(false);
         }
@@ -208,7 +210,7 @@ const DataAnalysis: React.FC = () => {
     const handleCancelAnalysis = () => {
         if (analysisAbortController) {
             analysisAbortController.abort();
-            message.info('正在取消分析...');
+            message.info(t('dataAnalysis.analysis.messages.cancelling'));
         }
     };
 
@@ -221,7 +223,7 @@ const DataAnalysis: React.FC = () => {
     // 运行Cox回归分析
     const handleCoxRegression = async () => {
         if (!uploadedFile) {
-            message.error('请先上传CSV文件');
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
             return;
         }
 
@@ -231,15 +233,15 @@ const DataAnalysis: React.FC = () => {
 
         // 验证必要参数
         if (!covariateVars || covariateVars.length === 0) {
-            message.error('请选择协变量');
+            message.error(t('dataAnalysis.analysis.messages.selectCovariates'));
             return;
         }
         if (!timeVar) {
-            message.error('请选择时间变量');
+            message.error(t('dataAnalysis.analysis.messages.selectTimeVar'));
             return;
         }
         if (!eventVar) {
-            message.error('请选择事件变量');
+            message.error(t('dataAnalysis.analysis.messages.selectEventVar'));
             return;
         }
 
@@ -310,9 +312,9 @@ const DataAnalysis: React.FC = () => {
             if (result.success) {
                 setCoxResult(result);
                 setResults(result);
-                message.success('Cox回归分析完成！');
+                message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.cox_regression.name') }));
             } else {
-                message.error(`Cox回归分析失败：${result.error}`);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.cox_regression.name'), error: result.error }));
                 setResults(null);
                 setCoxResult(null);
             }
@@ -320,9 +322,9 @@ const DataAnalysis: React.FC = () => {
             clearInterval(progressInterval);
             console.error('Cox回归分析错误:', error);
             if (error.name === 'AbortError') {
-                message.warning('Cox回归分析已取消');
+                message.warning(t('dataAnalysis.analysis.messages.analysisCancelled', { method: t('dataAnalysis.methods.cox_regression.name') }));
             } else {
-                message.error('Cox回归分析失败，请检查网络连接');
+                message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.cox_regression.name') }));
             }
             setResults(null);
             setCoxResult(null);
@@ -340,7 +342,7 @@ const DataAnalysis: React.FC = () => {
     // 运行线性回归分析
     const handleLinearRegression = async () => {
         if (!uploadedFile) {
-            message.error('请先上传CSV文件');
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
             return;
         }
 
@@ -349,12 +351,12 @@ const DataAnalysis: React.FC = () => {
         const { xVars, yVar } = formValues;
 
         if (!xVars || xVars.length === 0) {
-            message.error('请选择至少一个自变量');
+            message.error(t('dataAnalysis.analysis.messages.selectXVar'));
             return;
         }
 
         if (!yVar) {
-            message.error('请选择因变量');
+            message.error(t('dataAnalysis.analysis.messages.selectYVar'));
             return;
         }
 
@@ -392,14 +394,14 @@ const DataAnalysis: React.FC = () => {
                 setLinearResult(result);
                 setResults(result);  // 设置通用结果状态
                 setProgress(100);
-                message.success('线性回归分析完成！');
+                message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.linear_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(`线性回归分析失败：${result.error}`);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.linear_regression.name'), error: result.error }));
             }
         } catch (error) {
             console.error('线性回归分析错误:', error);
-            message.error('线性回归分析失败，请检查网络连接');
+            message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.linear_regression.name') }));
         } finally {
             setAnalyzing(false);
         }
@@ -408,7 +410,7 @@ const DataAnalysis: React.FC = () => {
     // 运行逻辑回归分析
     const handleLogisticRegression = async () => {
         if (!uploadedFile) {
-            message.error('请先上传CSV文件');
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
             return;
         }
 
@@ -417,12 +419,12 @@ const DataAnalysis: React.FC = () => {
         const { xVar, yVar } = formValues;
 
         if (!xVar) {
-            message.error('请选择自变量');
+            message.error(t('dataAnalysis.analysis.messages.selectXVar'));
             return;
         }
 
         if (!yVar) {
-            message.error('请选择因变量');
+            message.error(t('dataAnalysis.analysis.messages.selectYVar'));
             return;
         }
 
@@ -452,14 +454,14 @@ const DataAnalysis: React.FC = () => {
                 setLogisticResult(result);
                 setResults(result);  // 设置通用结果状态
                 setProgress(100);
-                message.success('逻辑回归分析完成！');
+                message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.logistic_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(`逻辑回归分析失败：${result.error}`);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.logistic_regression.name'), error: result.error }));
             }
         } catch (error) {
             console.error('逻辑回归分析错误:', error);
-            message.error('逻辑回归分析失败，请检查网络连接');
+            message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.logistic_regression.name') }));
         } finally {
             setAnalyzing(false);
         }
@@ -468,7 +470,7 @@ const DataAnalysis: React.FC = () => {
     // 运行多分类逻辑回归分析
     const handleMultinomialLogisticRegression = async () => {
         if (!uploadedFile) {
-            message.error('请先上传CSV文件');
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
             return;
         }
 
@@ -477,12 +479,12 @@ const DataAnalysis: React.FC = () => {
         const { xVars, yVar } = formValues;
 
         if (!xVars || xVars.length === 0) {
-            message.error('请选择至少一个自变量');
+            message.error(t('dataAnalysis.analysis.messages.selectXVar'));
             return;
         }
 
         if (!yVar) {
-            message.error('请选择因变量');
+            message.error(t('dataAnalysis.analysis.messages.selectYVar'));
             return;
         }
 
@@ -520,14 +522,14 @@ const DataAnalysis: React.FC = () => {
                 setMultinomialResult(result);
                 setResults(result);
                 setProgress(100);
-                message.success('多分类逻辑回归分析完成！');
+                message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(`多分类逻辑回归分析失败：${result.error}`);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name'), error: result.error }));
             }
         } catch (error) {
             console.error('多分类逻辑回归分析错误:', error);
-            message.error('多分类逻辑回归分析失败，请检查网络连接');
+            message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name') }));
         } finally {
             setAnalyzing(false);
         }
@@ -545,7 +547,7 @@ const DataAnalysis: React.FC = () => {
                 return;
             } catch (error) {
                 console.log('表单验证失败:', error);
-                message.error('请完整填写Cox回归分析参数');
+                message.error(t('dataAnalysis.analysis.messages.formValidationFailed'));
                 return;
             }
         }
@@ -566,7 +568,7 @@ const DataAnalysis: React.FC = () => {
         }
 
         // 如果没有匹配的分析方法
-        message.error('请选择有效的分析方法');
+        message.error(t('dataAnalysis.analysis.messages.selectValidMethod'));
     };
 
     // 渲染变量选择选项
@@ -603,13 +605,13 @@ const DataAnalysis: React.FC = () => {
     // Cox回归表格列定义
     const coxColumns = [
         {
-            title: '协变量',
+            title: t('dataAnalysis.results.cox.columns.covariate'),
             dataIndex: 'covariate',
             key: 'covariate',
             width: '30%',
         },
         {
-            title: '风险比 (HR)',
+            title: t('dataAnalysis.results.cox.columns.hr'),
             dataIndex: 'hr',
             key: 'hr',
             width: '25%',
@@ -619,7 +621,7 @@ const DataAnalysis: React.FC = () => {
             }
         },
         {
-            title: '95% CI 下限',
+            title: t('dataAnalysis.results.cox.columns.ciLower'),
             dataIndex: 'ci_lower',
             key: 'ci_lower',
             width: '25%',
@@ -629,7 +631,7 @@ const DataAnalysis: React.FC = () => {
             }
         },
         {
-            title: '95% CI 上限',
+            title: t('dataAnalysis.results.cox.columns.ciUpper'),
             dataIndex: 'ci_upper',
             key: 'ci_upper',
             width: '20%',
@@ -664,21 +666,21 @@ const DataAnalysis: React.FC = () => {
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
                             <Col span={12}>
-                                <Card title="森林图" size="small">
+                                <Card title={t('dataAnalysis.results.cox.forestPlot')} size="small">
                                     <div style={{ textAlign: 'center' }}>
                                         <Image
                                             src={coxResult.plot}
-                                            alt="Cox回归森林图"
+                                            alt={t('dataAnalysis.results.cox.forestPlot')}
                                             style={{ maxWidth: '100%', height: 'auto' }}
                                             preview={{
-                                                mask: '点击查看大图'
+                                                mask: t('dataVisualization.result.previewImage')
                                             }}
                                         />
                                     </div>
                                 </Card>
                             </Col>
                             <Col span={12}>
-                                <Card title="风险比结果" size="small">
+                                <Card title={t('dataAnalysis.results.cox.hazardRatios')} size="small">
                                     <Table
                                         columns={coxColumns}
                                         dataSource={coxTableData}
@@ -690,8 +692,8 @@ const DataAnalysis: React.FC = () => {
                         </Row>
 
                         <Alert
-                            message="Cox回归分析结果"
-                            description={`分析了${coxResult.covariates.length}个协变量的风险比。森林图展示了各协变量的风险比及其95%置信区间。`}
+                            message={t('dataAnalysis.results.cox.summary.title')}
+                            description={t('dataAnalysis.results.cox.summary.description', { count: coxResult.covariates.length })}
                             type="success"
                             showIcon
                         />
@@ -706,16 +708,16 @@ const DataAnalysis: React.FC = () => {
                     if (linearResult.regression_type === 'linear_simple') {
                         return {
                             key: index,
-                            variable: index === 0 ? linearResult.x_var : '截距',
+                            variable: index === 0 ? linearResult.x_var : t('dataAnalysis.results.linear.intercept'),
                             coefficient: coef,
-                            description: index === 0 ? '自变量系数' : '回归截距'
+                            description: index === 0 ? t('dataAnalysis.results.linear.independentCoefficient') : t('dataAnalysis.results.linear.regressionIntercept')
                         };
                     } else {
                         return {
                             key: index,
-                            variable: linearResult.x_vars?.[index] || '截距',
+                            variable: linearResult.x_vars?.[index] || t('dataAnalysis.results.linear.intercept'),
                             coefficient: coef,
-                            description: '回归系数'
+                            description: t('dataAnalysis.results.linear.regressionCoefficient')
                         };
                     }
                 });
@@ -723,30 +725,30 @@ const DataAnalysis: React.FC = () => {
                 // 添加截距项
                 linearTableData.push({
                     key: linearTableData.length,
-                    variable: '截距',
+                    variable: t('dataAnalysis.results.linear.intercept'),
                     coefficient: linearResult.intercept,
-                    description: '回归截距'
+                    description: t('dataAnalysis.results.linear.regressionIntercept')
                 });
 
                 const linearColumns = [
-                    { title: '变量', dataIndex: 'variable', key: 'variable' },
-                    { title: '系数值', dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => val.toFixed(4) },
-                    { title: '说明', dataIndex: 'description', key: 'description' },
+                    { title: t('dataAnalysis.results.linear.columns.variable'), dataIndex: 'variable', key: 'variable' },
+                    { title: t('dataAnalysis.results.linear.columns.coefficient'), dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => val.toFixed(4) },
+                    { title: t('dataAnalysis.results.linear.columns.description'), dataIndex: 'description', key: 'description' },
                 ];
 
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
                             <Col span={12}>
-                                <Card title="回归图" size="small">
+                                <Card title={t('dataAnalysis.results.linear.plot')} size="small">
                                     <div style={{ textAlign: 'center' }}>
                                         {linearResult.plot ? (
                                             <Image
                                                 src={linearResult.plot}
-                                                alt="线性回归图"
+                                                alt={t('dataAnalysis.results.linear.plot')}
                                                 style={{ maxWidth: '100%', height: 'auto' }}
                                                 preview={{
-                                                    mask: '点击查看大图'
+                                                    mask: t('dataVisualization.result.previewImage')
                                                 }}
                                                 onError={(e) => {
                                                     console.error('线性回归图片加载失败:', e);
@@ -755,34 +757,34 @@ const DataAnalysis: React.FC = () => {
                                             />
                                         ) : (
                                             <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                图片数据缺失
+                                                {t('dataVisualization.result.noData')}
                                             </div>
                                         )}
                                     </div>
                                 </Card>
                             </Col>
                             <Col span={12}>
-                                <Card title="回归统计" size="small">
+                                <Card title={t('dataAnalysis.results.linear.statistics')} size="small">
                                     <Row gutter={16} style={{ marginBottom: 16 }}>
                                         <Col span={12}>
-                                            <Statistic title="R² 决定系数" value={linearResult.r2_score} precision={4} />
+                                            <Statistic title={t('dataAnalysis.results.linear.stats.r2')} value={linearResult.r2_score} precision={4} />
                                         </Col>
                                         <Col span={12}>
-                                            <Statistic title="MSE 均方误差" value={linearResult.mse} precision={4} />
+                                            <Statistic title={t('dataAnalysis.results.linear.stats.mse')} value={linearResult.mse} precision={4} />
                                         </Col>
                                     </Row>
                                     {linearResult.correlation && (
                                         <Row gutter={16} style={{ marginBottom: 16 }}>
                                             <Col span={12}>
-                                                <Statistic title="相关系数" value={linearResult.correlation} precision={4} />
+                                                <Statistic title={t('dataAnalysis.results.linear.stats.correlation')} value={linearResult.correlation} precision={4} />
                                             </Col>
                                             <Col span={12}>
-                                                <Statistic title="样本数量" value={linearResult.sample_size} />
+                                                <Statistic title={t('dataAnalysis.results.linear.stats.sampleSize')} value={linearResult.sample_size} />
                                             </Col>
                                         </Row>
                                     )}
                                     <Divider />
-                                    <Text strong>回归方程：</Text>
+                                    <Text strong>{t('dataAnalysis.results.linear.equation')}</Text>
                                     <div style={{
                                         backgroundColor: '#f5f5f5',
                                         padding: '8px 12px',
@@ -796,7 +798,7 @@ const DataAnalysis: React.FC = () => {
                             </Col>
                         </Row>
 
-                        <Card title="回归系数" size="small" style={{ marginBottom: 16 }}>
+                        <Card title={t('dataAnalysis.results.linear.coefficients')} size="small" style={{ marginBottom: 16 }}>
                             <Table
                                 columns={linearColumns}
                                 dataSource={linearTableData}
@@ -806,12 +808,13 @@ const DataAnalysis: React.FC = () => {
                         </Card>
 
                         <Alert
-                            message="线性回归分析结果"
-                            description={`
-                                ${linearResult.regression_type === 'linear_simple' ? '单变量' : '多变量'}线性回归分析完成。
-                                R² = ${linearResult.r2_score.toFixed(4)}，表示模型解释了因变量 ${(linearResult.r2_score * 100).toFixed(2)}% 的方差。
-                                样本量：${linearResult.sample_size}
-                            `}
+                            message={t('dataAnalysis.results.linear.summary.title')}
+                            description={t('dataAnalysis.results.linear.summary.description', {
+                                type: t(`dataAnalysis.results.linear.summary.types.${linearResult.regression_type === 'linear_simple' ? 'simple' : 'multiple'}`),
+                                r2: linearResult.r2_score.toFixed(4),
+                                variance: (linearResult.r2_score * 100).toFixed(2),
+                                sampleSize: linearResult.sample_size
+                            })}
                             type="success"
                             showIcon
                         />
@@ -827,35 +830,35 @@ const DataAnalysis: React.FC = () => {
                         key: 0,
                         variable: logisticResult.x_var,
                         coefficient: logisticResult.coefficients[0],
-                        description: '自变量系数'
+                        description: t('dataAnalysis.results.logistic.independentCoefficient')
                     },
                     {
                         key: 1,
-                        variable: '截距',
+                        variable: t('dataAnalysis.results.logistic.intercept'),
                         coefficient: logisticResult.intercept,
-                        description: '回归截距'
+                        description: t('dataAnalysis.results.logistic.regressionIntercept')
                     }
                 ];
 
                 const logisticColumns = [
-                    { title: '变量', dataIndex: 'variable', key: 'variable' },
-                    { title: '系数值', dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => val.toFixed(4) },
-                    { title: '说明', dataIndex: 'description', key: 'description' },
+                    { title: t('dataAnalysis.results.linear.columns.variable'), dataIndex: 'variable', key: 'variable' },
+                    { title: t('dataAnalysis.results.linear.columns.coefficient'), dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => val.toFixed(4) },
+                    { title: t('dataAnalysis.results.linear.columns.description'), dataIndex: 'description', key: 'description' },
                 ];
 
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
                             <Col span={12}>
-                                <Card title="逻辑回归图" size="small">
+                                <Card title={t('dataAnalysis.results.logistic.plot')} size="small">
                                     <div style={{ textAlign: 'center' }}>
                                         {logisticResult.plot ? (
                                             <Image
                                                 src={logisticResult.plot}
-                                                alt="逻辑回归图"
+                                                alt={t('dataAnalysis.results.logistic.plot')}
                                                 style={{ maxWidth: '100%', height: 'auto' }}
                                                 preview={{
-                                                    mask: '点击查看大图'
+                                                    mask: t('dataVisualization.result.previewImage')
                                                 }}
                                                 onError={(e) => {
                                                     console.error('逻辑回归图片加载失败:', e);
@@ -864,33 +867,33 @@ const DataAnalysis: React.FC = () => {
                                             />
                                         ) : (
                                             <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                图片数据缺失
+                                                {t('dataVisualization.result.noData')}
                                             </div>
                                         )}
                                     </div>
                                 </Card>
                             </Col>
                             <Col span={12}>
-                                <Card title="分类统计" size="small">
+                                <Card title={t('dataAnalysis.results.logistic.statistics')} size="small">
                                     <Row gutter={16} style={{ marginBottom: 16 }}>
                                         <Col span={24}>
-                                            <Statistic title="分类准确率" value={logisticResult.accuracy * 100} precision={2} suffix="%" />
+                                            <Statistic title={t('dataAnalysis.results.logistic.accuracy')} value={logisticResult.accuracy * 100} precision={2} suffix="%" />
                                         </Col>
                                     </Row>
                                     <Divider />
                                     <div>
-                                        <Text strong>模型说明：</Text>
+                                        <Text strong>{t('dataAnalysis.results.logistic.modelInfo.title')}</Text>
                                         <div style={{ marginTop: '8px' }}>
-                                            <Text>自变量：{logisticResult.x_var}</Text><br />
-                                            <Text>因变量：{logisticResult.y_var}</Text><br />
-                                            <Text>模型类型：二分类逻辑回归</Text>
+                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.xVar')} {logisticResult.x_var}</Text><br />
+                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.yVar')} {logisticResult.y_var}</Text><br />
+                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.type')}</Text>
                                         </div>
                                     </div>
                                 </Card>
                             </Col>
                         </Row>
 
-                        <Card title="回归系数" size="small" style={{ marginBottom: 16 }}>
+                        <Card title={t('dataAnalysis.results.logistic.coefficients')} size="small" style={{ marginBottom: 16 }}>
                             <Table
                                 columns={logisticColumns}
                                 dataSource={logisticTableData}
@@ -900,12 +903,13 @@ const DataAnalysis: React.FC = () => {
                         </Card>
 
                         <Alert
-                            message="逻辑回归分析结果"
-                            description={`
-                                二分类逻辑回归分析完成。
-                                模型准确率：${(logisticResult.accuracy * 100).toFixed(2)}%。
-                                自变量 ${logisticResult.x_var} 对因变量 ${logisticResult.y_var} 的预测效果${logisticResult.accuracy > 0.7 ? '较好' : '一般'}。
-                            `}
+                            message={t('dataAnalysis.results.logistic.summary.title')}
+                            description={t('dataAnalysis.results.logistic.summary.description', {
+                                accuracy: (logisticResult.accuracy * 100).toFixed(2),
+                                xVar: logisticResult.x_var,
+                                yVar: logisticResult.y_var,
+                                performance: t(`dataAnalysis.results.logistic.summary.performance.${logisticResult.accuracy > 0.7 ? 'good' : 'fair'}`)
+                            })}
                             type="success"
                             showIcon
                         />
@@ -919,15 +923,15 @@ const DataAnalysis: React.FC = () => {
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
                             <Col span={12}>
-                                <Card title="多分类回归分析图" size="small">
+                                <Card title={t('dataAnalysis.results.multinomial.plot')} size="small">
                                     <div style={{ textAlign: 'center' }}>
                                         {multinomialResult.plot ? (
                                             <Image
                                                 src={multinomialResult.plot}
-                                                alt="多分类逻辑回归图"
+                                                alt={t('dataAnalysis.results.multinomial.plot')}
                                                 style={{ maxWidth: '100%', height: 'auto' }}
                                                 preview={{
-                                                    mask: '点击查看大图'
+                                                    mask: t('dataVisualization.result.previewImage')
                                                 }}
                                                 onError={(e) => {
                                                     console.error('多分类回归图片加载失败:', e);
@@ -936,35 +940,35 @@ const DataAnalysis: React.FC = () => {
                                             />
                                         ) : (
                                             <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                图片数据缺失
+                                                {t('dataVisualization.result.noData')}
                                             </div>
                                         )}
                                     </div>
                                 </Card>
                             </Col>
                             <Col span={12}>
-                                <Card title="分类统计" size="small">
+                                <Card title={t('dataAnalysis.results.multinomial.statistics')} size="small">
                                     <Row gutter={16} style={{ marginBottom: 16 }}>
                                         <Col span={12}>
-                                            <Statistic title="分类准确率" value={multinomialResult.accuracy * 100} precision={2} suffix="%" />
+                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.accuracy')} value={multinomialResult.accuracy * 100} precision={2} suffix="%" />
                                         </Col>
                                         <Col span={12}>
-                                            <Statistic title="类别数量" value={multinomialResult.n_classes} />
+                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.classes')} value={multinomialResult.n_classes} />
                                         </Col>
                                     </Row>
                                     <Row gutter={16} style={{ marginBottom: 16 }}>
                                         <Col span={24}>
-                                            <Statistic title="样本数量" value={multinomialResult.sample_size} />
+                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.sampleSize')} value={multinomialResult.sample_size} />
                                         </Col>
                                     </Row>
                                     <Divider />
                                     <div>
-                                        <Text strong>模型说明：</Text>
+                                        <Text strong>{t('dataAnalysis.results.multinomial.modelInfo.title')}</Text>
                                         <div style={{ marginTop: '8px' }}>
-                                            <Text>自变量：{multinomialResult.x_vars.join(', ')}</Text><br />
-                                            <Text>因变量：{multinomialResult.y_var}</Text><br />
-                                            <Text>类别标签：{multinomialResult.class_labels.join(', ')}</Text><br />
-                                            <Text>模型类型：多分类逻辑回归</Text>
+                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.xVars')} {multinomialResult.x_vars.join(', ')}</Text><br />
+                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.yVar')} {multinomialResult.y_var}</Text><br />
+                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.labels')} {multinomialResult.class_labels.join(', ')}</Text><br />
+                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.type')}</Text>
                                         </div>
                                     </div>
                                 </Card>
@@ -972,13 +976,12 @@ const DataAnalysis: React.FC = () => {
                         </Row>
 
                         <Alert
-                            message="多分类逻辑回归分析结果"
-                            description={`
-                                多分类逻辑回归分析完成。
-                                模型准确率：${(multinomialResult.accuracy * 100).toFixed(2)}%。
-                                成功分类 ${multinomialResult.n_classes} 个类别（${multinomialResult.class_labels.join(', ')}）。
-                                适用于CKMStage等多分类因变量的分析。
-                            `}
+                            message={t('dataAnalysis.results.multinomial.summary.title')}
+                            description={t('dataAnalysis.results.multinomial.summary.description', {
+                                accuracy: (multinomialResult.accuracy * 100).toFixed(2),
+                                classes: multinomialResult.n_classes,
+                                labels: multinomialResult.class_labels.join(', ')
+                            })}
                             type="success"
                             showIcon
                         />
@@ -992,16 +995,16 @@ const DataAnalysis: React.FC = () => {
 
     return (
         <div>
-            <Title level={2}>数据分析</Title>
+            <Title level={2}>{t('dataAnalysis.title')}</Title>
             <Text type="secondary">
-                上传数据文件，选择统计分析方法，配置参数并查看分析结果
+                {t('dataAnalysis.subtitle')}
             </Text>
 
             <Card style={{ marginTop: 24 }}>
                 <Tabs activeKey={activeTab} onChange={setActiveTab}>
-                    <TabPane tab="分析配置" key="config">
+                    <TabPane tab={t('dataAnalysis.config.title')} key="config">
                         {/* 数据上传区域 */}
-                        <Card title="数据上传" size="small" style={{ marginBottom: 16 }}>
+                        <Card title={t('dataAnalysis.upload.title')} size="small" style={{ marginBottom: 16 }}>
                             <Row gutter={24}>
                                 <Col span={12}>
                                     <Upload
@@ -1015,23 +1018,23 @@ const DataAnalysis: React.FC = () => {
                                             loading={uploadLoading}
                                             size="large"
                                         >
-                                            {uploadedFile ? '重新上传CSV文件' : '上传CSV文件'}
+                                            {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
                                         </Button>
                                     </Upload>
                                     <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
-                                        支持格式：CSV文件，最大50MB
+                                        {t('dataAnalysis.upload.supportFormat')}
                                     </Text>
                                 </Col>
                                 <Col span={12}>
                                     {fileInfo && (
                                         <div>
-                                            <Text strong>文件信息：</Text>
+                                            <Text strong>{t('dataAnalysis.upload.fileInfo')}</Text>
                                             <div style={{ marginTop: 8 }}>
-                                                <Text>文件名：{fileInfo.filename}</Text><br />
-                                                <Text>数据行数：{fileInfo.file_stats.total_rows}</Text><br />
-                                                <Text>列数：{fileInfo.file_stats.total_columns}
-                                                    (数值型: {fileInfo.file_stats.numeric_columns_count},
-                                                    分类型: {fileInfo.file_stats.categorical_columns_count})
+                                                <Text>{t('dataAnalysis.upload.fileName')} {fileInfo.filename}</Text><br />
+                                                <Text>{t('dataAnalysis.upload.rowCount')} {fileInfo.file_stats.total_rows}</Text><br />
+                                                <Text>{t('dataAnalysis.upload.columnCount')} {fileInfo.file_stats.total_columns}
+                                                    ({t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count},
+                                                    {t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count})
                                                 </Text>
                                             </div>
                                         </div>
@@ -1046,9 +1049,9 @@ const DataAnalysis: React.FC = () => {
                                 title={
                                     <Space>
                                         <FileTextOutlined />
-                                        <span>数据预览</span>
+                                        <span>{t('dataAnalysis.preview.title')}</span>
                                         <Text type="secondary" style={{ fontSize: '12px' }}>
-                                            (显示前10行数据)
+                                            {t('dataAnalysis.preview.showFirst')}
                                         </Text>
                                     </Space>
                                 }
@@ -1066,17 +1069,17 @@ const DataAnalysis: React.FC = () => {
                                     <Row justify="space-between" align="middle">
                                         <Col>
                                             <Space>
-                                                <Text>总数据: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong> 行</Text>
+                                                <Text>{t('dataAnalysis.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong> {t('dataVisualization.preview.rows')}</Text>
                                                 <Text>|</Text>
-                                                <Text>总列数: <strong>{fileInfo.file_stats.total_columns}</strong> 列</Text>
+                                                <Text>{t('dataAnalysis.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong> {t('dataVisualization.preview.columns')}</Text>
                                                 <Text>|</Text>
-                                                <Text>文件大小: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
+                                                <Text>{t('dataAnalysis.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
                                             </Space>
                                         </Col>
                                         <Col>
                                             <Space>
-                                                <Tag color="blue">数值型: {fileInfo.file_stats.numeric_columns_count}</Tag>
-                                                <Tag color="green">分类型: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
                                             </Space>
                                         </Col>
                                     </Row>
@@ -1115,10 +1118,10 @@ const DataAnalysis: React.FC = () => {
                                     <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
                                         <FileTextOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
                                         <br />
-                                        <Text type="secondary">数据预览暂不可用</Text>
+                                        <Text type="secondary">{t('dataAnalysis.preview.unavailable')}</Text>
                                         <br />
                                         <Text type="secondary" style={{ fontSize: '12px' }}>
-                                            请确保上传的CSV文件格式正确
+                                            {t('dataAnalysis.preview.checkFormat')}
                                         </Text>
                                     </div>
                                 )}
@@ -1127,9 +1130,9 @@ const DataAnalysis: React.FC = () => {
 
                         <Row gutter={24}>
                             <Col span={8}>
-                                <Card title="1. 选择分析方法" size="small">
+                                <Card title={t('dataAnalysis.methods.title')} size="small">
                                     <List
-                                        dataSource={analysisTypes}
+                                        dataSource={getAnalysisTypes(t)}
                                         renderItem={(item) => (
                                             <List.Item
                                                 key={item.key}
@@ -1167,7 +1170,7 @@ const DataAnalysis: React.FC = () => {
                             </Col>
 
                             <Col span={16}>
-                                <Card title="分析参数配置" size="small" style={{ marginBottom: 16 }}>
+                                <Card title={t('dataAnalysis.config.title')} size="small" style={{ marginBottom: 16 }}>
                                     <Form
                                         form={form}
                                         layout="vertical"
@@ -1176,8 +1179,8 @@ const DataAnalysis: React.FC = () => {
                                             // Cox回归特殊参数
                                             <>
                                                 <Alert
-                                                    message="Cox回归分析说明"
-                                                    description="协变量：影响生存的因素；时间变量：生存时间（必须为正数）；事件变量：事件状态（0=删失，1=发生事件）"
+                                                    message={t('dataAnalysis.config.cox.title')}
+                                                    description={t('dataAnalysis.config.cox.description')}
                                                     type="info"
                                                     showIcon
                                                     style={{ marginBottom: 16 }}
@@ -1187,18 +1190,18 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    协变量
+                                                                    {t('dataAnalysis.config.cox.covariates.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (可多选，影响生存的因素)
+                                                                        {t('dataAnalysis.config.cox.covariates.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="covariateVars"
-                                                            rules={[{ required: true, message: '请选择协变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.covariates.required') }]}
                                                         >
                                                             <Select
                                                                 mode="multiple"
-                                                                placeholder="选择协变量（可多选，如：年龄、性别、治疗方式等）"
+                                                                placeholder={t('dataAnalysis.config.cox.covariates.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1227,17 +1230,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    时间变量
+                                                                    {t('dataAnalysis.config.cox.timeVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (生存时间，数值型)
+                                                                        {t('dataAnalysis.config.cox.timeVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="timeVar"
-                                                            rules={[{ required: true, message: '请选择时间变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.timeVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择生存时间变量（如：survival_time）"
+                                                                placeholder={t('dataAnalysis.config.cox.timeVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1253,17 +1256,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    事件变量
+                                                                    {t('dataAnalysis.config.cox.eventVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (0=删失，1=事件)
+                                                                        {t('dataAnalysis.config.cox.eventVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="eventVar"
-                                                            rules={[{ required: true, message: '请选择事件变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.eventVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择事件状态变量（如：event_status）"
+                                                                placeholder={t('dataAnalysis.config.cox.eventVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1277,9 +1280,9 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    显著性水平
+                                                                    {t('dataAnalysis.config.cox.alpha.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (统计检验的α水平)
+                                                                        {t('dataAnalysis.config.cox.alpha.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
@@ -1287,9 +1290,9 @@ const DataAnalysis: React.FC = () => {
                                                             initialValue="0.05"
                                                         >
                                                             <Select>
-                                                                <Option value="0.01">α = 0.01 (99%置信度)</Option>
-                                                                <Option value="0.05">α = 0.05 (95%置信度，推荐)</Option>
-                                                                <Option value="0.10">α = 0.10 (90%置信度)</Option>
+                                                                <Option value="0.01">{t('dataAnalysis.config.cox.alpha.options.0.01')}</Option>
+                                                                <Option value="0.05">{t('dataAnalysis.config.cox.alpha.options.0.05')}</Option>
+                                                                <Option value="0.10">{t('dataAnalysis.config.cox.alpha.options.0.10')}</Option>
                                                             </Select>
                                                         </Form.Item>
                                                     </Col>
@@ -1299,8 +1302,8 @@ const DataAnalysis: React.FC = () => {
                                             // 线性回归参数
                                             <>
                                                 <Alert
-                                                    message="线性回归分析说明"
-                                                    description="线性回归用于分析连续型因变量与一个或多个自变量的线性关系。因变量必须是连续型数值变量（如身高、体重、收入、年龄等）。如果因变量是分类变量（如性别、是否通过等），请使用逻辑回归。"
+                                                    message={t('dataAnalysis.config.linear.title')}
+                                                    description={t('dataAnalysis.config.linear.description')}
                                                     type="info"
                                                     showIcon
                                                     style={{ marginBottom: 16 }}
@@ -1310,17 +1313,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    因变量 (Y)
+                                                                    {t('dataAnalysis.config.linear.yVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (连续型变量，必须为数值型)
+                                                                        {t('dataAnalysis.config.linear.yVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="yVar"
-                                                            rules={[{ required: true, message: '请选择因变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择因变量（如：身高、体重、收入等）"
+                                                                placeholder={t('dataAnalysis.config.linear.yVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1334,18 +1337,18 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    自变量 (X)
+                                                                    {t('dataAnalysis.config.linear.xVars.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (可多选，数值型或分类型)
+                                                                        {t('dataAnalysis.config.linear.xVars.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="xVars"
-                                                            rules={[{ required: true, message: '请选择自变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
                                                         >
                                                             <Select
                                                                 mode="multiple"
-                                                                placeholder="选择自变量（如：年龄、性别、教育程度等）"
+                                                                placeholder={t('dataAnalysis.config.linear.xVars.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1376,8 +1379,8 @@ const DataAnalysis: React.FC = () => {
                                             // 逻辑回归参数
                                             <>
                                                 <Alert
-                                                    message="逻辑回归分析说明"
-                                                    description="逻辑回归用于分析二分类因变量与自变量的关系。因变量应包含两个分类（如：0/1，是/否，成功/失败）。"
+                                                    message={t('dataAnalysis.config.logistic.title')}
+                                                    description={t('dataAnalysis.config.logistic.description')}
                                                     type="info"
                                                     showIcon
                                                     style={{ marginBottom: 16 }}
@@ -1387,17 +1390,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    因变量 (Y)
+                                                                    {t('dataAnalysis.config.logistic.yVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (二分类变量，如：0/1，成功/失败)
+                                                                        {t('dataAnalysis.config.logistic.yVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="yVar"
-                                                            rules={[{ required: true, message: '请选择因变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择因变量（如：是否患病、是否通过等）"
+                                                                placeholder={t('dataAnalysis.config.logistic.yVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1411,17 +1414,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    自变量 (X)
+                                                                    {t('dataAnalysis.config.logistic.xVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (数值型或分类型变量)
+                                                                        {t('dataAnalysis.config.logistic.xVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="xVar"
-                                                            rules={[{ required: true, message: '请选择自变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择自变量（如：年龄、性别、教育程度等）"
+                                                                placeholder={t('dataAnalysis.config.logistic.xVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1437,8 +1440,8 @@ const DataAnalysis: React.FC = () => {
                                             // 多分类逻辑回归参数
                                             <>
                                                 <Alert
-                                                    message="多分类逻辑回归分析说明"
-                                                    description="多分类逻辑回归用于分析多分类因变量与自变量的关系。因变量应包含3个或更多分类（如：CKMStage的0,1,2,3,4等级）。适用于分析有序或无序的多分类问题。"
+                                                    message={t('dataAnalysis.config.multinomial.title')}
+                                                    description={t('dataAnalysis.config.multinomial.description')}
                                                     type="info"
                                                     showIcon
                                                     style={{ marginBottom: 16 }}
@@ -1448,17 +1451,17 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    因变量 (Y)
+                                                                    {t('dataAnalysis.config.multinomial.yVar.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (多分类变量，如：CKMStage的0,1,2,3,4)
+                                                                        {t('dataAnalysis.config.multinomial.yVar.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="yVar"
-                                                            rules={[{ required: true, message: '请选择因变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
                                                         >
                                                             <Select
-                                                                placeholder="选择因变量（如：CKMStage、疾病严重程度等）"
+                                                                placeholder={t('dataAnalysis.config.multinomial.yVar.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1472,18 +1475,18 @@ const DataAnalysis: React.FC = () => {
                                                         <Form.Item
                                                             label={
                                                                 <span>
-                                                                    自变量 (X)
+                                                                    {t('dataAnalysis.config.multinomial.xVars.label')}
                                                                     <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        (可多选，数值型或分类型)
+                                                                        {t('dataAnalysis.config.multinomial.xVars.hint')}
                                                                     </Text>
                                                                 </span>
                                                             }
                                                             name="xVars"
-                                                            rules={[{ required: true, message: '请选择自变量' }]}
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.multinomial.xVars.required') }]}
                                                         >
                                                             <Select
                                                                 mode="multiple"
-                                                                placeholder="选择自变量（如：年龄、性别、BMI等）"
+                                                                placeholder={t('dataAnalysis.config.multinomial.xVars.placeholder')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1510,8 +1513,8 @@ const DataAnalysis: React.FC = () => {
                                                     </Col>
                                                 </Row>
                                                 <Alert
-                                                    message="提示"
-                                                    description="多分类逻辑回归会自动处理缺失值，并标准化数值型特征。模型将输出每个类别的预测概率和整体分类准确率。"
+                                                    message={t('common.info')}
+                                                    description={t('dataAnalysis.config.multinomial.tip')}
                                                     type="warning"
                                                     showIcon
                                                     style={{ marginTop: 16 }}
@@ -1583,7 +1586,7 @@ const DataAnalysis: React.FC = () => {
                                         disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
                                         loading={analyzing && !showAnalysisTimeoutWarning}
                                     >
-                                        开始分析
+                                        {t('dataAnalysis.analysis.start')}
                                     </Button>
 
                                     {analyzing && showAnalysisTimeoutWarning && (
@@ -1594,7 +1597,7 @@ const DataAnalysis: React.FC = () => {
                                                 onClick={handleCancelAnalysis}
                                                 size="large"
                                             >
-                                                取消分析
+                                                {t('dataAnalysis.analysis.cancel')}
                                             </Button>
                                             <Button
                                                 type="default"
@@ -1602,27 +1605,27 @@ const DataAnalysis: React.FC = () => {
                                                 onClick={handleRetryAnalysis}
                                                 size="large"
                                             >
-                                                重新分析
+                                                {t('dataAnalysis.analysis.retry')}
                                             </Button>
                                         </Space>
                                     )}
 
                                     {!analyzing && (
                                         <Text style={{ color: '#666' }}>
-                                            当前分析方法：{analysisTypes.find(t => t.key === selectedAnalysis)?.name}
-                                            {selectedAnalysis === 'cox_regression' && !fileInfo && ' (需要先上传数据文件)'}
+                                            {t('dataAnalysis.analysis.currentMethod')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}
+                                            {selectedAnalysis === 'cox_regression' && !fileInfo && t('dataAnalysis.analysis.needUpload')}
                                         </Text>
                                     )}
                                 </Space>
 
                                 {showAnalysisTimeoutWarning && (
                                     <Alert
-                                        message="分析时间较长"
+                                        message={t('dataAnalysis.analysis.timeoutWarning.title')}
                                         description={
                                             <div>
-                                                数据分析正在处理中，可能由于数据量较大或计算复杂。
+                                                {t('dataAnalysis.analysis.timeoutWarning.description')}
                                                 <br />
-                                                您可以选择继续等待、取消当前操作或重新分析。
+                                                {t('dataAnalysis.analysis.timeoutWarning.options')}
                                             </div>
                                         }
                                         type="warning"
@@ -1634,7 +1637,7 @@ const DataAnalysis: React.FC = () => {
                         </div>
                     </TabPane>
 
-                    <TabPane tab="分析结果" key="results">
+                    <TabPane tab={t('dataAnalysis.results.tab')} key="results">
                         {analyzing ? (
                             <div style={{ textAlign: 'center', padding: '100px 0' }}>
                                 <Progress
@@ -1643,12 +1646,12 @@ const DataAnalysis: React.FC = () => {
                                     style={{ marginBottom: 16 }}
                                 />
                                 <div>
-                                    <Text>正在进行{analysisTypes.find(t => t.key === selectedAnalysis)?.name}...</Text>
+                                    <Text>{t('dataAnalysis.analysis.progress')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}...</Text>
                                     {showAnalysisTimeoutWarning && (
                                         <div style={{ marginTop: 16, maxWidth: 400, margin: '16px auto' }}>
                                             <Alert
-                                                message="分析时间较长"
-                                                description="数据分析正在处理中，可能由于数据量较大或计算复杂，请耐心等待或返回配置页面取消操作"
+                                                message={t('dataAnalysis.analysis.timeoutWarning.title')}
+                                                description={t('dataAnalysis.analysis.timeoutWarning.waitMessage')}
                                                 type="warning"
                                                 showIcon
                                                 action={
@@ -1658,14 +1661,14 @@ const DataAnalysis: React.FC = () => {
                                                             danger
                                                             onClick={handleCancelAnalysis}
                                                         >
-                                                            取消分析
+                                                            {t('dataAnalysis.analysis.cancel')}
                                                         </Button>
                                                         <Button
                                                             size="small"
                                                             type="primary"
                                                             onClick={handleRetryAnalysis}
                                                         >
-                                                            重新分析
+                                                            {t('dataAnalysis.analysis.retry')}
                                                         </Button>
                                                     </Space>
                                                 }
@@ -1679,14 +1682,14 @@ const DataAnalysis: React.FC = () => {
                                 <Row gutter={24}>
                                     <Col span={selectedAnalysis === 'cox_regression' ? 24 : 18}>
                                         <Card
-                                            title={`${analysisTypes.find(t => t.key === selectedAnalysis)?.name}结果`}
+                                            title={`${getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name} ${t('dataAnalysis.results.title')}`}
                                             extra={
                                                 <Space>
                                                     <Button icon={<DownloadOutlined />} size="small">
-                                                        导出结果
+                                                        {t('dataAnalysis.results.export')}
                                                     </Button>
                                                     <Button icon={<FileTextOutlined />} size="small">
-                                                        生成报告
+                                                        {t('dataAnalysis.results.generateReport')}
                                                     </Button>
                                                 </Space>
                                             }
@@ -1697,28 +1700,28 @@ const DataAnalysis: React.FC = () => {
 
                                     {selectedAnalysis !== 'cox_regression' && (
                                         <Col span={6}>
-                                            <Card title="分析信息" size="small">
+                                            <Card title={t('dataAnalysis.results.info.title')} size="small">
                                                 <Space direction="vertical" style={{ width: '100%' }}>
                                                     <div>
-                                                        <Text strong style={{ color: '#333' }}>分析方法：</Text>
+                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.method')}</Text>
                                                         <br />
-                                                        <Text style={{ color: '#333' }}>{analysisTypes.find(t => t.key === selectedAnalysis)?.name}</Text>
+                                                        <Text style={{ color: '#333' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
                                                     </div>
 
                                                     <div>
-                                                        <Text strong style={{ color: '#333' }}>数据源：</Text>
+                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.dataSource')}</Text>
                                                         <br />
-                                                        <Text style={{ color: '#333' }}>{fileInfo?.filename || '模拟数据'}</Text>
+                                                        <Text style={{ color: '#333' }}>{fileInfo?.filename || t('dataAnalysis.results.info.simulatedData')}</Text>
                                                     </div>
 
                                                     <div>
-                                                        <Text strong style={{ color: '#333' }}>样本量：</Text>
+                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.sampleSize')}</Text>
                                                         <br />
-                                                        <Text style={{ color: '#333' }}>{fileInfo?.file_stats.total_rows?.toLocaleString() || '9,460'} 人</Text>
+                                                        <Text style={{ color: '#333' }}>{fileInfo?.file_stats.total_rows?.toLocaleString() || '9,460'} {t('dataAnalysis.results.info.people')}</Text>
                                                     </div>
 
                                                     <div>
-                                                        <Text strong style={{ color: '#333' }}>分析时间：</Text>
+                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.analysisTime')}</Text>
                                                         <br />
                                                         <Text style={{ color: '#333' }}>{new Date().toLocaleString()}</Text>
                                                     </div>
@@ -1730,7 +1733,7 @@ const DataAnalysis: React.FC = () => {
                             </div>
                         ) : (
                             <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                                <Text type="secondary">请在配置页面选择分析方法并开始分析</Text>
+                                <Text type="secondary">{t('dataAnalysis.results.noResults')}</Text>
                             </div>
                         )}
                     </TabPane>

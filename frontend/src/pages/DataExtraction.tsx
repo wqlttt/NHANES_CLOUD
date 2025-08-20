@@ -44,63 +44,63 @@ const yearOptions = [
 
 // 常见二级指标 - 与CSV文件名保持一致
 const commonIndicators = [
-    { value: 'phenoage0', label: 'Phenoage（表型年龄）', description: '基于生物标志物的衰老评估指标，包含白蛋白、肌酐、血糖等10个指标' },
-    { value: 'TyG', label: 'TyG（甘油三酯血糖指数）', description: '评估胰岛素抵抗的指标，基于空腹甘油三酯和血糖计算' },
-    { value: 'BMI', label: 'BMI（体重指数）', description: '体重(kg)/身高(m)²，评估体重状况的标准指标' },
-    { value: 'TyG_BMI', label: 'TyG-BMI（TyG与BMI乘积）', description: 'TyG指数与BMI的乘积，综合评估代谢风险' },
-    { value: 'AIP', label: 'AIP（动脉粥样硬化指数）', description: 'log(TG/HDL-C)，评估动脉粥样硬化风险的指标' },
-    { value: 'VAI', label: 'VAI（内脏脂肪指数）', description: '基于腰围、BMI、甘油三酯和HDL-C计算的内脏脂肪评估指标' },
-    { value: 'UHR', label: 'UHR（尿酸HDL比值）', description: '尿酸与高密度脂蛋白胆固醇比值，评估代谢异常风险' },
-    { value: 'eGFR', label: 'eGFR（肾小球滤过率）', description: '基于CKD-EPI公式计算的估算肾小球滤过率' },
-    { value: 'RAR', label: 'RAR（红细胞分布宽度/白蛋白比值）', description: 'RDW与白蛋白比值，评估炎症和营养状态' },
-    { value: 'BRI', label: 'BRI（身体圆度指数）', description: '基于腰围和身高计算的体型评估指标' },
-    { value: 'SII', label: 'SII（全身免疫炎症指数）', description: '(血小板×中性粒细胞)/淋巴细胞，评估全身炎症状态' },
-    { value: 'NPAR', label: 'NPAR（中性粒细胞百分比/白蛋白比值）', description: '中性粒细胞百分比与白蛋白比值，评估炎症营养状态' },
-    { value: 'MAR', label: 'MAR（单核细胞/白蛋白比值）', description: '单核细胞计数与白蛋白浓度比值，炎症指标' },
-    { value: 'HALP', label: 'HALP（血红蛋白-白蛋白-淋巴细胞-血小板评分）', description: '综合营养免疫评估指标' },
-    { value: 'NLR', label: 'NLR（中性粒细胞/淋巴细胞比值）', description: '中性粒细胞与淋巴细胞比率，炎症免疫指标' },
-    { value: 'HRR', label: 'HRR（心率储备比）', description: '心率储备相关指标' },
-    { value: 'FIB4', label: 'FIB4（纤维化指数）', description: '肝纤维化评估指标' }
+    { value: 'phenoage0', label: 'Phenoage (Phenotypic Age)', description: 'Aging assessment indicator based on biomarkers, including 10 indicators such as albumin, creatinine, and glucose' },
+    { value: 'TyG', label: 'TyG (Triglycerides-Glucose Index)', description: 'Insulin resistance assessment indicator, calculated based on fasting triglycerides and glucose' },
+    { value: 'BMI', label: 'BMI (Body Mass Index)', description: 'Weight(kg)/Height(m)², standard indicator for weight status assessment' },
+    { value: 'TyG_BMI', label: 'TyG-BMI (TyG and BMI Product)', description: 'Product of TyG index and BMI, comprehensive metabolic risk assessment' },
+    { value: 'AIP', label: 'AIP (Atherogenic Index of Plasma)', description: 'log(TG/HDL-C), indicator for assessing atherosclerosis risk' },
+    { value: 'VAI', label: 'VAI (Visceral Adiposity Index)', description: 'Visceral fat assessment indicator based on waist circumference, BMI, triglycerides, and HDL-C' },
+    { value: 'UHR', label: 'UHR (Uric Acid to HDL Ratio)', description: 'Ratio of uric acid to high-density lipoprotein cholesterol, assessing metabolic abnormality risk' },
+    { value: 'eGFR', label: 'eGFR (estimated Glomerular Filtration Rate)', description: 'Estimated glomerular filtration rate calculated using CKD-EPI formula' },
+    { value: 'RAR', label: 'RAR (Red Blood Cell Distribution Width to Albumin Ratio)', description: 'RDW to albumin ratio, assessing inflammation and nutritional status' },
+    { value: 'BRI', label: 'BRI (Body Roundness Index)', description: 'Body shape assessment indicator based on waist circumference and height' },
+    { value: 'SII', label: 'SII (Systemic Immune-inflammation Index)', description: '(Platelets × Neutrophils)/Lymphocytes, assessing systemic inflammation status' },
+    { value: 'NPAR', label: 'NPAR (Neutrophil Percentage to Albumin Ratio)', description: 'Ratio of neutrophil percentage to albumin, assessing inflammatory nutritional status' },
+    { value: 'MAR', label: 'MAR (Monocyte to Albumin Ratio)', description: 'Ratio of monocyte count to albumin concentration, inflammation indicator' },
+    { value: 'HALP', label: 'HALP (Hemoglobin-Albumin-Lymphocyte-Platelet Score)', description: 'Comprehensive nutrition and immune assessment indicator' },
+    { value: 'NLR', label: 'NLR (Neutrophil to Lymphocyte Ratio)', description: 'Ratio of neutrophils to lymphocytes, inflammation and immune indicator' },
+    { value: 'HRR', label: 'HRR (Heart Rate Reserve)', description: 'Heart rate reserve related indicator' },
+    { value: 'FIB4', label: 'FIB4 (Fibrosis-4 Index)', description: 'Liver fibrosis assessment indicator' }
 ];
 
 // 死亡指标 - 对应MortData目录中的CSV文件
 const mortalityIndicators = [
-    { value: '1999-2000', label: '死亡数据（1999-2000）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2001-2002', label: '死亡数据（2001-2002）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2003-2004', label: '死亡数据（2003-2004）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2005-2006', label: '死亡数据（2005-2006）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2007-2008', label: '死亡数据（2007-2008）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2009-2010', label: '死亡数据（2009-2010）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2011-2012', label: '死亡数据（2011-2012）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2013-2014', label: '死亡数据（2013-2014）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2015-2016', label: '死亡数据（2015-2016）', description: '包含死亡状态、死亡时间、死因等信息' },
-    { value: '2017-2018', label: '死亡数据（2017-2018）', description: '包含死亡状态、死亡时间、死因等信息' }
+    { value: '1999-2000', label: 'Mortality Data (1999-2000)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2001-2002', label: 'Mortality Data (2001-2002)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2003-2004', label: 'Mortality Data (2003-2004)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2005-2006', label: 'Mortality Data (2005-2006)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2007-2008', label: 'Mortality Data (2007-2008)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2009-2010', label: 'Mortality Data (2009-2010)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2011-2012', label: 'Mortality Data (2011-2012)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2013-2014', label: 'Mortality Data (2013-2014)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2015-2016', label: 'Mortality Data (2015-2016)', description: 'Contains information about mortality status, time of death, cause of death, etc.' },
+    { value: '2017-2018', label: 'Mortality Data (2017-2018)', description: 'Contains information about mortality status, time of death, cause of death, etc.' }
 ];
 
 // 预设变量组
 const presetVariableGroups = [
     {
         value: 'basic_demographics',
-        label: '基础人口学变量组',
-        description: '包含SEQN、性别、年龄、种族等核心变量',
+        label: 'Basic Demographics Variables',
+        description: 'Core variables including SEQN, gender, age, race, etc.',
         variables: ['SEQN', 'RIAGENDR', 'RIDAGEYR', 'RIDRETH3']
     },
     {
         value: 'metabolic_syndrome',
-        label: '代谢综合征变量组',
-        description: '代谢综合征相关的BMI、血压、血糖、血脂指标',
+        label: 'Metabolic Syndrome Variables',
+        description: 'Metabolic syndrome related indicators: BMI, blood pressure, blood glucose, blood lipids',
         variables: ['BMXBMI', 'BPXSY1', 'BPXDI1', 'LBXGLU', 'LBXTC']
     },
     {
         value: 'cardiovascular',
-        label: '心血管疾病变量组',
-        description: '心血管疾病风险评估相关指标',
+        label: 'Cardiovascular Disease Variables',
+        description: 'Cardiovascular disease risk assessment related indicators',
         variables: ['BPXSY1', 'BPXDI1', 'LBXTC', 'LBXHDL', 'LBXLDL']
     },
     {
         value: 'diabetes',
-        label: '糖尿病变量组',
-        description: '糖尿病诊断和管理相关指标',
+        label: 'Diabetes Variables',
+        description: 'Diabetes diagnosis and management related indicators',
         variables: ['LBXGLU', 'LBXGH', 'LBXIN', 'DIQ010']
     }
 ];
@@ -872,8 +872,8 @@ const DataExtraction: React.FC = () => {
         setIndicators('');
 
         Modal.success({
-                            title: t('dataExtraction.messages.addSuccess'),
-                content: t('dataExtraction.messages.addSuccessContent')
+            title: t('dataExtraction.messages.addSuccess'),
+            content: t('dataExtraction.messages.addSuccessContent')
         });
     };
 
@@ -1423,7 +1423,7 @@ const DataExtraction: React.FC = () => {
                                 onClick={() => startEdit(record)}
                                 style={{ fontSize: '11px' }}
                             >
-                                                                    {t('common.edit')}
+                                {t('common.edit')}
                             </Button>
                             <Button
                                 danger
@@ -1432,7 +1432,7 @@ const DataExtraction: React.FC = () => {
                                 onClick={() => deleteCustomExtraction(record.key)}
                                 style={{ fontSize: '11px' }}
                             >
-                                                                    {t('common.delete')}
+                                {t('common.delete')}
                             </Button>
                         </Space>
                         <Button
@@ -1444,7 +1444,7 @@ const DataExtraction: React.FC = () => {
                             block
                             style={{ fontSize: '11px' }}
                         >
-                                                                {t('common.download')}
+                            {t('common.download')}
                         </Button>
                     </Space>
                 );
@@ -1730,7 +1730,7 @@ const DataExtraction: React.FC = () => {
                                 title={
                                     <Space>
                                         <TableOutlined />
-                                        <Tag color="blue">常见指标</Tag>
+                                        <Tag color="blue">{t('dataExtraction.commonIndicators.title')}</Tag>
                                         {commonIndicators.find(item => item.value === selectedCommonIndicator)?.label}
                                     </Space>
                                 }
@@ -1756,7 +1756,7 @@ const DataExtraction: React.FC = () => {
                                                 color: 'white'
                                             }}
                                         >
-                                            导出CSV数据
+                                            {t('common.exportCSV')}
                                         </Button>
                                     </div>
                                 )}
@@ -1773,7 +1773,7 @@ const DataExtraction: React.FC = () => {
                                         <Row justify="space-between" align="middle">
                                             <Col>
                                                 <Space>
-                                                    <Text>{t('common.pagination.total', { total: paginationState.total.toLocaleString() })}</Text>
+                                                    <Text>{t('common.pagination.total', { total: paginationState.total })}</Text>
                                                     <Text>|</Text>
                                                     <Text>{t('common.pagination.page')} <strong>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
                                                 </Space>
@@ -1927,7 +1927,7 @@ const DataExtraction: React.FC = () => {
                                 title={
                                     <Space>
                                         <TableOutlined />
-                                        <Tag color="red">死亡数据</Tag>
+                                        <Tag color="red">{t('dataExtraction.mortalityData.title')}</Tag>
                                         {mortalityIndicators.find(item => item.value === selectedMortalityIndicator)?.label}
                                     </Space>
                                 }
@@ -1953,7 +1953,7 @@ const DataExtraction: React.FC = () => {
                                                 color: 'white'
                                             }}
                                         >
-                                            导出CSV数据
+                                            {t('common.exportCSV')}
                                         </Button>
                                     </div>
                                 )}
@@ -1970,7 +1970,7 @@ const DataExtraction: React.FC = () => {
                                         <Row justify="space-between" align="middle">
                                             <Col>
                                                 <Space>
-                                                    <Text>总数据: <strong>{mortalityPaginationState.total.toLocaleString()}</strong> 条</Text>
+                                                    <Text>{t('common.pagination.total', { total: mortalityPaginationState.total })}</Text>
                                                     <Text>|</Text>
                                                     <Text>当前页: <strong>{mortalityPaginationState.currentPage}</strong> / {mortalityPaginationState.totalPages}</Text>
                                                 </Space>
@@ -2119,7 +2119,7 @@ const DataExtraction: React.FC = () => {
                                 title={
                                     <Space>
                                         <TableOutlined />
-                                        <Tag color="green">预设变量组</Tag>
+                                        <Tag color="green">{t('dataExtraction.presetGroups.title')}</Tag>
                                         {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.label}
                                     </Space>
                                 }
