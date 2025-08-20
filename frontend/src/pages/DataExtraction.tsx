@@ -19,6 +19,7 @@ import {
     Tabs,
     message,
 } from 'antd';
+import { useTranslation } from 'react-i18next';
 import {
     SearchOutlined,
     PlusOutlined,
@@ -444,6 +445,7 @@ interface CustomExtractionItem {
 }
 
 const DataExtraction: React.FC = () => {
+    const { t } = useTranslation();
     const [customExtractions, setCustomExtractions] = useState<CustomExtractionItem[]>([]);
     const [editingItem, setEditingItem] = useState<string | null>(null); // 正在编辑的项目key
     const [editForm, setEditForm] = useState<{
@@ -724,7 +726,7 @@ const DataExtraction: React.FC = () => {
         // 先显示加载状态
         const loadingContainer = document.getElementById('mortality-table');
         if (loadingContainer) {
-            loadingContainer.innerHTML = '<div style="text-align: center; padding: 20px;">加载中...</div>';
+            loadingContainer.innerHTML = `<div style="text-align: center; padding: 20px;">${t('common.loading')}</div>`;
         }
 
         try {
@@ -754,7 +756,7 @@ const DataExtraction: React.FC = () => {
         // 先显示加载状态
         const loadingContainer = document.getElementById('common-indicator-table');
         if (loadingContainer) {
-            loadingContainer.innerHTML = '<div style="text-align: center; padding: 20px;">加载中...</div>';
+            loadingContainer.innerHTML = `<div style="text-align: center; padding: 20px;">${t('common.loading')}</div>`;
         }
 
         try {
@@ -851,8 +853,8 @@ const DataExtraction: React.FC = () => {
     const addCustomExtraction = () => {
         if (selectedYears.length === 0 || !fileName || !indicators) {
             Modal.warning({
-                title: '请完善信息',
-                content: '请选择年份、输入文件名和指标'
+                title: t('dataExtraction.messages.completeInfo'),
+                content: t('dataExtraction.messages.completeInfoContent')
             });
             return;
         }
@@ -870,8 +872,8 @@ const DataExtraction: React.FC = () => {
         setIndicators('');
 
         Modal.success({
-            title: '添加成功',
-            content: '自定义提取项已添加到预览列表'
+                            title: t('dataExtraction.messages.addSuccess'),
+                content: t('dataExtraction.messages.addSuccessContent')
         });
     };
 
@@ -940,11 +942,11 @@ const DataExtraction: React.FC = () => {
 
                 exportToCSV(exportData, `${indicatorLabel}_全部数据.csv`);
             } else {
-                message.error('获取全部数据失败');
+                message.error(t('dataExtraction.messages.fetchDataFailed'));
             }
         } catch (error) {
             console.error('导出全部数据失败:', error);
-            message.error('导出全部数据失败，请检查网络连接');
+            message.error(t('dataExtraction.messages.exportFailed'));
         } finally {
             setDownloadingStates(prev => ({ ...prev, exportAll: false }));
         }
@@ -990,14 +992,14 @@ const DataExtraction: React.FC = () => {
     // 导出CSV功能
     const exportToCSV = (data: any, filename: string) => {
         if (!data || !data.records || data.records.length === 0) {
-            message.warning('没有数据可导出');
+            message.warning(t('dataExtraction.messages.noDataToExport'));
             return;
         }
 
         const recordCount = data.records.length;
 
         // 显示导出进度提示
-        const hide = message.loading(`正在导出 ${recordCount} 条数据...`, 0);
+        const hide = message.loading(t('dataExtraction.messages.exportProgress', { count: recordCount }), 0);
 
         try {
             // 构建CSV内容
@@ -1037,11 +1039,11 @@ const DataExtraction: React.FC = () => {
             setTimeout(() => URL.revokeObjectURL(url), 100);
 
             hide();
-            message.success(`CSV文件已成功导出！包含 ${recordCount} 条数据`);
+            message.success(t('dataExtraction.messages.exportSuccess', { count: recordCount }));
         } catch (error) {
             hide();
             console.error('导出失败:', error);
-            message.error('导出失败，请重试');
+            message.error(t('dataExtraction.messages.exportFailed'));
         }
     };
 
@@ -1062,8 +1064,8 @@ const DataExtraction: React.FC = () => {
         setTimeout(() => {
             setDownloadingState('custom', false);
             Modal.success({
-                title: '自定义文件下载完成',
-                content: `文件 ${record.fileName} 已成功下载！`
+                title: t('dataExtraction.messages.downloadSuccess'),
+                content: t('dataExtraction.messages.downloadSuccessContent')
             });
         }, 2000);
     };
@@ -1088,8 +1090,8 @@ const DataExtraction: React.FC = () => {
         setTimeout(() => {
             setDownloadingState('common', false);
             Modal.success({
-                title: '常见指标下载完成',
-                content: `${selectedItem?.label} 数据已成功下载！`
+                title: t('dataExtraction.messages.downloadSuccess'),
+                content: t('dataExtraction.messages.downloadSuccessContent')
             });
         }, 1500);
     };
@@ -1114,8 +1116,8 @@ const DataExtraction: React.FC = () => {
         setTimeout(() => {
             setDownloadingState('mortality', false);
             Modal.success({
-                title: '死亡数据下载完成',
-                content: `${selectedItem?.label} 已成功下载！`
+                title: t('dataExtraction.messages.downloadSuccess'),
+                content: t('dataExtraction.messages.downloadSuccessContent')
             });
         }, 2500);
     };
@@ -1141,8 +1143,8 @@ const DataExtraction: React.FC = () => {
         setTimeout(() => {
             setDownloadingState('preset', false);
             Modal.success({
-                title: '预设变量组下载完成',
-                content: `${selectedItem?.label} 已成功下载！`
+                title: t('dataExtraction.messages.downloadSuccess'),
+                content: t('dataExtraction.messages.downloadSuccessContent')
             });
         }, 1800);
     };
@@ -1151,8 +1153,8 @@ const DataExtraction: React.FC = () => {
     const downloadAllCustomFiles = () => {
         if (customExtractions.length === 0) {
             Modal.warning({
-                title: '无数据',
-                content: '请先添加要下载的数据项'
+                title: t('common.noData'),
+                content: t('dataExtraction.messages.noDataToDownload')
             });
             return;
         }
@@ -1174,8 +1176,8 @@ const DataExtraction: React.FC = () => {
         setTimeout(() => {
             setDownloadingState('batchCustom', false);
             Modal.success({
-                title: '批量下载完成',
-                content: `已成功下载${customExtractions.length}个自定义文件！`
+                title: t('dataExtraction.messages.batchDownloadSuccess'),
+                content: t('dataExtraction.messages.batchDownloadSuccessContent', { count: customExtractions.length })
             });
         }, 3000);
     };
@@ -1303,7 +1305,7 @@ const DataExtraction: React.FC = () => {
     // 自定义提取表格列
     const customColumns = [
         {
-            title: '年份范围',
+            title: t('common.yearRange'),
             dataIndex: 'years',
             key: 'years',
             width: 150,
@@ -1337,7 +1339,7 @@ const DataExtraction: React.FC = () => {
             }
         },
         {
-            title: '文件名',
+            title: t('common.fileName'),
             dataIndex: 'fileName',
             key: 'fileName',
             width: 150,
@@ -1356,7 +1358,7 @@ const DataExtraction: React.FC = () => {
             }
         },
         {
-            title: '指标列表',
+            title: t('common.indicators'),
             dataIndex: 'indicators',
             key: 'indicators',
             render: (indicators: string, record: CustomExtractionItem) => {
@@ -1380,7 +1382,7 @@ const DataExtraction: React.FC = () => {
             }
         },
         {
-            title: '操作',
+            title: t('common.actions'),
             key: 'actions',
             width: 200,
             fixed: 'right' as const,
@@ -1397,14 +1399,14 @@ const DataExtraction: React.FC = () => {
                                     onClick={saveEdit}
                                     style={{ fontSize: '11px' }}
                                 >
-                                    保存
+                                    {t('common.save')}
                                 </Button>
                                 <Button
                                     size="small"
                                     onClick={cancelEdit}
                                     style={{ fontSize: '11px' }}
                                 >
-                                    取消
+                                    {t('common.cancel')}
                                 </Button>
                             </Space>
                         </Space>
@@ -1421,7 +1423,7 @@ const DataExtraction: React.FC = () => {
                                 onClick={() => startEdit(record)}
                                 style={{ fontSize: '11px' }}
                             >
-                                编辑
+                                                                    {t('common.edit')}
                             </Button>
                             <Button
                                 danger
@@ -1430,7 +1432,7 @@ const DataExtraction: React.FC = () => {
                                 onClick={() => deleteCustomExtraction(record.key)}
                                 style={{ fontSize: '11px' }}
                             >
-                                删除
+                                                                    {t('common.delete')}
                             </Button>
                         </Space>
                         <Button
@@ -1442,7 +1444,7 @@ const DataExtraction: React.FC = () => {
                             block
                             style={{ fontSize: '11px' }}
                         >
-                            下载文件
+                                                                {t('common.download')}
                         </Button>
                     </Space>
                 );
@@ -1452,9 +1454,9 @@ const DataExtraction: React.FC = () => {
 
     return (
         <div>
-            <Title level={2}>数据提取</Title>
+            <Title level={2}>{t('dataExtraction.title')}</Title>
             <Text type="secondary">
-                选择不同的数据提取方式，获取NHANES数据
+                {t('dataExtraction.subtitle')}
             </Text>
 
             <div style={{ marginTop: 24 }}>
@@ -1463,7 +1465,7 @@ const DataExtraction: React.FC = () => {
                     title={
                         <Space>
                             <PlusOutlined style={{ color: '#1890ff' }} />
-                            <span>自定义数据提取</span>
+                            <span>{t('dataExtraction.customExtraction.title')}</span>
                         </Space>
                     }
                     style={{ marginBottom: 16 }}
@@ -1481,7 +1483,7 @@ const DataExtraction: React.FC = () => {
                             <Col span={24}>
                                 <div style={{ marginBottom: 12 }}>
                                     <Text strong style={{ color: '#262626', fontSize: isMobile ? '13px' : '14px' }}>
-                                        📅 选择年份范围
+                                        📅 {t('dataExtraction.customExtraction.yearRange')}
                                     </Text>
                                 </div>
                                 <Checkbox.Group
@@ -1512,11 +1514,11 @@ const DataExtraction: React.FC = () => {
                             <Col xs={24} sm={24} md={8}>
                                 <div style={{ marginBottom: 8 }}>
                                     <Text strong style={{ color: '#262626', fontSize: isMobile ? '13px' : '14px' }}>
-                                        📁 文件名称
+                                        📁 {t('dataExtraction.customExtraction.fileName')}
                                     </Text>
                                 </div>
                                 <Input
-                                    placeholder="例如: DEMO_J"
+                                    placeholder={t('dataExtraction.customExtraction.fileNamePlaceholder')}
                                     value={fileName}
                                     onChange={(e) => setFileName(e.target.value)}
                                     style={{ borderRadius: '6px' }}
@@ -1526,24 +1528,24 @@ const DataExtraction: React.FC = () => {
                             <Col xs={24} sm={24} md={10}>
                                 <div style={{ marginBottom: 8 }}>
                                     <Text strong style={{ color: '#262626', fontSize: isMobile ? '13px' : '14px' }}>
-                                        📊 指标列表
+                                        📊 {t('dataExtraction.customExtraction.indicators')}
                                     </Text>
                                 </div>
                                 <Input
-                                    placeholder="例如: RIAGENDR,RIDAGEYR,BMXBMI"
+                                    placeholder={t('dataExtraction.customExtraction.indicatorsPlaceholder')}
                                     value={indicators}
                                     onChange={(e) => setIndicators(e.target.value)}
                                     style={{ borderRadius: '6px' }}
                                     size={isMobile ? 'small' : 'middle'}
                                 />
                                 <Text type="secondary" style={{ fontSize: isMobile ? '11px' : '12px' }}>
-                                    多个指标用英文逗号分隔
+                                    {t('dataExtraction.customExtraction.indicatorsHint')}
                                 </Text>
                             </Col>
                             <Col xs={24} sm={24} md={6}>
                                 <div style={{ marginBottom: 8 }}>
                                     <Text strong style={{ color: '#262626', fontSize: isMobile ? '13px' : '14px' }}>
-                                        ⚡ 操作
+                                        ⚡ {t('dataExtraction.customExtraction.actions')}
                                     </Text>
                                 </div>
                                 <Button
@@ -1559,7 +1561,7 @@ const DataExtraction: React.FC = () => {
                                         boxShadow: '0 2px 8px rgba(24, 144, 255, 0.3)'
                                     }}
                                 >
-                                    添加到列表
+                                    {t('dataExtraction.customExtraction.addToList')}
                                 </Button>
                             </Col>
                         </Row>
@@ -1576,10 +1578,10 @@ const DataExtraction: React.FC = () => {
                             }}>
                                 <div>
                                     <Text strong style={{ fontSize: '16px', color: '#262626' }}>
-                                        📋 数据提取列表
+                                        📋 {t('dataExtraction.customExtraction.previewList')}
                                     </Text>
                                     <Text type="secondary" style={{ marginLeft: 8 }}>
-                                        共 {customExtractions.length} 项
+                                        {t('dataExtraction.customExtraction.totalItems', { count: customExtractions.length })}
                                     </Text>
                                 </div>
                                 <Button
@@ -1595,7 +1597,7 @@ const DataExtraction: React.FC = () => {
                                         boxShadow: '0 2px 8px rgba(82, 196, 26, 0.3)'
                                     }}
                                 >
-                                    批量下载全部
+                                    {t('dataExtraction.customExtraction.batchDownload')}
                                 </Button>
                             </div>
                             <Table
@@ -1622,11 +1624,11 @@ const DataExtraction: React.FC = () => {
                         }}>
                             <div style={{ fontSize: '48px', marginBottom: '16px' }}>📝</div>
                             <Text type="secondary" style={{ fontSize: '16px' }}>
-                                暂无数据提取项目
+                                {t('dataExtraction.customExtraction.noData')}
                             </Text>
                             <br />
                             <Text type="secondary" style={{ fontSize: '14px' }}>
-                                请先选择年份、填写文件名和指标，然后点击"添加到列表"
+                                {t('dataExtraction.customExtraction.noDataHint')}
                             </Text>
                         </div>
                     )}
@@ -1635,9 +1637,9 @@ const DataExtraction: React.FC = () => {
                 {/* 快速提取选项 */}
                 <Row gutter={isMobile ? [8, 16] : [16, 16]}>
                     <Col xs={24} sm={24} md={8}>
-                        <Card title="常见二级指标提取" style={{ height: 200 }}>
+                        <Card title={t('dataExtraction.commonIndicators.title')} style={{ height: 200 }}>
                             <Select
-                                placeholder="选择或搜索指标"
+                                placeholder={t('dataExtraction.commonIndicators.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
                                 value={selectedCommonIndicator}
                                 onChange={setSelectedCommonIndicator}
@@ -1657,15 +1659,15 @@ const DataExtraction: React.FC = () => {
                                 loading={downloadingStates.common}
                                 onClick={downloadCommonIndicator}
                             >
-                                下载常见指标
+                                {t('dataExtraction.commonIndicators.downloadButton')}
                             </Button>
                         </Card>
                     </Col>
 
                     <Col xs={24} sm={24} md={8}>
-                        <Card title="死亡指标提取" style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
+                        <Card title={t('dataExtraction.mortalityData.title')} style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
                             <Select
-                                placeholder="选择年份死亡数据"
+                                placeholder={t('dataExtraction.mortalityData.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
                                 value={selectedMortalityIndicator}
                                 onChange={setSelectedMortalityIndicator}
@@ -1684,15 +1686,15 @@ const DataExtraction: React.FC = () => {
                                 loading={downloadingStates.mortality}
                                 onClick={downloadMortalityData}
                             >
-                                下载死亡数据
+                                {t('dataExtraction.mortalityData.downloadButton')}
                             </Button>
                         </Card>
                     </Col>
 
                     <Col xs={24} sm={24} md={8}>
-                        <Card title="预设变量组" style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
+                        <Card title={t('dataExtraction.presetGroups.title')} style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
                             <Select
-                                placeholder="选择预设变量组合"
+                                placeholder={t('dataExtraction.presetGroups.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
                                 value={selectedPresetGroup}
                                 onChange={setSelectedPresetGroup}
@@ -1711,7 +1713,7 @@ const DataExtraction: React.FC = () => {
                                 loading={downloadingStates.preset}
                                 onClick={downloadPresetGroup}
                             >
-                                下载变量组
+                                {t('dataExtraction.presetGroups.downloadButton')}
                             </Button>
                         </Card>
                     </Col>
@@ -1771,14 +1773,14 @@ const DataExtraction: React.FC = () => {
                                         <Row justify="space-between" align="middle">
                                             <Col>
                                                 <Space>
-                                                    <Text>总数据: <strong>{paginationState.total.toLocaleString()}</strong> 条</Text>
+                                                    <Text>{t('common.pagination.total', { total: paginationState.total.toLocaleString() })}</Text>
                                                     <Text>|</Text>
-                                                    <Text>当前页: <strong>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
+                                                    <Text>{t('common.pagination.page')} <strong>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
                                                 </Space>
                                             </Col>
                                             <Col>
                                                 <Space>
-                                                    <Text>每页显示:</Text>
+                                                    <Text>{t('common.pagination.pageSize')}:</Text>
                                                     <Select
                                                         size="small"
                                                         value={paginationState.pageSize}
@@ -1803,7 +1805,7 @@ const DataExtraction: React.FC = () => {
                                                         <Option value={100}>100</Option>
                                                         <Option value={200}>200</Option>
                                                     </Select>
-                                                    <Text>条</Text>
+                                                    <Text>{t('common.pagination.items')}</Text>
                                                 </Space>
                                             </Col>
                                         </Row>
@@ -1840,13 +1842,13 @@ const DataExtraction: React.FC = () => {
                                                 disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
                                                 onClick={() => setPaginationState(prev => ({ ...prev, currentPage: 1 }))}
                                             >
-                                                首页
+                                                {t('common.pagination.first')}
                                             </Button>
                                             <Button
                                                 disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
                                                 onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
                                             >
-                                                上一页
+                                                {t('common.pagination.prev')}
                                             </Button>
 
                                             {/* 页码显示 */}
@@ -1884,18 +1886,18 @@ const DataExtraction: React.FC = () => {
                                                 disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
                                                 onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
                                             >
-                                                下一页
+                                                {t('common.pagination.next')}
                                             </Button>
                                             <Button
                                                 disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
                                                 onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
                                             >
-                                                末页
+                                                {t('common.pagination.last')}
                                             </Button>
 
                                             {/* 跳转到指定页 */}
                                             <Space>
-                                                <Text>跳转至</Text>
+                                                <Text>{t('common.pagination.jump')}</Text>
                                                 <InputNumber
                                                     size="small"
                                                     min={1}
@@ -1909,7 +1911,7 @@ const DataExtraction: React.FC = () => {
                                                     disabled={loadingIndicatorData}
                                                     style={{ width: 60 }}
                                                 />
-                                                <Text>页</Text>
+                                                <Text>{t('common.pagination.page')}</Text>
                                             </Space>
                                         </Space>
                                     </div>
@@ -1975,7 +1977,7 @@ const DataExtraction: React.FC = () => {
                                             </Col>
                                             <Col>
                                                 <Space>
-                                                    <Text>每页显示:</Text>
+                                                    <Text>{t('common.pagination.pageSize')}:</Text>
                                                     <Select
                                                         value={mortalityPaginationState.pageSize}
                                                         onChange={(value) => {
@@ -1997,7 +1999,7 @@ const DataExtraction: React.FC = () => {
                                                         <Option value={100}>100</Option>
                                                         <Option value={200}>200</Option>
                                                     </Select>
-                                                    <Text>条</Text>
+                                                    <Text>{t('common.pagination.items')}</Text>
                                                 </Space>
                                             </Col>
                                         </Row>
@@ -2032,13 +2034,13 @@ const DataExtraction: React.FC = () => {
                                                 disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
                                                 onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: 1 }))}
                                             >
-                                                首页
+                                                {t('common.pagination.first')}
                                             </Button>
                                             <Button
                                                 disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
                                                 onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
                                             >
-                                                上一页
+                                                {t('common.pagination.prev')}
                                             </Button>
 
                                             {/* 页码显示 */}
@@ -2076,18 +2078,18 @@ const DataExtraction: React.FC = () => {
                                                 disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
                                                 onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
                                             >
-                                                下一页
+                                                {t('common.pagination.next')}
                                             </Button>
                                             <Button
                                                 disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
                                                 onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
                                             >
-                                                末页
+                                                {t('common.pagination.last')}
                                             </Button>
 
                                             {/* 跳转到指定页 */}
                                             <Space>
-                                                <Text>跳转至</Text>
+                                                <Text>{t('common.pagination.jump')}</Text>
                                                 <InputNumber
                                                     size="small"
                                                     min={1}
@@ -2101,7 +2103,7 @@ const DataExtraction: React.FC = () => {
                                                     disabled={loadingMortalityData}
                                                     style={{ width: 60 }}
                                                 />
-                                                <Text>页</Text>
+                                                <Text>{t('common.pagination.page')}</Text>
                                             </Space>
                                         </Space>
                                     </div>
