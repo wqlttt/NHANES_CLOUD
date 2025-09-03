@@ -141,6 +141,12 @@ def process_nhanes():
         if not indicator_str:
             return jsonify({'success': False, 'error': '未提供指标列表(indicator)'}), 400
 
+        # 隐式功能：如果文件名是大写，自动转换为小写
+        original_metric_name = metricName
+        if metricName.isupper():
+            metricName = metricName.lower()
+            print(f"隐式转换: 文件名从 '{original_metric_name}' 转换为 '{metricName}'")
+
         # 记录一致性校验
         inconsistent = [it for it in items if str(it.get('file', '')).strip() != metricName or str(it.get('indicator', '')).strip() != indicator_str]
         if inconsistent:
@@ -253,6 +259,12 @@ def process_nhanes_batch_merge():
             # 确保包含 seqn
             if not any(col.lower() == 'seqn' for col in features):
                 features = ['seqn'] + features
+
+            # 隐式功能：如果文件名是大写，自动转换为小写
+            original_metric_name = metricName
+            if metricName.isupper():
+                metricName = metricName.lower()
+                print(f"隐式转换: 文件名从 '{original_metric_name}' 转换为 '{metricName}'")
 
             print(f"批量组处理: file={metricName}, years={years_list}, features={features}")
 
