@@ -1047,6 +1047,17 @@ const DataExtraction: React.FC = () => {
         }
     };
 
+    // 指标标准化：若未包含 SEQN，则自动加入并置于首位
+    const normalizeIndicators = (indicators: string): string => {
+        if (!indicators || !indicators.trim()) return 'seqn';
+        const parts = indicators
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+        const filtered = parts.filter(p => p.toLowerCase() !== 'SEQN');
+        return ['seqn', ...filtered].join(',');
+    };
+
     // 下载自定义单个文件
     const downloadCustomFile = async (record: CustomExtractionItem) => {
         setDownloadingState('custom', true);
@@ -1065,7 +1076,7 @@ const DataExtraction: React.FC = () => {
             const items = record.years.map(year => ({
                 year: year,
                 file: record.fileName,
-                indicator: record.indicators
+                indicator: normalizeIndicators(record.indicators)
             }));
 
             // 调用后端API
@@ -1091,7 +1102,8 @@ const DataExtraction: React.FC = () => {
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', `${record.fileName}.csv`);
+                const suggested = (result && result.suggested_filename) ? String(result.suggested_filename) : `${record.fileName}.csv`;
+                link.setAttribute('download', suggested);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
@@ -1197,7 +1209,7 @@ const DataExtraction: React.FC = () => {
         }, 1800);
     };
 
-    // 批量下载所有自定义文件
+    // 批量下载所有自定义文件（后端按 seqn 合并，返回单一文件）
     const downloadAllCustomFiles = async () => {
         if (customExtractions.length === 0) {
             Modal.warning({
@@ -1221,20 +1233,20 @@ const DataExtraction: React.FC = () => {
                 }
             });
 
-            // 构造所有请求项目
+            // 构造所有请求项目（由后端进行合并）
             const allItems: Array<{ year: string, file: string, indicator: string }> = [];
             customExtractions.forEach(record => {
                 record.years.forEach(year => {
                     allItems.push({
                         year: year,
                         file: record.fileName,
-                        indicator: record.indicators
+                        indicator: normalizeIndicators(record.indicators)
                     });
                 });
             });
 
-            // 调用后端API进行批量处理
-            const response = await fetch('http://localhost:5000/process_nhanes', {
+            // 调用后端批量合并接口
+            const response = await fetch('http://localhost:5000/process_nhanes_batch_merge', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1249,14 +1261,15 @@ const DataExtraction: React.FC = () => {
             const result = await response.json();
 
             if (result.success && result.csv_data) {
-                // 创建批量CSV文件下载
+                // 创建合并后的CSV文件下载
                 const blob = new Blob(['\uFEFF' + result.csv_data], {
                     type: 'text/csv;charset=utf-8;'
                 });
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', `batch_custom_extraction_${new Date().toISOString().split('T')[0]}.csv`);
+                const suggested = (result && result.suggested_filename) ? String(result.suggested_filename) : `batch_custom_extraction_${new Date().toISOString().split('T')[0]}.csv`;
+                link.setAttribute('download', suggested);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();

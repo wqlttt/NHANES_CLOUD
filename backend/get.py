@@ -93,145 +93,225 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
-# 模拟数据生成器（临时解决方案）
-def generate_mock_nhanes_data(years, indicators, file_name):
-    """生成模拟的NHANES数据用于测试"""
-    import pandas as pd
-    import numpy as np
-    
-    # 为每个年份生成数据
-    all_data = []
-    for year in years:
-        # 生成基础数据
-        n_samples = np.random.randint(100, 500)  # 每年100-500个样本
-        
-        data = {
-            'SEQN': [f"{83732 + i}_{year.split('-')[0]}" for i in range(n_samples)],
-            'YEAR': [year] * n_samples
-        }
-        
-        # 为每个指标生成数据
-        for indicator in indicators:
-            indicator = indicator.strip().upper()
-            if indicator in ['BMI', 'BMXBMI']:
-                data[indicator] = np.random.normal(26.5, 5.0, n_samples).round(1)
-            elif indicator in ['AGE', 'RIDAGEYR']:
-                data[indicator] = np.random.randint(18, 80, n_samples)
-            elif indicator in ['GENDER', 'RIAGENDR']:
-                data[indicator] = np.random.choice([1, 2], n_samples)
-            elif 'GLUCOSE' in indicator or 'GLU' in indicator:
-                data[indicator] = np.random.normal(95, 15, n_samples).round(1)
-            elif 'CHOLESTEROL' in indicator or 'TC' in indicator:
-                data[indicator] = np.random.normal(200, 40, n_samples).round(1)
-            elif 'TRIGLYCERIDES' in indicator or 'TG' in indicator:
-                data[indicator] = np.random.normal(150, 50, n_samples).round(1)
-            else:
-                # 默认生成正态分布数据
-                data[indicator] = np.random.normal(50, 15, n_samples).round(2)
-        
-        all_data.append(pd.DataFrame(data))
-    
-    # 合并所有年份的数据
-    if all_data:
-        return pd.concat(all_data, ignore_index=True)
-    else:
-        return pd.DataFrame()
-
 # 自定义提取
 @app.route('/process_nhanes', methods=['POST'])
 def process_nhanes():
     try:
         # 检查get_nhanes_data函数是否可用
-        use_mock_data = 'get_nhanes_data' not in globals()
-        
-        if use_mock_data:
-            print("警告: 使用模拟数据，因为NHANES数据提取功能不可用")
-        
-        # 如果不使用模拟数据，检查配置状态
-        if not use_mock_data:
-            try:
-                from GetNhanes import config
-                base_path = config.get_base_path()
-                if not os.path.exists(base_path):
-                    print(f"NHANES数据路径不存在: {base_path}，切换到模拟数据模式")
-                    use_mock_data = True
-            except Exception as config_error:
-                print(f"NHANES数据路径配置错误: {config_error}，切换到模拟数据模式")
-                use_mock_data = True
-            
+        if 'get_nhanes_data' not in globals():
+            return jsonify({
+                'success': False,
+                'error': 'NHANES数据提取功能不可用，请检查系统配置'
+            }), 500
+
+        # 检查配置状态
+        try:
+            from GetNhanes import config
+            base_path = config.get_base_path()
+            if not os.path.exists(base_path):
+                return jsonify({
+                    'success': False,
+                    'error': f'NHANES数据路径不存在: {base_path}，请检查配置'
+                }), 500
+        except Exception as config_error:
+            return jsonify({
+                'success': False,
+                'error': f'NHANES数据路径配置错误: {config_error}'
+            }), 500
+
         data = request.json
         items = data.get('items', [])
-        
+
         if not items:
             return jsonify({
                 'success': False,
                 'error': '没有提供要处理的数据项'
             }), 400
-        
-        results = []
-        for item in items:
-            try:
-                years = [item['year']]
-                features = [f.strip() for f in item['indicator'].split(',') if f.strip()]
-                metricName = item['file']
-                
-                print(f"处理数据提取请求: 年份={years}, 特征={features}, 文件名={metricName}")
-                
-                if use_mock_data:
-                    # 使用模拟数据
-                    result = generate_mock_nhanes_data(years, features, metricName)
-                    print(f"生成模拟数据: {len(result)} 行")
-                else:
-                    # 使用真实的NHANES数据
-                    result = get_nhanes_data(
-                        years=years,
-                        features=features,
-                        metric_prefix=metricName,
-                        merge_output=True,
-                        save_each_file=True
-                    )
-                
-                # Convert result to CSV
-                if hasattr(result, 'to_csv'):
-                    csv_data = result.to_csv(index=False)
-                elif hasattr(result, 'to_string'):
-                    csv_data = result.to_string()
-                else:
-                    csv_data = str(result)
-                    
-                results.append({
-                    'year': item['year'],
-                    'file': item['file'],
-                    'indicator': item['indicator'],
-                    'result': csv_data
-                })
-                print(f"成功处理: {item['year']} - {item['file']} ({'模拟数据' if use_mock_data else '真实数据'})")
-                
-            except Exception as item_error:
-                print(f"处理单个项目失败: {item} - {str(item_error)}")
-                import traceback
-                traceback.print_exc()
-                # 创建错误信息的CSV
-                error_csv = f"Error,Message\n处理失败,{str(item_error)}"
-                results.append({
-                    'year': item.get('year', 'Unknown'),
-                    'file': item.get('file', 'Unknown'),
-                    'indicator': item.get('indicator', 'Unknown'),
-                    'result': error_csv
-                })
-        
+
+        # 将同一次请求中的年份视作一个整体进行处理
+        years = [str(item['year']).strip() for item in items if 'year' in item and str(item['year']).strip()]
+        if not years:
+            return jsonify({'success': False, 'error': '未提供有效年份'}), 400
+
+        # 以第一个item为准获取文件名与指标，并校验一致性（若不一致以第一个为准并给出日志提醒）
+        metricName = items[0].get('file', '').strip()
+        indicator_str = items[0].get('indicator', '').strip()
+        if not metricName:
+            return jsonify({'success': False, 'error': '未提供文件名前缀(file)'}), 400
+        if not indicator_str:
+            return jsonify({'success': False, 'error': '未提供指标列表(indicator)'}), 400
+
+        # 记录一致性校验
+        inconsistent = [it for it in items if str(it.get('file', '')).strip() != metricName or str(it.get('indicator', '')).strip() != indicator_str]
+        if inconsistent:
+            print(f"警告: 本次请求存在不一致的file/indicator，将以第一个为准。数量={len(inconsistent)}")
+
+        features = [f.strip() for f in indicator_str.split(',') if f.strip()]
+
+        print(f"处理数据提取请求(合并模式): 年份={years}, 特征={features}, 文件名={metricName}")
+
+        # 使用真实的NHANES数据（一次性合并所有年份）
+        result = get_nhanes_data(
+            years=years,
+            features=features,
+            metric_prefix=metricName,
+            merge_output=True,
+            save_each_file=True
+        )
+
+        # Convert result to CSV
+        if hasattr(result, 'to_csv'):
+            csv_data = result.to_csv(index=False)
+        elif hasattr(result, 'to_string'):
+            csv_data = result.to_string()
+        else:
+            csv_data = str(result)
+
+        print(f"成功处理(合并): years={years}, file={metricName}")
+
+        # 生成建议文件名：年份始末_文件名.csv
+        try:
+            start_year = min(int(y.split('-')[0]) for y in years)
+            end_year = max(int(y.split('-')[-1]) for y in years)
+            suggested_filename = f"{start_year}-{end_year}_{metricName}.csv"
+        except Exception:
+            # 解析失败则回退
+            suggested_filename = f"{metricName}.csv"
+
+        # 兼容前端原有结构，返回一个汇总结果与csv_data
         return jsonify({
-            'success': True, 
-            'results': results,
-            'csv_data': '\n'.join([r['result'] for r in results])
+            'success': True,
+            'results': [{
+                'years': years,
+                'file': metricName,
+                'indicator': indicator_str,
+                'result': csv_data
+            }],
+            'csv_data': csv_data,
+            'suggested_filename': suggested_filename
         })
-    
     except Exception as e:
         import traceback
-        print("Error occurred:")
+        print("自定义提取处理错误:")
         traceback.print_exc()
-        return jsonify({'success': False, 'error': str(e)})
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# 批量合并提取（多个自定义项按seqn合并为一个文件）
+@app.route('/process_nhanes_batch_merge', methods=['POST'])
+def process_nhanes_batch_merge():
+    try:
+        # 检查get_nhanes_data函数是否可用
+        if 'get_nhanes_data' not in globals():
+            return jsonify({
+                'success': False,
+                'error': 'NHANES数据提取功能不可用，请检查系统配置'
+            }), 500
+
+        # 检查配置状态
+        try:
+            from GetNhanes import config
+            base_path = config.get_base_path()
+            if not os.path.exists(base_path):
+                return jsonify({
+                    'success': False,
+                    'error': f'NHANES数据路径不存在: {base_path}，请检查配置'
+                }), 500
+        except Exception as config_error:
+            return jsonify({
+                'success': False,
+                'error': f'NHANES数据路径配置错误: {config_error}'
+            }), 500
+
+        data = request.json
+        items = data.get('items', [])
+        if not items:
+            return jsonify({'success': False, 'error': '没有提供要处理的数据项'}), 400
+
+        # 将 items 归并为多个组：以 (file, indicator) 为键，years 为值
+        groups = {}
+        all_years = []
+        for it in items:
+            year_val = str(it.get('year', '')).strip()
+            file_val = str(it.get('file', '')).strip()
+            indicator_val = str(it.get('indicator', '')).strip()
+            if not year_val or not file_val or not indicator_val:
+                print(f"跳过无效项目: {it}")
+                continue
+            key = (file_val, indicator_val)
+            groups.setdefault(key, set()).add(year_val)
+            all_years.append(year_val)
+
+        if not groups:
+            return jsonify({'success': False, 'error': '没有可处理的有效项目'}), 400
+
+        # 逐组提取并按 seqn 合并
+        merged_df = None
+        for (metricName, indicator_str), years_set in groups.items():
+            years_list = sorted(list(years_set))
+            features = [f.strip() for f in indicator_str.split(',') if f.strip()]
+            # 确保包含 seqn
+            if not any(col.lower() == 'seqn' for col in features):
+                features = ['seqn'] + features
+
+            print(f"批量组处理: file={metricName}, years={years_list}, features={features}")
+
+            df = get_nhanes_data(
+                years=years_list,
+                features=features,
+                metric_prefix=metricName,
+                merge_output=True,
+                save_each_file=True
+            )
+
+            # 规范列名、前缀化避免冲突，保留一个 'seqn'
+            if hasattr(df, 'columns') and 'seqn' in df.columns:
+                prefixed_cols = {}
+                for col in df.columns:
+                    if col == 'seqn':
+                        prefixed_cols[col] = col
+                    else:
+                        prefixed_cols[col] = f"{metricName}_{col}"
+                df = df.rename(columns=prefixed_cols)
+            else:
+                # 若不存在 seqn，则无法合并，跳过
+                print(f"警告: 数据集中缺少 seqn，跳过: file={metricName}")
+                continue
+
+            if merged_df is None:
+                merged_df = df
+            else:
+                try:
+                    merged_df = pd.merge(merged_df, df, on='seqn', how='outer')
+                except Exception as me:
+                    print(f"合并失败({metricName}): {str(me)}")
+
+        if merged_df is None:
+            return jsonify({'success': False, 'error': '无法生成合并数据，请检查输入'}), 400
+
+        # 生成 CSV
+        csv_data = merged_df.to_csv(index=False)
+
+        # 生成建议文件名（使用所有年份的最小与最大）
+        try:
+            start_year = min(int(y.split('-')[0]) for y in all_years if y)
+            end_year = max(int(y.split('-')[-1]) for y in all_years if y)
+            suggested_filename = f"{start_year}-{end_year}_merged.csv"
+        except Exception:
+            suggested_filename = "merged.csv"
+
+        return jsonify({
+            'success': True,
+            'csv_data': csv_data,
+            'suggested_filename': suggested_filename,
+            'merged_columns': list(merged_df.columns)
+        })
+
+    except Exception as e:
+        import traceback
+        print("批量合并处理错误:")
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 # 二级指标提取
