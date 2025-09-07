@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 import {
     Typography,
     Card,
@@ -123,7 +124,7 @@ const DataVisualization: React.FC = () => {
         formData.append('file', file);
 
         try {
-            const response = await fetch('http://localhost:5000/get_csvfile', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.GET_CSV_FILE), {
                 method: 'POST',
                 body: formData,
             });
@@ -233,7 +234,7 @@ const DataVisualization: React.FC = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/generate_visualization', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.GENERATE_VISUALIZATION), {
                 method: 'POST',
                 body: formData,
                 signal: controller.signal

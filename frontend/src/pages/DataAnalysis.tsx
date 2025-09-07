@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 import {
     Typography,
     Card,
@@ -172,7 +173,7 @@ const DataAnalysis: React.FC = () => {
         formData.append('file', file);
 
         try {
-            const response = await fetch('http://localhost:5000/get_csvfile', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.GET_CSV_FILE), {
                 method: 'POST',
                 body: formData,
             });
@@ -296,7 +297,7 @@ const DataAnalysis: React.FC = () => {
 
         try {
             console.log('发送Cox回归请求...');
-            const response = await fetch('http://localhost:5000/CoxRegression', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.COX_REGRESSION), {
                 method: 'POST',
                 body: formData,
                 signal: controller.signal
@@ -378,7 +379,7 @@ const DataAnalysis: React.FC = () => {
 
         try {
             setProgress(60);
-            const response = await fetch('http://localhost:5000/linearRegression', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.LINEAR_REGRESSION), {
                 method: 'POST',
                 body: formData,
             });
@@ -438,7 +439,7 @@ const DataAnalysis: React.FC = () => {
 
         try {
             setProgress(60);
-            const response = await fetch('http://localhost:5000/logisticRegression', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.LOGISTIC_REGRESSION), {
                 method: 'POST',
                 body: formData,
             });
@@ -506,7 +507,7 @@ const DataAnalysis: React.FC = () => {
 
         try {
             setProgress(60);
-            const response = await fetch('http://localhost:5000/multinomialLogisticRegression', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.MULTINOMIAL_LOGISTIC_REGRESSION), {
                 method: 'POST',
                 body: formData,
             });

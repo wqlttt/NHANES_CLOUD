@@ -20,6 +20,7 @@ import {
     message,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 import {
     SearchOutlined,
     PlusOutlined,
@@ -923,7 +924,7 @@ const DataExtraction: React.FC = () => {
 
         try {
             // 调用后端API获取全部数据（不分页）
-            const response = await fetch(`http://localhost:5000/api/indicators/${indicatorName}?export_all=true`);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.INDICATOR_DATA(indicatorName)) + '?export_all=true');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -960,7 +961,7 @@ const DataExtraction: React.FC = () => {
 
         try {
             // 调用后端API获取全部死亡数据（不分页）
-            const response = await fetch(`http://localhost:5000/api/mortality/${mortalityYear}?export_all=true`);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.MORTALITY_DATA(mortalityYear)) + '?export_all=true');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -1080,7 +1081,7 @@ const DataExtraction: React.FC = () => {
             }));
 
             // 调用后端API
-            const response = await fetch('http://localhost:5000/process_nhanes', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.PROCESS_NHANES), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1246,7 +1247,7 @@ const DataExtraction: React.FC = () => {
             });
 
             // 调用后端批量合并接口
-            const response = await fetch('http://localhost:5000/process_nhanes_batch_merge', {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.PROCESS_NHANES_BATCH), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1300,7 +1301,7 @@ const DataExtraction: React.FC = () => {
     const fetchMortalityData = async (mortalityYear: string, page: number = 1, limit: number = 10) => {
         try {
             // 调用后端API获取死亡数据
-            const response = await fetch(`http://localhost:5000/api/mortality/${mortalityYear}?page=${page}&limit=${limit}`);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.MORTALITY_DATA(mortalityYear)) + `?page=${page}&limit=${limit}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -1349,7 +1350,7 @@ const DataExtraction: React.FC = () => {
     const fetchIndicatorData = async (indicatorName: string, page: number = 1, limit: number = 10) => {
         try {
             // 调用后端API获取真实数据
-            const response = await fetch(`http://localhost:5000/api/indicators/${indicatorName}?page=${page}&limit=${limit}`);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.INDICATOR_DATA(indicatorName)) + `?page=${page}&limit=${limit}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
