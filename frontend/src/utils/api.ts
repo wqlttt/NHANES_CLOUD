@@ -1,5 +1,5 @@
 // API配置工具
-const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 // 获取完整的API URL
 export const getApiUrl = (path: string): string => {

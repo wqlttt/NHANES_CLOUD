@@ -35,7 +35,11 @@ const zhTranslations = {
                     variables: '15000+',
                     cycles: '20+'
                 },
-                button: '进入数据提取'
+                button: '进入数据提取',
+                variableSearch: {
+                    title: '变量搜索',
+                    placeholder: '输入关键词搜索变量 (如: HDL, Glucose)'
+                }
             },
             visualization: {
                 title: '数据可视化',
@@ -147,7 +151,11 @@ const enTranslations = {
                     variables: '15K+',
                     cycles: '20+'
                 },
-                button: 'Enter Data Extraction'
+                button: 'Enter Data Extraction',
+                variableSearch: {
+                    title: 'Variable Search',
+                    placeholder: 'Enter keywords to search variables (e.g., HDL, Glucose)'
+                }
             },
             visualization: {
                 title: 'Data Visualization',

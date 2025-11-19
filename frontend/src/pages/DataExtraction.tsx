@@ -515,6 +515,12 @@ const DataExtraction: React.FC = () => {
     const [currentMortalityData, setCurrentMortalityData] = useState<any>(null);
     const [loadingMortalityData, setLoadingMortalityData] = useState(false);
 
+    // 变量搜索状态
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<any[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [selectedSearchRows, setSelectedSearchRows] = useState<any[]>([]);
+
     // 设置特定下载状态
     const setDownloadingState = (type: string, loading: boolean) => {
         setDownloadingStates(prev => ({
@@ -745,6 +751,44 @@ const DataExtraction: React.FC = () => {
         } catch (error) {
             console.error('加载死亡数据失败:', error);
             setLoadingMortalityData(false);
+        }
+    };
+
+    // 变量搜索函数
+    const handleSearch = async (value: string) => {
+        if (!value.trim()) {
+            message.warning('请输入搜索关键词');
+            return;
+        }
+
+        setIsSearching(true);
+        try {
+            const response = await fetch(getApiUrl('/search_variables'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: value }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            if (data.success) {
+                setSearchResults(data.results);
+                if (data.results.length === 0) {
+                    message.info('未找到匹配的变量');
+                }
+            } else {
+                message.error(data.error || '搜索失败');
+            }
+        } catch (error) {
+            console.error('搜索变量失败:', error);
+            message.error('搜索变量失败，请检查网络连接');
+        } finally {
+            setIsSearching(false);
         }
     };
 
@@ -1575,6 +1619,177 @@ const DataExtraction: React.FC = () => {
             </Text>
 
             <div style={{ marginTop: 24 }}>
+                {/* 变量搜索 */}
+                <Card
+                    title={
+                        <Space>
+                            <SearchOutlined style={{ color: '#1890ff' }} />
+                            <span>{t('home.features.dataExtraction.variableSearch.title', '变量搜索')}</span>
+                        </Space>
+                    }
+                    style={{ marginBottom: 16 }}
+                    bodyStyle={{ padding: '20px' }}
+                >
+                    <div style={{ marginBottom: 16 }}>
+                        <Input.Search
+                            placeholder={t('home.features.dataExtraction.variableSearch.placeholder', '输入关键词搜索变量 (如: HDL, Glucose)')}
+                            enterButton={t('common.search', '搜索')}
+                            size="large"
+                            onSearch={handleSearch}
+                            loading={isSearching}
+                        />
+                    </div>
+
+                    {searchResults.length > 0 && (
+                        <>
+                            <Table
+                                dataSource={searchResults}
+                                columns={[
+                                    { title: t('common.year', 'Year'), dataIndex: 'year', key: 'year', width: 100 },
+                                    { title: t('common.fileName', 'File Name'), dataIndex: 'file', key: 'file', width: 150 },
+                                    { title: t('common.variable', 'Variable'), dataIndex: 'variable', key: 'variable', width: 120 },
+                                    { title: t('common.label', 'Label'), dataIndex: 'label', key: 'label' },
+                                    { title: t('common.description', 'Description'), dataIndex: 'description', key: 'description', ellipsis: true }
+                                ]}
+                                rowKey={(record) => `${record.year}-${record.variable}`}
+                                rowSelection={{
+                                    type: 'checkbox',
+                                    onChange: (selectedRowKeys, selectedRows) => {
+                                        setSelectedSearchRows(selectedRows);
+                                    },
+                                }}
+                                pagination={{ pageSize: 10 }}
+                                size="small"
+                                scroll={{ x: 'max-content' }}
+                            />
+                            {selectedSearchRows.length > 0 && (
+                                <div style={{ marginTop: 16, textAlign: 'right' }}>
+                                    <Button
+                                        type="primary"
+                                        icon={<PlusOutlined />}
+                                        onClick={() => {
+                                            // Helper function to extract base name and suffix
+                                            const parseFileName = (fileName: string): { base: string, suffix: string } => {
+                                                // Match pattern: base_letter or just base
+                                                const match = fileName.match(/^(.+?)(_[a-z])?$/i);
+                                                if (match) {
+                                                    return {
+                                                        base: match[1],
+                                                        suffix: match[2] || ''
+                                                    };
+                                                }
+                                                return { base: fileName, suffix: '' };
+                                            };
+
+                                            // Group by file name first
+                                            const fileGroups: { [key: string]: { years: Set<string>, file: string, variables: Set<string> }[] } = {};
+
+                                            selectedSearchRows.forEach(row => {
+                                                const key = row.file;
+                                                if (!fileGroups[key]) {
+                                                    fileGroups[key] = [];
+                                                }
+
+                                                // Find if there's already a group for this year
+                                                let yearGroup = fileGroups[key].find(g => g.years.has(row.year));
+                                                if (!yearGroup) {
+                                                    yearGroup = {
+                                                        years: new Set([row.year]),
+                                                        file: row.file,
+                                                        variables: new Set()
+                                                    };
+                                                    fileGroups[key].push(yearGroup);
+                                                }
+                                                yearGroup.variables.add(row.variable);
+                                            });
+
+                                            // Try to merge groups with similar file names (NHANES pattern)
+                                            const allFiles = Object.keys(fileGroups);
+                                            const mergedGroups: { years: Set<string>, fileName: string, variables: Set<string> }[] = [];
+
+                                            // Group files by base name
+                                            const baseGroups: { [base: string]: string[] } = {};
+                                            allFiles.forEach(file => {
+                                                const { base } = parseFileName(file);
+                                                if (!baseGroups[base]) {
+                                                    baseGroups[base] = [];
+                                                }
+                                                baseGroups[base].push(file);
+                                            });
+
+                                            // Process each base group
+                                            Object.entries(baseGroups).forEach(([base, files]) => {
+                                                if (files.length > 1) {
+                                                    // Check if all files follow the pattern: base, base_b, base_c, etc.
+                                                    const allFollowPattern = files.every(f => {
+                                                        const { base: fBase, suffix } = parseFileName(f);
+                                                        return fBase === base && (suffix === '' || /^_[a-z]$/i.test(suffix));
+                                                    });
+
+                                                    if (allFollowPattern) {
+                                                        // Merge these files
+                                                        const mergedYears = new Set<string>();
+                                                        const mergedVariables = new Set<string>();
+
+                                                        files.forEach(f => {
+                                                            fileGroups[f].forEach(group => {
+                                                                group.years.forEach(y => mergedYears.add(y));
+                                                                group.variables.forEach(v => mergedVariables.add(v));
+                                                            });
+                                                        });
+
+                                                        mergedGroups.push({
+                                                            years: mergedYears,
+                                                            fileName: base + '_', // Use base_ to indicate a merged file set
+                                                            variables: mergedVariables
+                                                        });
+                                                    } else {
+                                                        // Don't merge, keep separate
+                                                        files.forEach(f => {
+                                                            fileGroups[f].forEach(group => {
+                                                                mergedGroups.push({
+                                                                    years: group.years,
+                                                                    fileName: f,
+                                                                    variables: group.variables
+                                                                });
+                                                            });
+                                                        });
+                                                    }
+                                                } else {
+                                                    // Single file, keep as is
+                                                    fileGroups[files[0]].forEach(group => {
+                                                        mergedGroups.push({
+                                                            years: group.years,
+                                                            fileName: files[0],
+                                                            variables: group.variables
+                                                        });
+                                                    });
+                                                }
+                                            });
+
+                                            // Add each merged group as a custom extraction
+                                            mergedGroups.forEach(group => {
+                                                const newItem: CustomExtractionItem = {
+                                                    key: Date.now().toString() + Math.random(),
+                                                    years: Array.from(group.years),
+                                                    fileName: group.fileName,
+                                                    indicators: Array.from(group.variables).join(',')
+                                                };
+                                                setCustomExtractions(prev => [...prev, newItem]);
+                                            });
+
+                                            message.success(`已添加 ${selectedSearchRows.length} 个变量到自定义提取列表`);
+                                            setSelectedSearchRows([]);
+                                        }}
+                                    >
+                                        添加到自定义提取 ({selectedSearchRows.length})
+                                    </Button>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </Card>
+
                 {/* 自定义提取 */}
                 <Card
                     title={

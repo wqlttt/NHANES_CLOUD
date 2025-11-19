@@ -165,7 +165,7 @@ export const zhTranslations = {
             noData: '暂无数据提取项目',
             noDataHint: '请先选择年份、填写文件名和指标，然后点击"添加到列表"',
             previewList: '数据提取列表',
-            totalItems: '共 {count} 项',
+            totalItems: '共 {{count}} 项',
             batchDownload: '批量下载全部'
         },
         commonIndicators: {
@@ -760,7 +760,7 @@ export const enTranslations = {
             noData: 'No data extraction items',
             noDataHint: 'Please select years, enter file name and indicators, then click "Add to List"',
             previewList: 'Data Extraction List',
-            totalItems: 'Total {count} items',
+            totalItems: 'Total {{count}} items',
             batchDownload: 'Batch Download All'
         },
         commonIndicators: {

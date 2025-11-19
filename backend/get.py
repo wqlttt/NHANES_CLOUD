@@ -718,6 +718,71 @@ def get_file_columns():
             "error_code": "COLUMN_INFO_ERROR"
         }), 500
 
+# 变量搜索接口
+@app.route('/search_variables', methods=['POST'])
+def search_variables():
+    try:
+        data = request.json
+        query = data.get('query', '').strip().lower()
+        
+        if not query:
+            return jsonify({
+                'success': False,
+                'error': 'Search query is required'
+            }), 400
+
+        # Path to varLabel.json
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        json_path = os.path.join(current_dir, 'varLabel.json')
+        
+        if not os.path.exists(json_path):
+             return jsonify({
+                'success': False,
+                'error': f'Variable definition file not found at {json_path}'
+            }), 500
+
+        # Read the JSON file
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                all_variables = json.load(f)
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'error': f'Failed to read variable definition file: {str(e)}'
+            }), 500
+
+        # Filter data
+        results = []
+        count = 0
+        
+        for item in all_variables:
+            # Check if query is in variable, label, or description
+            # Use safe get with empty string default for None values
+            if (query in (item.get('variable') or '').lower() or 
+                query in (item.get('label') or '').lower() or 
+                query in (item.get('description') or '').lower()):
+                
+                results.append(item)
+                count += 1
+                
+                if count >= 100: # Limit to top 100 results
+                    break
+        
+        return jsonify({
+            'success': True,
+            'results': results,
+            'count': len(results)
+        })
+
+    except Exception as e:
+        import traceback
+        print(f"Error searching variables: {str(e)}")
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 # 数据可视化统一接口
 @app.route('/generate_visualization', methods=['POST'])
 def generate_visualization():

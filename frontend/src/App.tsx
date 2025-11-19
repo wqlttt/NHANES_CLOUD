@@ -1,23 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Layout, Menu, Typography, Space, Button, Drawer } from 'antd';
+import { Layout, Menu, Typography, Space, Button, Drawer, Spin } from 'antd';
 import { DatabaseOutlined, BarChartOutlined, FundOutlined, HomeOutlined, GlobalOutlined, MenuOutlined } from '@ant-design/icons';
-import Home from './pages/Home';
-import DataExtraction from './pages/DataExtraction';
-import DataVisualization from './pages/DataVisualization';
-import DataAnalysis from './pages/DataAnalysis';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
+
+const Home = lazy(() => import('./pages/Home'));
+const DataExtraction = lazy(() => import('./pages/DataExtraction'));
+const DataVisualization = lazy(() => import('./pages/DataVisualization'));
+const DataAnalysis = lazy(() => import('./pages/DataAnalysis'));
 
 const { Header, Content, Sider } = Layout;
 const { Title } = Typography;
 
-type PageKey = 'home' | 'extraction' | 'visualization' | 'analysis';
-
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<PageKey>('home');
   const [isMobile, setIsMobile] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // 检测屏幕尺寸变化
   useEffect(() => {
@@ -35,22 +36,22 @@ const App: React.FC = () => {
 
   const menuItems = [
     {
-      key: 'home',
+      key: '/',
       icon: <HomeOutlined />,
-      label: t('home.features.dataExtraction.title'),
+      label: t('home.features.dataExtraction.title'), // Assuming Home uses this title or similar
     },
     {
-      key: 'extraction',
+      key: '/extraction',
       icon: <DatabaseOutlined />,
       label: t('home.features.dataExtraction.title'),
     },
     {
-      key: 'visualization',
+      key: '/visualization',
       icon: <BarChartOutlined />,
       label: t('home.features.visualization.title'),
     },
     {
-      key: 'analysis',
+      key: '/analysis',
       icon: <FundOutlined />,
       label: t('home.features.analysis.title'),
     },
@@ -62,25 +63,20 @@ const App: React.FC = () => {
   };
 
   const handleMenuClick = (key: string) => {
-    setCurrentPage(key as PageKey);
+    navigate(key);
     if (isMobile) {
       setDrawerVisible(false);
     }
   };
 
-  const renderContent = () => {
-    switch (currentPage) {
-      case 'home':
-        return <Home onNavigate={setCurrentPage} />;
-      case 'extraction':
-        return <DataExtraction />;
-      case 'visualization':
-        return <DataVisualization />;
-      case 'analysis':
-        return <DataAnalysis />;
-      default:
-        return <Home onNavigate={setCurrentPage} />;
-    }
+  // Determine selected key based on current path
+  const getSelectedKey = () => {
+    const path = location.pathname;
+    if (path === '/') return '/';
+    if (path.startsWith('/extraction')) return '/extraction';
+    if (path.startsWith('/visualization')) return '/visualization';
+    if (path.startsWith('/analysis')) return '/analysis';
+    return '/';
   };
 
   return (
@@ -136,7 +132,7 @@ const App: React.FC = () => {
           <Sider width={200} style={{ background: '#fff' }}>
             <Menu
               mode="inline"
-              selectedKeys={[currentPage]}
+              selectedKeys={[getSelectedKey()]}
               style={{
                 height: '100%',
                 borderRight: 0,
@@ -161,7 +157,7 @@ const App: React.FC = () => {
         >
           <Menu
             mode="inline"
-            selectedKeys={[currentPage]}
+            selectedKeys={[getSelectedKey()]}
             style={{
               height: '100%',
               borderRight: 0,
@@ -188,7 +184,19 @@ const App: React.FC = () => {
               boxShadow: 'none',
             }}
           >
-            {renderContent()}
+            <Suspense fallback={
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <Spin size="large" tip="Loading..." />
+              </div>
+            }>
+              <Routes>
+                <Route path="/" element={<Home onNavigate={(key) => navigate(key === 'home' ? '/' : `/${key}`)} />} />
+                <Route path="/extraction" element={<DataExtraction />} />
+                <Route path="/visualization" element={<DataVisualization />} />
+                <Route path="/analysis" element={<DataAnalysis />} />
+                <Route path="*" element={<Home onNavigate={(key) => navigate(key === 'home' ? '/' : `/${key}`)} />} />
+              </Routes>
+            </Suspense>
           </Content>
         </Layout>
       </Layout>
