@@ -180,7 +180,6 @@ deploy.sh
 !README.md
 # NHANES specific exclusions
 backend/nhanes_output/
-backend/varLabel.json
 nginx/nhanes.cloud_nginx/
 test_search.py
 convert_var_label.py
