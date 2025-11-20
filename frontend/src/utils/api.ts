@@ -37,6 +37,9 @@ export const API_ENDPOINTS = {
     GET_CSV_INFO: '/get_csv_info',
     GET_FILE_COLUMNS: '/get_file_columns',
 
+    // 变量搜索
+    SEARCH_VARIABLES: '/search_variables',
+
     // 数据可视化
     GENERATE_VISUALIZATION: '/generate_visualization',
     DRAW_BOXPLOT: '/draw_boxplot',

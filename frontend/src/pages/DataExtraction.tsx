@@ -763,7 +763,7 @@ const DataExtraction: React.FC = () => {
 
         setIsSearching(true);
         try {
-            const response = await fetch(getApiUrl('/search_variables'), {
+            const response = await fetch(getApiUrl(API_ENDPOINTS.SEARCH_VARIABLES), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
