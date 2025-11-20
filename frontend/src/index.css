@@ -1,237 +1,179 @@
-/* 全局样式 */
+/* Global Styles & Design Tokens */
 @import 'antd/dist/reset.css';
+
+:root {
+  /* Brand Colors */
+  --primary-color: #1890ff;
+  --primary-hover: #40a9ff;
+  --primary-active: #096dd9;
+  --secondary-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #ff4d4f;
+
+  /* Backgrounds */
+  --bg-body: #f0f2f5;
+  --bg-container: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-header: rgba(255, 255, 255, 0.8);
+
+  /* Text */
+  --text-primary: #1f1f1f;
+  --text-secondary: #8c8c8c;
+  --text-tertiary: #bfbfbf;
+
+  /* Spacing */
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 32px;
+  --spacing-xl: 48px;
+
+  /* Borders & Shadows */
+  --border-radius-base: 8px;
+  --border-radius-lg: 16px;
+  --box-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --box-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --box-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  
+  /* Header Height */
+  --header-height: 64px;
+}
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol';
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f5f5;
+  background-color: var(--bg-body);
+  color: var(--text-primary);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* NHANES系统特定样式 */
-* {
-  box-sizing: border-box;
-}
-
+/* Layout Overrides */
 .ant-layout {
-  background: #f5f5f5;
+  background: var(--bg-body);
 }
 
-.ant-layout-header {
-  background: #fff;
-  border-bottom: 1px solid #f0f0f0;
+.app-header {
+  background: var(--bg-header) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 0 var(--spacing-md) !important;
+  height: var(--header-height);
+  line-height: var(--header-height);
 }
 
-.ant-layout-sider {
-  background: #fff;
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
-.ant-menu {
-  border-right: none;
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.ant-card {
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
+.logo-icon {
+  font-size: 28px;
+  color: var(--primary-color);
 }
 
-.ant-table {
-  border-radius: 6px;
+.logo-text {
+  margin: 0 !important;
+  color: var(--primary-color) !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
 }
 
-.ant-btn-primary {
-  background: #1890ff;
-  border-color: #1890ff;
+.app-sider {
+  background: var(--bg-sidebar) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  position: sticky;
+  top: var(--header-height);
+  height: calc(100vh - var(--header-height));
+  overflow-y: auto;
 }
 
-.ant-btn-primary:hover {
-  background: #40a9ff;
-  border-color: #40a9ff;
+.app-menu {
+  border-right: none !important;
+  padding-top: var(--spacing-xs);
 }
 
-/* 滚动条样式 */
+.main-content-layout {
+  padding: var(--spacing-md);
+  transition: all 0.3s;
+}
+
+.main-content {
+  background: transparent;
+  min-height: 280px;
+  border-radius: var(--border-radius-base);
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 var(--spacing-sm) !important;
+  }
+  
+  .main-content-layout {
+    padding: var(--spacing-sm);
+  }
+  
+  .logo-icon {
+    font-size: 24px;
+  }
+  
+  .logo-text {
+    font-size: 18px !important;
+  }
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: rgba(0, 0, 0, 0.3);
 }
 
-/* 响应式设计 */
-@media (max-width: 1200px) {
-  .ant-card {
-    margin-bottom: 12px;
-  }
+/* Utility Classes */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--box-shadow-sm);
+  border-radius: var(--border-radius-lg);
 }
 
-@media (max-width: 992px) {
-  .chart-wrapper {
-    padding: 16px;
-  }
-}
-
-@media (max-width: 768px) {
-
-  /* 移动端布局优化 */
-  .ant-layout-sider {
-    display: none;
-    /* 移动端隐藏侧边栏，使用抽屉代替 */
-  }
-
-  .ant-layout-header {
-    padding: 0 16px !important;
-    height: 56px;
-    line-height: 56px;
-  }
-
-  .ant-layout-content {
-    padding: 12px !important;
-  }
-
-  .chart-wrapper {
-    padding: 12px;
-    margin: 8px 0;
-  }
-
-  .ant-card {
-    margin-bottom: 12px;
-    border-radius: 6px;
-  }
-
-  .ant-card-body {
-    padding: 16px !important;
-  }
-
-  .ant-form-item {
-    margin-bottom: 16px;
-  }
-
-  .ant-btn {
-    height: 36px;
-    font-size: 14px;
-  }
-
-  .ant-btn-lg {
-    height: 40px;
-    font-size: 16px;
-  }
-
-  .ant-input {
-    height: 36px;
-    font-size: 14px;
-  }
-
-  .ant-select {
-    font-size: 14px;
-  }
-
-  .ant-table {
-    font-size: 12px;
-  }
-
-  .ant-table-tbody>tr>td {
-    padding: 8px 6px;
-  }
-
-  .ant-table-thead>tr>th {
-    padding: 8px 6px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 576px) {
-
-  /* 超小屏幕优化 */
-  .ant-layout-header {
-    height: 52px;
-    line-height: 52px;
-  }
-
-  .ant-layout-content {
-    padding: 8px !important;
-  }
-
-  .chart-wrapper {
-    padding: 8px;
-    margin: 4px 0;
-  }
-
-  .ant-card-body {
-    padding: 12px !important;
-  }
-
-  .ant-btn {
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .ant-input {
-    height: 32px;
-    font-size: 12px;
-  }
-
-  .ant-table {
-    font-size: 11px;
-  }
-
-  .ant-table-tbody>tr>td {
-    padding: 6px 4px;
-  }
-
-  .ant-table-thead>tr>th {
-    padding: 6px 4px;
-    font-size: 11px;
-  }
-}
-
-/* 加载动画 */
-.loading-spin {
-  text-align: center;
-  padding: 50px;
-}
-
-/* 图表容器 */
-.chart-wrapper {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* 统计卡片 */
-.stats-card {
-  text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 16px;
-}
-
-.stats-card .ant-statistic-title {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.stats-card .ant-statistic-content {
-  color: white;
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
