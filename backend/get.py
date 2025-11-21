@@ -7,14 +7,6 @@ from flask_cors import CORS
 # 导入配置
 from config import CORS_ORIGINS, DEBUG, HOST, PORT
 
-# 延迟导入GetNhanes模块，避免启动时的路径错误
-try:
-    from GetNhanes.coreCalculated import *
-    print("成功导入GetNhanes核心计算模块")
-except Exception as e:
-    print(f"警告: 无法导入GetNhanes核心计算模块: {e}")
-    print("数据提取功能可能不可用，但其他功能仍然正常")
-
 # 导入数据提取功能
 try:
     from GetNhanes.utils.getMetricsConvenient import get_nhanes_data

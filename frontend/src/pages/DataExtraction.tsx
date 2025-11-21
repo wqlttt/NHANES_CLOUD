@@ -674,7 +674,7 @@ const DataExtraction: React.FC = () => {
         let lastHeight = container.clientHeight;
 
         // 监听窗口大小变化，使用防抖避免无限循环
-        const resizeObserver = new ResizeObserver((entries) => {
+        const resizeObserver = new ResizeObserver(() => {
             // 清除之前的定时器
             if (resizeTimeout) {
                 clearTimeout(resizeTimeout);
@@ -683,7 +683,12 @@ const DataExtraction: React.FC = () => {
             // 使用防抖，300ms 后执行
             resizeTimeout = setTimeout(() => {
                 try {
-                    if (tableInstance && container) {
+                    if (!container || !container.isConnected) {
+                        resizeObserver.disconnect();
+                        return;
+                    }
+
+                    if (tableInstance) {
                         const newWidth = container.clientWidth;
                         const newHeight = container.clientHeight;
 
@@ -694,8 +699,12 @@ const DataExtraction: React.FC = () => {
 
                             // 使用 requestAnimationFrame 确保在下一帧执行
                             requestAnimationFrame(() => {
-                                if (tableInstance) {
-                                    tableInstance.resize();
+                                try {
+                                    if (tableInstance && container && container.isConnected) {
+                                        tableInstance.resize();
+                                    }
+                                } catch (error) {
+                                    console.warn('VTable resize RAF error:', error);
                                 }
                             });
                         }
