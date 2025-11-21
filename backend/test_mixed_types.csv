@@ -1,0 +1,11 @@
+name,age,salary,height,gender,education_level,marital_status,binary_flag,department,city,employee_id
+Alice,25,50000,170.5,1,1,1,0,Engineering,北京,1001
+Bob,30,60000,165.2,2,2,2,1,Marketing,上海,1002
+Charlie,35,70000,180.3,1,3,1,1,Engineering,广州,1003
+David,28,55000,175.8,2,2,3,0,Sales,深圳,1004
+Eve,42,85000,168.9,1,4,2,1,Engineering,北京,1005
+Frank,38,75000,172.1,1,3,1,0,Marketing,上海,1006
+Grace,33,62000,177.5,2,2,1,1,Sales,广州,1007
+Henry,29,58000,169.3,1,1,2,1,Engineering,深圳,1008
+Iris,31,61000,173.2,2,3,3,0,Marketing,北京,1009
+Jack,27,54000,171.8,2,2,2,1,Sales,上海,1010

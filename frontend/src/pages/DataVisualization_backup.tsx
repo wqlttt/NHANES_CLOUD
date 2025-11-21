@@ -22,6 +22,7 @@ import {
     Table,
     Tag,
     Input,
+    Checkbox,
 } from 'antd';
 import {
     BarChartOutlined,
@@ -34,6 +35,9 @@ import {
     FileTextOutlined,
     StopOutlined,
     ReloadOutlined,
+    HeatMapOutlined,
+    FundOutlined,
+    AreaChartOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -43,9 +47,13 @@ const { TabPane } = Tabs;
 // 图表类型配置 - 匹配后端支持的类型
 const getChartTypes = (t: any) => [
     { value: 'histogram', label: t('dataVisualization.chartType.histogram'), icon: <BarChartOutlined /> },
-    { value: 'scatter', label: t('dataVisualization.chartType.scatter'), icon: <DotChartOutlined /> },
-    { value: 'heatmap', label: t('dataVisualization.chartType.heatmap'), icon: <PieChartOutlined /> },
     { value: 'boxplot', label: t('dataVisualization.chartType.boxplot'), icon: <LineChartOutlined /> },
+    { value: 'violinplot', label: t('dataVisualization.chartType.violinplot'), icon: <AreaChartOutlined /> },
+    { value: 'qqplot', label: t('dataVisualization.chartType.qqplot'), icon: <FundOutlined /> },
+    { value: 'barplot', label: t('dataVisualization.chartType.barplot'), icon: <BarChartOutlined /> },
+    { value: 'scatter', label: t('dataVisualization.chartType.scatter'), icon: <DotChartOutlined /> },
+    { value: 'jointplot', label: t('dataVisualization.chartType.jointplot'), icon: <PieChartOutlined /> },
+    { value: 'correlation_heatmap', label: t('dataVisualization.chartType.correlation_heatmap'), icon: <HeatMapOutlined /> },
 ];
 
 // 接口类型定义
@@ -163,17 +171,34 @@ const DataVisualization: React.FC = () => {
         }
 
         const formValues = form.getFieldsValue();
-        const { xVar, yVar, groupVar, chartTitleType, customTitle, colorTheme } = formValues;
+        const { xVar, yVar, groupVar, chartTitleType, customTitle, colorTheme, columns, method, distribution, show_percentage } = formValues;
 
         // 验证必要参数
-        if (!xVar && chartType !== 'histogram') {
-            message.error(t('dataVisualization.generate.errors.noXVar'));
-            return;
-        }
+        const needsXVar = ['histogram', 'qqplot', 'barplot'];
+        const needsYVar = ['boxplot', 'violinplot'];
+        const needsBothVars = ['scatter', 'jointplot'];
+        const isCorrelationHeatmap = chartType === 'correlation_heatmap';
 
-        if ((chartType === 'scatter' || chartType === 'heatmap') && !yVar) {
-            message.error(t('dataVisualization.generate.errors.noYVar'));
-            return;
+        if (isCorrelationHeatmap) {
+            if (!columns || columns.length < 2) {
+                message.error(t('dataVisualization.generate.errors.noColumns'));
+                return;
+            }
+        } else {
+            if (needsXVar.includes(chartType) && !xVar) {
+                message.error(t('dataVisualization.generate.errors.noXVar'));
+                return;
+            }
+
+            if (needsYVar.includes(chartType) && !yVar) {
+                message.error(t('dataVisualization.generate.errors.noYVar'));
+                return;
+            }
+
+            if (needsBothVars.includes(chartType) && (!xVar || !yVar)) {
+                message.error(t('dataVisualization.generate.errors.noVars'));
+                return;
+            }
         }
 
         // 验证自定义标题
@@ -201,14 +226,23 @@ const DataVisualization: React.FC = () => {
 
         if (xVar) formData.append('x_var', xVar);
         if (yVar) formData.append('y_var', yVar);
+        if (groupVar) formData.append('hue', groupVar);
+
+        if (columns) {
+            columns.forEach((col: string) => formData.append('columns', col));
+        }
+        if (method) formData.append('method', method);
+        if (distribution) formData.append('distribution', distribution);
+        if (show_percentage) formData.append('show_percentage', 'true');
 
         // 处理颜色主题
-        const colorMap: Record<string, string> = {
+        const colorMap = {
             'blue': '#1890ff',
             'green': '#52c41a',
             'orange': '#fa8c16',
             'purple': '#722ed1'
         };
+        // @ts-ignore
         formData.append('color', colorMap[colorTheme] || '#1890ff');
 
         // 处理图表标题
@@ -217,16 +251,35 @@ const DataVisualization: React.FC = () => {
         } else {
             // 自动生成标题
             let autoTitle = '';
-            if (chartType === 'histogram') {
-                autoTitle = t('dataVisualization.chartTitles.histogram', { x: xVar });
-            } else if (chartType === 'scatter') {
-                autoTitle = t('dataVisualization.chartTitles.scatter', { x: xVar, y: yVar });
-            } else if (chartType === 'heatmap') {
-                autoTitle = t('dataVisualization.chartTitles.heatmap', { x: xVar, y: yVar });
-            } else if (chartType === 'boxplot') {
-                autoTitle = yVar
-                    ? t('dataVisualization.chartTitles.boxplotGrouped', { x: xVar, y: yVar })
-                    : t('dataVisualization.chartTitles.boxplot', { x: xVar });
+            switch (chartType) {
+                case 'histogram':
+                    autoTitle = t('dataVisualization.chartTitles.histogram', { x: xVar });
+                    break;
+                case 'boxplot':
+                    autoTitle = yVar
+                        ? t('dataVisualization.chartTitles.boxplotGrouped', { x: xVar, y: yVar })
+                        : t('dataVisualization.chartTitles.boxplot', { x: xVar });
+                    break;
+                case 'violinplot':
+                    autoTitle = yVar
+                        ? t('dataVisualization.chartTitles.violinplotGrouped', { x: xVar, y: yVar })
+                        : t('dataVisualization.chartTitles.violinplot', { x: xVar });
+                    break;
+                case 'qqplot':
+                    autoTitle = t('dataVisualization.chartTitles.qqplot', { x: xVar });
+                    break;
+                case 'barplot':
+                    autoTitle = t('dataVisualization.chartTitles.barplot', { x: xVar });
+                    break;
+                case 'scatter':
+                    autoTitle = t('dataVisualization.chartTitles.scatter', { x: xVar, y: yVar });
+                    break;
+                case 'jointplot':
+                    autoTitle = t('dataVisualization.chartTitles.jointplot', { x: xVar, y: yVar });
+                    break;
+                case 'correlation_heatmap':
+                    autoTitle = t('dataVisualization.chartTitles.correlation_heatmap');
+                    break;
             }
             if (autoTitle) {
                 formData.append('title', autoTitle);
@@ -502,59 +555,103 @@ const DataVisualization: React.FC = () => {
                             <Col span={12}>
                                 <Card title={t('dataVisualization.variables.title')} size="small" style={{ marginBottom: 16 }}>
                                     <Form form={form} layout="vertical" size="small">
-                                        <Form.Item
-                                            label={t('dataVisualization.variables.xAxis')}
-                                            name="xVar"
-                                            rules={[
-                                                {
-                                                    required: chartType !== 'boxplot',
-                                                    message: t('dataVisualization.variables.required', { axis: 'X' })
-                                                }
-                                            ]}
-                                        >
-                                            <Select
-                                                placeholder={t('dataVisualization.variables.selectX')}
-                                                disabled={!fileInfo}
-                                            >
-                                                {chartType === 'boxplot'
-                                                    ? renderColumnOptions('categorical')
-                                                    : renderColumnOptions('numeric')
-                                                }
-                                            </Select>
-                                        </Form.Item>
+                                        {/* Correlation Heatmap Specifics */}
+                                        {chartType === 'correlation_heatmap' && (
+                                            <>
+                                                <Form.Item
+                                                    label={t('dataVisualization.variables.columns')}
+                                                    name="columns"
+                                                    rules={[{ required: true, message: t('dataVisualization.variables.required', { axis: 'Columns' }) }]}
+                                                >
+                                                    <Select
+                                                        mode="multiple"
+                                                        placeholder={t('dataVisualization.variables.selectColumns')}
+                                                        disabled={!fileInfo}
+                                                        maxTagCount="responsive"
+                                                    >
+                                                        {renderColumnOptions('numeric')}
+                                                    </Select>
+                                                </Form.Item>
+                                                <Form.Item
+                                                    label={t('dataVisualization.variables.method')}
+                                                    name="method"
+                                                    initialValue="pearson"
+                                                >
+                                                    <Select>
+                                                        <Option value="pearson">Pearson</Option>
+                                                        <Option value="kendall">Kendall</Option>
+                                                        <Option value="spearman">Spearman</Option>
+                                                    </Select>
+                                                </Form.Item>
+                                            </>
+                                        )}
 
-                                        <Form.Item
-                                            label={t('dataVisualization.variables.yAxis')}
-                                            name="yVar"
-                                            rules={[
-                                                {
-                                                    required: ['scatter', 'heatmap'].includes(chartType) ||
-                                                        (chartType === 'boxplot'),
-                                                    message: t('dataVisualization.variables.required', { axis: 'Y' })
-                                                }
-                                            ]}
-                                        >
-                                            <Select
-                                                placeholder={t('dataVisualization.variables.selectY')}
-                                                disabled={!fileInfo}
+                                        {/* QQ Plot Specifics */}
+                                        {chartType === 'qqplot' && (
+                                            <Form.Item
+                                                label={t('dataVisualization.variables.distribution')}
+                                                name="distribution"
+                                                initialValue="norm"
                                             >
-                                                {chartType === 'boxplot'
-                                                    ? renderColumnOptions('numeric')
-                                                    : renderColumnOptions('numeric')
-                                                }
-                                            </Select>
-                                        </Form.Item>
+                                                <Select>
+                                                    <Option value="norm">Normal</Option>
+                                                    <Option value="uniform">Uniform</Option>
+                                                    <Option value="t">Student's t</Option>
+                                                    <Option value="expon">Exponential</Option>
+                                                    <Option value="chi2">Chi-Squared</Option>
+                                                </Select>
+                                            </Form.Item>
+                                        )}
 
-                                        <Form.Item label={t('dataVisualization.variables.group')} name="groupVar">
-                                            <Select
-                                                placeholder={t('dataVisualization.variables.selectGroup')}
-                                                allowClear
-                                                disabled={!fileInfo}
+                                        {/* Bar Plot Specifics */}
+                                        {chartType === 'barplot' && (
+                                            <Form.Item
+                                                name="show_percentage"
+                                                valuePropName="checked"
+                                                initialValue={false}
                                             >
-                                                {renderColumnOptions('categorical')}
-                                            </Select>
-                                        </Form.Item>
-                                    </Form>
+                                                <Checkbox>{t('dataVisualization.variables.showPercentage')}</Checkbox>
+                                            </Form.Item>
+                                        )}
+
+                                        {/* Standard Axes (X, Y, Group) - Conditionally Rendered */}
+                                        {chartType !== 'correlation_heatmap' && (
+                                            <>
+                                                {/* X Axis */}
+                                                <Form.Item
+                                                    label={t('dataVisualization.variables.xAxis')}
+                                                    name="xVar"
+                                                    rules={[{ required: ['histogram', 'qqplot', 'barplot', 'scatter', 'jointplot'].includes(chartType), message: t('dataVisualization.variables.required', { axis: 'X' }) }]}
+                                                    style={{ display: ['boxplot', 'violinplot'].includes(chartType) ? 'block' : (['histogram', 'qqplot', 'barplot', 'scatter', 'jointplot'].includes(chartType) ? 'block' : 'none') }}
+                                                >
+                                                    <Select placeholder={t('dataVisualization.variables.selectX')} disabled={!fileInfo}>
+                                                        {['barplot', 'boxplot', 'violinplot'].includes(chartType)
+                                                            ? renderColumnOptions('categorical')
+                                                            : renderColumnOptions('numeric')
+                                                        }
+                                                    </Select>
+                                                </Form.Item>
+
+                                                {/* Y Axis */}
+                                                <Form.Item
+                                                    label={t('dataVisualization.variables.yAxis')}
+                                                    name="yVar"
+                                                    rules={[{ required: ['scatter', 'jointplot', 'boxplot', 'violinplot'].includes(chartType), message: t('dataVisualization.variables.required', { axis: 'Y' }) }]}
+                                                    style={{ display: ['scatter', 'jointplot', 'boxplot', 'violinplot'].includes(chartType) ? 'block' : 'none' }}
+                                                >
+                                                    <Select placeholder={t('dataVisualization.variables.selectY')} disabled={!fileInfo}>
+                                                        {renderColumnOptions('numeric')}
+                                                    </Select>
+                                                </Form.Item>
+
+                                                {/* Group Variable */}
+                                                <Form.Item label={t('dataVisualization.variables.group')} name="groupVar">
+                                                    <Select placeholder={t('dataVisualization.variables.selectGroup')} allowClear disabled={!fileInfo}>
+                                                        {renderColumnOptions('categorical')}
+                                                    </Select>
+                                                </Form.Item>
+                                            </>
+                                        )}</Form>
                                 </Card>
 
                                 <Card title={t('dataVisualization.settings.title')} size="small">

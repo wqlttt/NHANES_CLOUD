@@ -233,14 +233,22 @@ export const zhTranslations = {
         chartType: {
             title: '2. 图表类型',
             histogram: '直方图',
+            boxplot: '箱线图',
+            violinplot: '小提琴图',
+            qqplot: 'QQ图',
+            barplot: '条形图',
             scatter: '散点图',
-            heatmap: '热力图',
-            boxplot: '箱型图',
+            jointplot: '联合分布图',
+            correlation_heatmap: '相关性矩阵热图',
             requirements: {
                 histogram: 'X轴变量（数值型）',
-                scatter: 'X轴和Y轴变量（数值型）',
-                heatmap: 'X轴和Y轴变量（数值型）',
                 boxplot: 'Y轴变量（数值型），X轴变量可选（分类型）',
+                violinplot: 'Y轴变量（数值型），X轴变量可选（分类型）',
+                qqplot: 'X轴变量（数值型）',
+                barplot: 'X轴变量（分类型）',
+                scatter: 'X轴和Y轴变量（数值型）',
+                jointplot: 'X轴和Y轴变量（数值型）',
+                correlation_heatmap: '多个数值型变量（可选）',
                 default: '请选择变量'
             }
         },
@@ -252,7 +260,12 @@ export const zhTranslations = {
             selectX: '选择X轴变量',
             selectY: '选择Y轴变量',
             selectGroup: '选择分组变量',
-            required: '请选择{axis}轴变量'
+            required: '请选择{axis}轴变量',
+            columns: '选择列',
+            selectColumns: '请选择多个列',
+            method: '相关性方法',
+            distribution: '分布类型',
+            showPercentage: '显示百分比'
         },
         settings: {
             title: '4. 图表设置',
@@ -289,8 +302,10 @@ export const zhTranslations = {
             },
             errors: {
                 noFile: '请先上传CSV文件',
+                noColumns: '请至少选择两个列进行相关性分析',
                 noXVar: '请选择X轴变量',
-                noYVar: '散点图和热力图需要选择Y轴变量',
+                noYVar: '请选择Y轴变量',
+                noVars: '请选择X轴和Y轴变量',
                 failed: '图表生成失败：{{error}}',
                 cancelled: '图表生成已取消',
                 cancelling: '正在取消图表生成...',
@@ -299,10 +314,15 @@ export const zhTranslations = {
         },
         chartTitles: {
             histogram: '{{x}} 分布直方图',
+            boxplot: '{{x}} 箱线图',
+            boxplotGrouped: '{{x}} 按 {{y}} 分组箱线图',
+            violinplot: '{{x}} 小提琴图',
+            violinplotGrouped: '{{x}} 按 {{y}} 分组小提琴图',
+            qqplot: '{{x}} QQ图',
+            barplot: '{{x}} 条形图',
             scatter: '{{x}} vs {{y}} 散点图',
-            heatmap: '{{x}} vs {{y}} 热力图',
-            boxplot: '{{x}} 箱型图',
-            boxplotGrouped: '{{x}} 按 {{y}} 分组箱型图'
+            jointplot: '{{x}} vs {{y}} 联合分布图',
+            correlation_heatmap: '相关性矩阵热图'
         },
         result: {
             tab: '图表结果',
@@ -828,14 +848,22 @@ export const enTranslations = {
         chartType: {
             title: '2. Chart Type',
             histogram: 'Histogram',
-            scatter: 'Scatter Plot',
-            heatmap: 'Heatmap',
             boxplot: 'Box Plot',
+            violinplot: 'Violin Plot',
+            qqplot: 'Q-Q Plot',
+            barplot: 'Bar Plot',
+            scatter: 'Scatter Plot',
+            jointplot: 'Joint Plot',
+            correlation_heatmap: 'Correlation Matrix Heatmap',
             requirements: {
                 histogram: 'X-axis variable (numeric)',
-                scatter: 'X and Y-axis variables (numeric)',
-                heatmap: 'X and Y-axis variables (numeric)',
                 boxplot: 'Y-axis variable (numeric), X-axis variable optional (categorical)',
+                violinplot: 'Y-axis variable (numeric), X-axis variable optional (categorical)',
+                qqplot: 'X-axis variable (numeric)',
+                barplot: 'X-axis variable (categorical)',
+                scatter: 'X and Y-axis variables (numeric)',
+                jointplot: 'X and Y-axis variables (numeric)',
+                correlation_heatmap: 'Multiple numeric variables (optional)',
                 default: 'Please select variables'
             }
         },
@@ -847,7 +875,12 @@ export const enTranslations = {
             selectX: 'Select X-axis variable',
             selectY: 'Select Y-axis variable',
             selectGroup: 'Select group variable',
-            required: 'Please select {axis}-axis variable'
+            required: 'Please select {axis}-axis variable',
+            columns: 'Select Columns',
+            selectColumns: 'Please select multiple columns',
+            method: 'Correlation Method',
+            distribution: 'Distribution Type',
+            showPercentage: 'Show Percentage'
         },
         settings: {
             title: '4. Chart Settings',
@@ -884,8 +917,10 @@ export const enTranslations = {
             },
             errors: {
                 noFile: 'Please upload a CSV file first',
+                noColumns: 'Please select at least two columns for correlation analysis',
                 noXVar: 'Please select X-axis variable',
-                noYVar: 'Scatter plot and heatmap require Y-axis variable',
+                noYVar: 'Please select Y-axis variable',
+                noVars: 'Please select both X and Y-axis variables',
                 failed: 'Chart generation failed: {{error}}',
                 cancelled: 'Chart generation cancelled',
                 cancelling: 'Cancelling chart generation...',
@@ -894,10 +929,15 @@ export const enTranslations = {
         },
         chartTitles: {
             histogram: '{{x}} Distribution Histogram',
-            scatter: '{{x}} vs {{y}} Scatter Plot',
-            heatmap: '{{x}} vs {{y}} Heatmap',
             boxplot: '{{x}} Box Plot',
-            boxplotGrouped: '{{x}} Box Plot Grouped by {{y}}'
+            boxplotGrouped: '{{x}} Box Plot Grouped by {{y}}',
+            violinplot: '{{x}} Violin Plot',
+            violinplotGrouped: '{{x}} Violin Plot Grouped by {{y}}',
+            qqplot: '{{x}} Q-Q Plot',
+            barplot: '{{x}} Bar Plot',
+            scatter: '{{x}} vs {{y}} Scatter Plot',
+            jointplot: '{{x}} vs {{y}} Joint Distribution Plot',
+            correlation_heatmap: 'Correlation Matrix Heatmap'
         },
         result: {
             tab: 'Chart Result',
