@@ -182,4 +182,5 @@ deploy.sh
 backend/nhanes_output/
 nginx/nhanes.cloud_nginx/
 test_search.py
+backend/GetNhanes/nhanes_config.json
 convert_var_label.py
