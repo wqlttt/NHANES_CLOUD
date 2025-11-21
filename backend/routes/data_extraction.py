@@ -3,6 +3,7 @@
 """
 from flask import Blueprint, request, jsonify
 import os
+import sys
 import json
 import math
 import pandas as pd
@@ -158,6 +159,7 @@ def process_nhanes():
         normalized_indicator_str = ','.join(features)
 
         print(f"处理数据提取请求(合并模式): 年份={years}, 特征={features}, 文件名={metricName}")
+        sys.stdout.flush()
 
         result = get_nhanes_data(
             years=years,
@@ -170,8 +172,10 @@ def process_nhanes():
         try:
             preview_rows = result.head(5).to_dict(orient='records') if hasattr(result, 'head') else None
             print(f"[调试] get_nhanes_data 返回行数={len(result)}，列={list(result.columns) if hasattr(result, 'columns') else 'N/A'}，前5行预览={preview_rows}")
+            sys.stdout.flush()
         except Exception as preview_error:
             print(f"[调试] 生成预览失败: {preview_error}")
+            sys.stdout.flush()
 
         # Convert result to CSV
         if hasattr(result, 'to_csv'):
@@ -182,8 +186,10 @@ def process_nhanes():
             csv_data = str(result)
 
         print(f"[调试] csv_data 长度={len(csv_data)}")
+        sys.stdout.flush()
 
         print(f"成功处理(合并): years={years}, file={metricName}")
+        sys.stdout.flush()
 
         # 生成建议文件名
         try:
@@ -238,6 +244,8 @@ def process_nhanes_batch_merge():
         data = request.json or {}
         items = data.get('items', [])
         if not items:
+            print("[调试][batch] items 为空，返回 400")
+            sys.stdout.flush()
             return jsonify({'success': False, 'error': '没有提供要处理的数据项'}), 400
 
         groups = {}
@@ -254,6 +262,9 @@ def process_nhanes_batch_merge():
             all_years.append(year_val)
 
         if not groups:
+            print("[调试][batch] 没有可处理的有效项目，所有 items 均被跳过")
+            print(f"[调试][batch] 原始 items = {items}")
+            sys.stdout.flush()
             return jsonify({'success': False, 'error': '没有可处理的有效项目'}), 400
 
         # 第一步：预扫描所有组合，统计每个指标在多少个文件前缀中出现
@@ -284,6 +295,7 @@ def process_nhanes_batch_merge():
             metric_resolved = group_metric_resolved[(metricName, indicator_str)]
 
             print(f"批量组处理: file={metric_resolved}, years={years_list}, features={features}")
+            sys.stdout.flush()
 
             df = get_nhanes_data(
                 years=years_list,
@@ -309,6 +321,7 @@ def process_nhanes_batch_merge():
                 df = df.rename(columns=rename_map)
             else:
                 print(f"警告: 数据集中缺少 seqn，跳过: file={metric_resolved}")
+                sys.stdout.flush()
                 continue
 
             if merged_df is None:
@@ -318,8 +331,12 @@ def process_nhanes_batch_merge():
                     merged_df = pd.merge(merged_df, df, on='seqn', how='outer')
                 except Exception as merge_error:
                     print(f"合并失败({metric_resolved}): {str(merge_error)}")
+                    sys.stdout.flush()
 
         if merged_df is None:
+            print("[调试][batch] merged_df 仍为 None，无法生成合并数据，返回 400")
+            print(f"[调试][batch] groups keys = {list(groups.keys())}")
+            sys.stdout.flush()
             return jsonify({'success': False, 'error': '无法生成合并数据，请检查输入'}), 400
 
         csv_data = merged_df.to_csv(index=False)
