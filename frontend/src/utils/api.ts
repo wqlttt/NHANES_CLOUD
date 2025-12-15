@@ -1,5 +1,8 @@
 // API配置工具
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// 生产环境：使用相对路径（通过 nginx 代理）
+// 开发环境：使用 localhost:5001 或通过 REACT_APP_API_URL 环境变量配置
+const API_BASE_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001');
 
 // 获取完整的API URL
 export const getApiUrl = (path: string): string => {
