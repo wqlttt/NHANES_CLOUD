@@ -3,15 +3,23 @@ NHANES数据处理服务器 - 主入口文件（重构版）
 """
 from flask import Flask
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+from pathlib import Path
 
-# 导入配置
+# 加载 .env 文件（如果存在）
+# 确保从当前文件所在目录加载 .env 文件
+env_path = Path(__file__).parent / '.env'
+load_dotenv(dotenv_path=env_path)
+
+# 导入配置（需要在 load_dotenv() 之后）
 from config import CORS_ORIGINS, DEBUG, HOST, PORT
 
 # 导入数据提取功能
 try:
-    from GetNhanes.utils.getMetricsConvenient import get_nhanes_data
+    from get_nhanes.utils.getMetricsConvenient import get_nhanes_data
     try:
-        from GetNhanes import config
+        from get_nhanes import config
         base_path = config.get_base_path()
         print(f"成功导入NHANES数据提取功能，基础路径: {base_path}")
     except Exception as config_e:

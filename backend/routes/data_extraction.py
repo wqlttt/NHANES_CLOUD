@@ -11,7 +11,7 @@ import numpy as np
 
 # 尝试加载NHANES数据提取核心函数
 try:
-    from GetNhanes.utils.getMetricsConvenient import get_nhanes_data
+    from get_nhanes.utils.getMetricsConvenient import get_nhanes_data
     print("数据提取模块: 成功导入get_nhanes_data")
 except Exception as e:
     get_nhanes_data = None
@@ -109,7 +109,7 @@ def process_nhanes():
 
         # 检查配置状态
         try:
-            from GetNhanes import config
+            from get_nhanes import config
             base_path = config.get_base_path()
             if not os.path.exists(base_path):
                 return jsonify({
@@ -228,7 +228,7 @@ def process_nhanes_batch_merge():
             }), 500
 
         try:
-            from GetNhanes import config
+            from get_nhanes import config
             base_path = config.get_base_path()
             if not os.path.exists(base_path):
                 return jsonify({
