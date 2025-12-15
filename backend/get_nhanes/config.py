@@ -49,6 +49,15 @@ def get_base_path():
     """
     global _BASE_PATH
 
+    # 优先检查环境变量
+    env_path = os.getenv('NHANES_DATA_PATH')
+    if env_path:
+        if os.path.exists(env_path):
+            _BASE_PATH = env_path
+            return _BASE_PATH
+        else:
+            print(f"警告: 环境变量 NHANES_DATA_PATH 配置的路径不存在: {env_path}")
+
     # 如果内存中没有配置，尝试从文件加载
     if _BASE_PATH is None:
         try:

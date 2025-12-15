@@ -66,6 +66,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+.npmrc
 
 # Logs
 logs
@@ -183,3 +184,6 @@ backend/nhanes_output/
 nginx/nhanes.cloud_nginx/
 test_search.py
 convert_var_label.py
+
+# Local config
+backend/get_nhanes/nhanes_config.json
