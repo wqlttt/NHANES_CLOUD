@@ -6,6 +6,9 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json (如果有)
 COPY package*.json ./
 
+# 设置 npm 淘宝/阿里镜像
+RUN npm config set registry https://registry.npmmirror.com
+
 # 安装依赖
 RUN npm ci --legacy-peer-deps
 

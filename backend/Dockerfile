@@ -10,6 +10,10 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # 防止 Python 缓冲 stdout 和 stderr
 ENV PYTHONUNBUFFERED=1
 
+# 替换国内镜像源 (阿里云)
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources && \
+    sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
+
 # 安装系统依赖
 # 如果需要编译某些 Python 包（如 pandas, numpy），可能需要 gcc 等工具
 # 这里先安装基本工具，根据实际情况添加
@@ -20,8 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 复制依赖文件
 COPY requirements.txt .
 
-# 安装 Python 依赖
-RUN pip install --no-cache-dir -r requirements.txt
+# 安装 Python 依赖 (使用清华源)
+RUN pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 复制项目代码
 COPY . .
