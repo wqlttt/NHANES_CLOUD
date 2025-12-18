@@ -178,7 +178,6 @@ deploy.sh
 
 # Documentation files (local notes)
 *.md
-!README.md
 # NHANES specific exclusions
 backend/nhanes_output/
 nginx/nhanes.cloud_nginx/
