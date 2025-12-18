@@ -1,8 +1,8 @@
 // API配置工具
 // 生产环境：使用相对路径（通过 nginx 代理）
 // 开发环境：使用 localhost:5001 或通过 REACT_APP_API_URL 环境变量配置
-const API_BASE_URL = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001');
+const API_BASE_URL = process.env.REACT_APP_API_URL ||
+    (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5001');
 
 // 获取完整的API URL
 export const getApiUrl = (path: string): string => {
@@ -55,6 +55,10 @@ export const API_ENDPOINTS = {
     MULTINOMIAL_LOGISTIC_REGRESSION: '/multinomialLogisticRegression',
     LINEAR_REGRESSION: '/linearRegression',
     COX_REGRESSION: '/CoxRegression',
+    T_TEST: '/ttest',
+    CHI_SQUARE: '/chisquare',
+    ANOVA: '/anova',
+    RANK_SUM: '/ranksum',
 
     // 健康检查
     HEALTH: '/health'

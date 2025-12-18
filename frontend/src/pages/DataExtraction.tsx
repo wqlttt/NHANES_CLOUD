@@ -61,7 +61,8 @@ const commonIndicators = [
     { value: 'HALP', label: 'HALP (Hemoglobin-Albumin-Lymphocyte-Platelet Score)', description: 'Comprehensive nutrition and immune assessment indicator' },
     { value: 'NLR', label: 'NLR (Neutrophil to Lymphocyte Ratio)', description: 'Ratio of neutrophils to lymphocytes, inflammation and immune indicator' },
     { value: 'HRR', label: 'HRR (Heart Rate Reserve)', description: 'Heart rate reserve related indicator' },
-    { value: 'FIB4', label: 'FIB4 (Fibrosis-4 Index)', description: 'Liver fibrosis assessment indicator' }
+    { value: 'FIB4', label: 'FIB4 (Fibrosis-4 Index)', description: 'Liver fibrosis assessment indicator' },
+    { value: 'CKMStage', label: 'CKM Stage (Cardiovascular-Kidney-Metabolic)', description: 'CKM syndrome staging (0-4) based on AHA guidelines assessing metabolic risk factors, kidney function, and cardiovascular disease.' }
 ];
 
 // 死亡指标 - 对应MortData目录中的CSV文件
@@ -317,7 +318,7 @@ const mockCommonIndicatorData = {
             { SEQN: 83736, NPAR: 1.53, NEUTROPHIL_PCT: 63.8, ALB_GL: 41.7, IMMUNE_STATUS: '正常' }
         ]
     },
-    ckm: {
+    CKMStage: {
         columns: [
             { field: 'SEQN', title: '序列号', width: 100 },
             { field: 'CKM_STAGE', title: 'CKM分期', width: 100 },

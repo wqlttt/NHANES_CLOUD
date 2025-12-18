@@ -394,10 +394,38 @@ export const zhTranslations = {
             multinomial_logistic_regression: {
                 name: '多分类逻辑回归',
                 description: '多分类逻辑回归，适用于CKMStage等多分类因变量'
+            },
+            ttest: {
+                name: 'T检验',
+                description: '双样本T检验，比较两组数据的均值差异'
+            },
+            chisquare: {
+                name: '卡方检验',
+                description: '卡方独立性检验，分析两个分类变量的相关性'
+            },
+            anova: {
+                name: '方差分析',
+                description: '单因素方差分析，比较多组数据的均值差异'
+            },
+            ranksum: {
+                name: '秩和检验',
+                description: 'Mann-Whitney U检验，非参数比较两组数据的分布差异'
             }
         },
         config: {
             title: '分析参数配置',
+            groupCol: '分组变量 (分类)',
+            valueCol: '数值变量 (连续)',
+            selectGroupCol: '选择分组变量',
+            selectValueCol: '选择数值变量',
+            groupColRequired: '请选择分组变量',
+            valueColRequired: '请选择数值变量',
+            col1: '变量 1 (分类)',
+            col2: '变量 2 (分类)',
+            selectCol1: '选择变量 1',
+            selectCol2: '选择变量 2',
+            col1Required: '请选择变量 1',
+            col2Required: '请选择变量 2',
             cox: {
                 title: 'Cox回归分析说明',
                 description: '协变量：影响生存的因素；时间变量：生存时间（必须为正数）；事件变量：事件状态（0=删失，1=发生事件）',
@@ -477,6 +505,22 @@ export const zhTranslations = {
                     required: '请选择自变量'
                 },
                 tip: '多分类逻辑回归会自动处理缺失值，并标准化数值型特征。模型将输出每个类别的预测概率和整体分类准确率。'
+            },
+            ttest: {
+                title: 'T检验分析说明',
+                description: '独立双样本T检验用于比较两个独立组别（如：男性vs女性，治疗组vs对照组）在某个连续型变量（如：BMI、血压）上的均值是否存在显著差异。',
+            },
+            chisquare: {
+                title: '卡方检验说明',
+                description: '卡方独立性检验用于分析两个分类变量（如：性别与吸烟状态）之间是否存在关联。',
+            },
+            anova: {
+                title: '方差分析说明',
+                description: '单因素方差分析（One-way ANOVA）用于比较三个或更多组别（如：CKM分期 0/1/2/3/4）在某个连续型变量上的均值是否存在显著差异。',
+            },
+            ranksum: {
+                title: '秩和检验说明',
+                description: '曼-惠特尼 U 检验（Mann-Whitney U Test）是T检验的非参数替代方法，用于比较两个独立组别的分布差异，无需假设数据服从正态分布。',
             }
         },
         analysis: {
@@ -1009,10 +1053,38 @@ export const enTranslations = {
             multinomial_logistic_regression: {
                 name: 'Multinomial Logistic Regression',
                 description: 'Multinomial logistic regression, suitable for multi-class dependent variables like CKMStage'
+            },
+            ttest: {
+                name: 'T-Test',
+                description: 'Two-sample T-test to compare means of two groups'
+            },
+            chisquare: {
+                name: 'Chi-Square Test',
+                description: 'Chi-square test of independence for categorical variables'
+            },
+            anova: {
+                name: 'ANOVA',
+                description: 'One-way ANOVA to compare means of multiple groups'
+            },
+            ranksum: {
+                name: 'Rank-Sum Test',
+                description: 'Mann-Whitney U test (non-parametric comparison)'
             }
         },
         config: {
             title: 'Analysis Parameter Configuration',
+            groupCol: 'Group Column (Categorical)',
+            valueCol: 'Value Column (Continuous)',
+            selectGroupCol: 'Select Group Column',
+            selectValueCol: 'Select Value Column',
+            groupColRequired: 'Please Select Group Column',
+            valueColRequired: 'Please Select Value Column',
+            col1: 'Column 1 (Categorical)',
+            col2: 'Column 2 (Categorical)',
+            selectCol1: 'Select Column 1',
+            selectCol2: 'Select Column 2',
+            col1Required: 'Please Select Column 1',
+            col2Required: 'Please Select Column 2',
             cox: {
                 title: 'Cox Regression Analysis Guide',
                 description: 'Covariates: factors affecting survival; Time variable: survival time (must be positive); Event variable: event status (0=censored, 1=event)',
@@ -1033,6 +1105,22 @@ export const enTranslations = {
                     hint: '(0=censored, 1=event)',
                     placeholder: 'Select event status variable (e.g., event_status)',
                     required: 'Please select event variable'
+                },
+                ttest: {
+                    title: 'T-Test Analysis Guide',
+                    description: 'Independent Two-sample T-test compares the means of two independent groups (e.g., Male vs Female) on a continuous variable (e.g., BMI).',
+                },
+                chisquare: {
+                    title: 'Chi-Square Test Guide',
+                    description: 'Chi-square Test of Independence analyzes the association between two categorical variables (e.g., Gender and Smoking Status).',
+                },
+                anova: {
+                    title: 'ANOVA Guide',
+                    description: 'One-way ANOVA compares the means of three or more groups (e.g., CKM Stages 0-4) on a continuous variable.',
+                },
+                ranksum: {
+                    title: 'Rank-Sum Test Guide',
+                    description: 'Mann-Whitney U Test is a non-parametric alternative to the T-test for comparing distributions of two independent groups, without assuming normality.',
                 },
                 alpha: {
                     label: 'Significance Level',

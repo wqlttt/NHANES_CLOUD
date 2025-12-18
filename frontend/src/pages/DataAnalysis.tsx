@@ -67,6 +67,30 @@ const getAnalysisTypes = (t: any) => [
         icon: <ExperimentOutlined />,
         description: t('dataAnalysis.methods.multinomial_logistic_regression.description'),
     },
+    {
+        key: 'ttest',
+        name: t('dataAnalysis.methods.ttest.name'),
+        icon: <ExperimentOutlined />,
+        description: t('dataAnalysis.methods.ttest.description'),
+    },
+    {
+        key: 'chisquare',
+        name: t('dataAnalysis.methods.chisquare.name'),
+        icon: <ExperimentOutlined />,
+        description: t('dataAnalysis.methods.chisquare.description'),
+    },
+    {
+        key: 'anova',
+        name: t('dataAnalysis.methods.anova.name'),
+        icon: <ExperimentOutlined />,
+        description: t('dataAnalysis.methods.anova.description'),
+    },
+    {
+        key: 'ranksum',
+        name: t('dataAnalysis.methods.ranksum.name'),
+        icon: <ExperimentOutlined />,
+        description: t('dataAnalysis.methods.ranksum.description'),
+    },
 ];
 
 // 接口类型定义
@@ -143,6 +167,39 @@ interface MultinomialLogisticRegressionResult {
     regression_type: 'multinomial_logistic';
 }
 
+interface TTestResult {
+    success: boolean;
+    plot: string;
+    statistic: number;
+    p_value: number;
+    groups: string[];
+    means: Record<string, number>;
+}
+
+interface ChiSquareResult {
+    success: boolean;
+    plot: string;
+    statistic: number;
+    p_value: number;
+    dof: number;
+}
+
+interface AnovaResult {
+    success: boolean;
+    plot: string;
+    statistic: number;
+    p_value: number;
+    groups: string[];
+}
+
+interface RankSumResult {
+    success: boolean;
+    plot: string;
+    statistic: number;
+    p_value: number;
+    groups: string[];
+}
+
 
 
 const DataAnalysis: React.FC = () => {
@@ -165,6 +222,10 @@ const DataAnalysis: React.FC = () => {
     const [linearResult, setLinearResult] = useState<LinearRegressionResult | null>(null);
     const [logisticResult, setLogisticResult] = useState<LogisticRegressionResult | null>(null);
     const [multinomialResult, setMultinomialResult] = useState<MultinomialLogisticRegressionResult | null>(null);
+    const [ttestResult, setTtestResult] = useState<TTestResult | null>(null);
+    const [chisquareResult, setChisquareResult] = useState<ChiSquareResult | null>(null);
+    const [anovaResult, setAnovaResult] = useState<AnovaResult | null>(null);
+    const [rankSumResult, setRankSumResult] = useState<RankSumResult | null>(null);
 
     // 处理文件上传
     const handleFileUpload = async (file: File) => {
@@ -191,6 +252,10 @@ const DataAnalysis: React.FC = () => {
                 setLinearResult(null);
                 setLogisticResult(null);
                 setMultinomialResult(null);
+                setTtestResult(null);
+                setChisquareResult(null);
+                setAnovaResult(null);
+                setRankSumResult(null);
 
                 // 重置表单
                 form.resetFields();
@@ -536,6 +601,73 @@ const DataAnalysis: React.FC = () => {
         }
     };
 
+    // Generic handler for statistical tests
+    const handleStatisticalTest = async (endpoint: string, resultSetter: (res: any) => void) => {
+        if (!uploadedFile) {
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
+            return;
+        }
+
+        const formValues = form.getFieldsValue();
+        console.log('Stats test form data:', formValues);
+
+        // For Chi-square: col1, col2
+        // For others: group_col, value_col
+        const { col1, col2, groupCol, valueCol } = formValues;
+
+        if (endpoint === API_ENDPOINTS.CHI_SQUARE) {
+            if (!col1 || !col2) {
+                message.error(t('dataAnalysis.analysis.messages.selectColumns'));
+                return;
+            }
+        } else {
+            if (!groupCol || !valueCol) {
+                message.error(t('dataAnalysis.analysis.messages.selectColumns'));
+                return;
+            }
+        }
+
+        setAnalyzing(true);
+        setProgress(20);
+
+        const formData = new FormData();
+        formData.append('file', uploadedFile);
+
+        if (endpoint === API_ENDPOINTS.CHI_SQUARE) {
+            formData.append('col1', col1);
+            formData.append('col2', col2);
+        } else {
+            formData.append('group_col', groupCol);
+            formData.append('value_col', valueCol);
+        }
+
+        try {
+            setProgress(60);
+            const response = await fetch(getApiUrl(endpoint), {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            setProgress(90);
+
+            if (result.success) {
+                resultSetter(result);
+                setResults(result);
+                setProgress(100);
+                message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: selectedAnalysis }));
+                setActiveTab('results');
+            } else {
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: selectedAnalysis, error: result.error }));
+            }
+        } catch (error) {
+            console.error('Analysis error:', error);
+            message.error(t('dataAnalysis.analysis.messages.networkError'));
+        } finally {
+            setAnalyzing(false);
+        }
+    };
+
     const handleRunAnalysis = async () => {
         console.log('开始分析，当前分析类型:', selectedAnalysis);
 
@@ -565,6 +697,23 @@ const DataAnalysis: React.FC = () => {
 
         if (selectedAnalysis === 'multinomial_logistic_regression') {
             await handleMultinomialLogisticRegression();
+            return;
+        }
+
+        if (selectedAnalysis === 'ttest') {
+            await handleStatisticalTest(API_ENDPOINTS.T_TEST, setTtestResult);
+            return;
+        }
+        if (selectedAnalysis === 'chisquare') {
+            await handleStatisticalTest(API_ENDPOINTS.CHI_SQUARE, setChisquareResult);
+            return;
+        }
+        if (selectedAnalysis === 'anova') {
+            await handleStatisticalTest(API_ENDPOINTS.ANOVA, setAnovaResult);
+            return;
+        }
+        if (selectedAnalysis === 'ranksum') {
+            await handleStatisticalTest(API_ENDPOINTS.RANK_SUM, setRankSumResult);
             return;
         }
 
@@ -649,6 +798,10 @@ const DataAnalysis: React.FC = () => {
         if (selectedAnalysis === 'linear_regression' && !linearResult) return null;
         if (selectedAnalysis === 'logistic_regression' && !logisticResult) return null;
         if (selectedAnalysis === 'multinomial_logistic_regression' && !multinomialResult) return null;
+        if (selectedAnalysis === 'ttest' && !ttestResult) return null;
+        if (selectedAnalysis === 'chisquare' && !chisquareResult) return null;
+        if (selectedAnalysis === 'anova' && !anovaResult) return null;
+        if (selectedAnalysis === 'ranksum' && !rankSumResult) return null;
 
         switch (selectedAnalysis) {
             case 'cox_regression':
@@ -989,6 +1142,103 @@ const DataAnalysis: React.FC = () => {
                     </div>
                 );
 
+            case 'ttest':
+                if (!ttestResult) return null;
+                return (
+                    <div>
+                        <Row gutter={24} style={{ marginBottom: 24 }}>
+                            <Col span={12}>
+                                <Card title="Boxplot" size="small">
+                                    <div style={{ textAlign: 'center' }}>
+                                        <Image src={ttestResult.plot} style={{ maxWidth: '100%' }} />
+                                    </div>
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card title="T-Test Results" size="small">
+                                    <Statistic title="T-Statistic" value={ttestResult.statistic} precision={4} />
+                                    <Statistic title="P-Value" value={ttestResult.p_value} precision={4} valueStyle={{ color: ttestResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                    <Divider />
+                                    <Paragraph>Groups: {ttestResult.groups.join(', ')}</Paragraph>
+                                    <Text strong>Means:</Text>
+                                    <ul>
+                                        {Object.entries(ttestResult.means).map(([group, mean]) => (
+                                            <li key={group}>{group}: {mean.toFixed(4)}</li>
+                                        ))}
+                                    </ul>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                );
+            case 'chisquare':
+                if (!chisquareResult) return null;
+                return (
+                    <div>
+                        <Row gutter={24} style={{ marginBottom: 24 }}>
+                            <Col span={12}>
+                                <Card title="Heatmap" size="small">
+                                    <div style={{ textAlign: 'center' }}>
+                                        <Image src={chisquareResult.plot} style={{ maxWidth: '100%' }} />
+                                    </div>
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card title="Chi-Square Test Results" size="small">
+                                    <Statistic title="Chi-Square Statistic" value={chisquareResult.statistic} precision={4} />
+                                    <Statistic title="P-Value" value={chisquareResult.p_value} precision={4} valueStyle={{ color: chisquareResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                    <Statistic title="Degrees of Freedom" value={chisquareResult.dof} />
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                );
+            case 'anova':
+                if (!anovaResult) return null;
+                return (
+                    <div>
+                        <Row gutter={24} style={{ marginBottom: 24 }}>
+                            <Col span={12}>
+                                <Card title="Violin Plot" size="small">
+                                    <div style={{ textAlign: 'center' }}>
+                                        <Image src={anovaResult.plot} style={{ maxWidth: '100%' }} />
+                                    </div>
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card title="ANOVA Results" size="small">
+                                    <Statistic title="F-Statistic" value={anovaResult.statistic} precision={4} />
+                                    <Statistic title="P-Value" value={anovaResult.p_value} precision={4} valueStyle={{ color: anovaResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                    <Divider />
+                                    <Paragraph>Groups: {anovaResult.groups.join(', ')}</Paragraph>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                );
+            case 'ranksum':
+                if (!rankSumResult) return null;
+                return (
+                    <div>
+                        <Row gutter={24} style={{ marginBottom: 24 }}>
+                            <Col span={12}>
+                                <Card title="Boxplot" size="small">
+                                    <div style={{ textAlign: 'center' }}>
+                                        <Image src={rankSumResult.plot} style={{ maxWidth: '100%' }} />
+                                    </div>
+                                </Card>
+                            </Col>
+                            <Col span={12}>
+                                <Card title="Mann-Whitney U Test Results" size="small">
+                                    <Statistic title="U-Statistic" value={rankSumResult.statistic} precision={4} />
+                                    <Statistic title="P-Value" value={rankSumResult.p_value} precision={4} valueStyle={{ color: rankSumResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                    <Divider />
+                                    <Paragraph>Groups: {rankSumResult.groups.join(', ')}</Paragraph>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                );
             default:
                 return <Alert message="分析结果" description="分析完成" type="success" />;
         }
@@ -1521,14 +1771,42 @@ const DataAnalysis: React.FC = () => {
                                                     style={{ marginTop: 16 }}
                                                 />
                                             </>
-                                        ) : (
-                                            // 其他分析方法的参数
+                                        ) : ['ttest', 'anova', 'ranksum'].includes(selectedAnalysis) ? (
+                                            // T检验、ANOVA、秩和检验参数
                                             <>
+                                                <Alert
+                                                    message={t(`dataAnalysis.config.${selectedAnalysis}.title`)}
+                                                    description={t(`dataAnalysis.config.${selectedAnalysis}.description`)}
+                                                    type="info"
+                                                    showIcon
+                                                    style={{ marginBottom: 16 }}
+                                                />
                                                 <Row gutter={16}>
                                                     <Col span={12}>
-                                                        <Form.Item label={<span style={{ color: '#333' }}>因变量</span>}>
+                                                        <Form.Item
+                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.groupCol')}</span>}
+                                                            name="groupCol"
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.groupColRequired') }]}
+                                                        >
                                                             <Select
-                                                                placeholder="选择因变量"
+                                                                placeholder={t('dataAnalysis.config.selectGroupCol')}
+                                                                disabled={!fileInfo}
+                                                                showSearch
+                                                                optionFilterProp="children"
+                                                                allowClear
+                                                            >
+                                                                {renderColumnOptions('all')}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                        <Form.Item
+                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.valueCol')}</span>}
+                                                            name="valueCol"
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.valueColRequired') }]}
+                                                        >
+                                                            <Select
+                                                                placeholder={t('dataAnalysis.config.selectValueCol')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
@@ -1538,15 +1816,47 @@ const DataAnalysis: React.FC = () => {
                                                             </Select>
                                                         </Form.Item>
                                                     </Col>
+                                                </Row>
+                                            </>
+                                        ) : selectedAnalysis === 'chisquare' ? (
+                                            // 卡方检验参数
+                                            <>
+                                                <Alert
+                                                    message={t('dataAnalysis.config.chisquare.title')}
+                                                    description={t('dataAnalysis.config.chisquare.description')}
+                                                    type="info"
+                                                    showIcon
+                                                    style={{ marginBottom: 16 }}
+                                                />
+                                                <Row gutter={16}>
                                                     <Col span={12}>
-                                                        <Form.Item label={<span style={{ color: '#333' }}>自变量</span>}>
+                                                        <Form.Item
+                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col1')}</span>}
+                                                            name="col1"
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.col1Required') }]}
+                                                        >
                                                             <Select
-                                                                mode="multiple"
-                                                                placeholder="选择自变量"
+                                                                placeholder={t('dataAnalysis.config.selectCol1')}
                                                                 disabled={!fileInfo}
                                                                 showSearch
                                                                 optionFilterProp="children"
-                                                                maxTagCount="responsive"
+                                                                allowClear
+                                                            >
+                                                                {renderColumnOptions('all')}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={12}>
+                                                        <Form.Item
+                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col2')}</span>}
+                                                            name="col2"
+                                                            rules={[{ required: true, message: t('dataAnalysis.config.col2Required') }]}
+                                                        >
+                                                            <Select
+                                                                placeholder={t('dataAnalysis.config.selectCol2')}
+                                                                disabled={!fileInfo}
+                                                                showSearch
+                                                                optionFilterProp="children"
                                                                 allowClear
                                                             >
                                                                 {renderColumnOptions('all')}
@@ -1554,10 +1864,8 @@ const DataAnalysis: React.FC = () => {
                                                         </Form.Item>
                                                     </Col>
                                                 </Row>
-
-
                                             </>
-                                        )}
+                                        ) : null}
                                     </Form>
                                 </Card>
 
@@ -1739,9 +2047,9 @@ const DataAnalysis: React.FC = () => {
                         )}
                     </TabPane>
                 </Tabs>
-            </Card>
-        </div>
+            </Card >
+        </div >
     );
 };
 
-export default DataAnalysis; 
+export default DataAnalysis;

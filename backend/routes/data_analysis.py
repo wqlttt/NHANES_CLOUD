@@ -2,9 +2,11 @@
 数据分析相关路由
 """
 from flask import Blueprint, request, jsonify
+import sys
 from DataAnalysis.logisticRegression import logistic_regression_analysis, multinomial_logistic_regression_analysis
 from DataAnalysis.linearRegression import linear_regression_analysis, multiple_linear_regression_analysis
 from DataAnalysis.coxRegression import cox_regression_analysis
+from DataAnalysis.hypothesisTesting import ttest_analysis, chisquare_analysis, anova_analysis, ranksum_analysis
 from utils.serialization import convert_to_serializable
 
 analysis_bp = Blueprint('data_analysis', __name__)
@@ -242,3 +244,144 @@ def cox_regression():
         print("Cox回归分析错误:")
         traceback.print_exc()
         return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+
+
+@analysis_bp.route('/ttest', methods=["POST"])
+def ttest_route():
+    """Two-sample T-test"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No file selected"}), 400
+        
+        group_col = request.form.get('group_col')
+        value_col = request.form.get('value_col')
+
+        if not group_col or not value_col:
+            return jsonify({"success": False, "error": "Please select both group and value columns"}), 400
+
+        result = ttest_analysis(file, group_col, value_col)
+        
+        return jsonify({
+            "success": True,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "statistic": convert_to_serializable(result['statistic']),
+            "p_value": convert_to_serializable(result['p_value']),
+            "groups": result['groups'],
+            "means": {k: convert_to_serializable(v) for k, v in result['means'].items()},
+            "analysis_type": "ttest"
+        })
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@analysis_bp.route('/chisquare', methods=["POST"])
+def chisquare_route():
+    """Chi-square Test"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No file selected"}), 400
+        
+        col1 = request.form.get('col1')
+        col2 = request.form.get('col2')
+
+        if not col1 or not col2:
+            return jsonify({"success": False, "error": "Please select two categorical columns"}), 400
+
+        result = chisquare_analysis(file, col1, col2)
+        
+        return jsonify({
+            "success": True,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "statistic": convert_to_serializable(result['statistic']),
+            "p_value": convert_to_serializable(result['p_value']),
+            "dof": convert_to_serializable(result['dof']),
+            "analysis_type": "chisquare"
+        })
+    except ValueError as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@analysis_bp.route('/anova', methods=["POST"])
+def anova_route():
+    """One-way ANOVA"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No file selected"}), 400
+        
+        group_col = request.form.get('group_col')
+        value_col = request.form.get('value_col')
+
+        if not group_col or not value_col:
+            return jsonify({"success": False, "error": "Please select group and value columns"}), 400
+
+        result = anova_analysis(file, group_col, value_col)
+        
+        return jsonify({
+            "success": True,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "statistic": convert_to_serializable(result['statistic']),
+            "p_value": convert_to_serializable(result['p_value']),
+            "groups": result['groups'],
+            "analysis_type": "anova"
+        })
+    except ValueError as e:
+        print(f"ANOVA ValueError: {str(e)}", file=sys.stderr)
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        print(f"ANOVA Exception: {str(e)}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@analysis_bp.route('/ranksum', methods=["POST"])
+def ranksum_route():
+    """Mann-Whitney U Test (Rank-sum)"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No file selected"}), 400
+        
+        group_col = request.form.get('group_col')
+        value_col = request.form.get('value_col')
+
+        if not group_col or not value_col:
+            return jsonify({"success": False, "error": "Please select group and value columns"}), 400
+
+        result = ranksum_analysis(file, group_col, value_col)
+        
+        return jsonify({
+            "success": True,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "statistic": convert_to_serializable(result['statistic']),
+            "p_value": convert_to_serializable(result['p_value']),
+            "groups": result['groups'],
+            "analysis_type": "ranksum"
+        })
+    except ValueError as e:
+        print(f"Rank-sum ValueError: {str(e)}", file=sys.stderr)
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        print(f"Rank-sum Exception: {str(e)}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
