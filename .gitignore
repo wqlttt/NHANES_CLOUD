@@ -172,6 +172,7 @@ Thumbs.db
 
 # Docker
 *.log
+docker-compose.dev.yml
 
 # Deployment scripts (server-specific)
 # deploy.sh
