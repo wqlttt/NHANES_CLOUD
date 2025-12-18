@@ -1245,809 +1245,871 @@ const DataAnalysis: React.FC = () => {
     };
 
     return (
-        <div>
-            <Title level={2}>{t('dataAnalysis.title')}</Title>
-            <Text type="secondary">
-                {t('dataAnalysis.subtitle')}
-            </Text>
+        <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
+            <div className="hero-section" style={{ padding: '40px 0 60px', textAlign: 'center', minHeight: 'auto' }}>
+                <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '6px 16px',
+                    borderRadius: '20px',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    color: '#6366f1',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    marginBottom: '24px',
+                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                }}>
+                    <ExperimentOutlined /> Data Analysis Engine
+                </div>
+                <Title level={1} className="hero-title" style={{ fontSize: '3rem', marginBottom: '16px', fontWeight: 800, background: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    {t('dataAnalysis.title')}
+                </Title>
+                <Text className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', margin: '0 auto', display: 'block', maxWidth: '700px', lineHeight: 1.6 }}>
+                    {t('dataAnalysis.subtitle')}
+                </Text>
+            </div>
 
-            <Card style={{ marginTop: 24 }}>
-                <Tabs activeKey={activeTab} onChange={setActiveTab}>
-                    <TabPane tab={t('dataAnalysis.config.title')} key="config">
-                        {/* 数据上传区域 */}
-                        <Card title={t('dataAnalysis.upload.title')} size="small" style={{ marginBottom: 16 }}>
+            <div className="main-content-layout">
+                <div className="glass-card static-card" style={{ padding: '30px', minHeight: '600px' }}>
+                    <Tabs activeKey={activeTab} onChange={setActiveTab}>
+                        <TabPane tab={t('dataAnalysis.config.title')} key="config">
                             <Row gutter={24}>
-                                <Col span={12}>
-                                    <Upload
-                                        accept=".csv"
-                                        showUploadList={false}
-                                        beforeUpload={handleFileUpload}
-                                        disabled={uploadLoading}
-                                    >
-                                        <Button
-                                            icon={<UploadOutlined />}
-                                            loading={uploadLoading}
-                                            size="large"
-                                        >
-                                            {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
-                                        </Button>
-                                    </Upload>
-                                    <Text type="secondary" style={{ display: 'block', marginTop: 8 }}>
-                                        {t('dataAnalysis.upload.supportFormat')}
-                                    </Text>
-                                </Col>
-                                <Col span={12}>
+                                <Col span={24}>
+                                    <Card title={t('dataAnalysis.upload.title')} size="small" style={{ marginBottom: 16 }}>
+                                        <Row gutter={24} align="middle">
+                                            <Col span={12} style={{ textAlign: 'center' }}>
+                                                <Upload
+                                                    accept=".csv"
+                                                    showUploadList={false}
+                                                    beforeUpload={handleFileUpload}
+                                                    disabled={uploadLoading}
+                                                >
+                                                    <Button
+                                                        icon={<UploadOutlined />}
+                                                        loading={uploadLoading}
+                                                        type="primary"
+                                                    >
+                                                        {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
+                                                    </Button>
+                                                </Upload>
+                                                <div style={{ marginTop: 8 }}>
+                                                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                                                        {t('dataAnalysis.upload.supportFormat')}
+                                                    </Text>
+                                                </div>
+                                            </Col>
+                                            <Col span={12}>
+                                                {fileInfo ? (
+                                                    <Alert
+                                                        message={t('dataAnalysis.upload.fileInfo')}
+                                                        description={
+                                                            <div>
+                                                                <div><Text strong>{t('dataAnalysis.upload.fileName')}:</Text> {fileInfo.filename}</div>
+                                                                <div><Text strong>{t('dataAnalysis.upload.rowCount')}:</Text> {fileInfo.file_stats.total_rows}</div>
+                                                                <div><Text strong>{t('dataAnalysis.upload.columnCount')}:</Text> {fileInfo.file_stats.total_columns}</div>
+                                                                <div>
+                                                                    <Space>
+                                                                        <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                                        <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                                    </Space>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        type="info"
+                                                        showIcon
+                                                        icon={<FileTextOutlined />}
+                                                    />
+                                                ) : (
+                                                    <div style={{ textAlign: 'center', color: '#999' }}>
+                                                        <FileTextOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+                                                        <div>{t('dataVisualization.upload.hint', { defaultValue: 'Please upload a file to start analysis' })}</div>
+                                                    </div>
+                                                )}
+                                            </Col>
+                                        </Row>
+                                    </Card>
+
                                     {fileInfo && (
-                                        <div>
-                                            <Text strong>{t('dataAnalysis.upload.fileInfo')}</Text>
-                                            <div style={{ marginTop: 8 }}>
-                                                <Text>{t('dataAnalysis.upload.fileName')} {fileInfo.filename}</Text><br />
-                                                <Text>{t('dataAnalysis.upload.rowCount')} {fileInfo.file_stats.total_rows}</Text><br />
-                                                <Text>{t('dataAnalysis.upload.columnCount')} {fileInfo.file_stats.total_columns}
-                                                    ({t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count},
-                                                    {t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count})
-                                                </Text>
+                                        <Card
+                                            title={
+                                                <Space>
+                                                    <FileTextOutlined />
+                                                    <span>{t('dataAnalysis.preview.title')}</span>
+                                                    <Text type="secondary" style={{ fontSize: '12px' }}>
+                                                        {t('dataAnalysis.preview.showFirst')}
+                                                    </Text>
+                                                </Space>
+                                            }
+                                            size="small"
+                                            style={{ marginBottom: 16 }}
+                                        >
+                                            <div style={{
+                                                marginBottom: 16,
+                                                padding: '12px',
+                                                backgroundColor: '#f5f5f5',
+                                                borderRadius: '4px',
+                                            }}>
+                                                <Row justify="space-between" align="middle">
+                                                    <Col>
+                                                        <Space>
+                                                            <Text>{t('dataAnalysis.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong></Text>
+                                                            <Divider type="vertical" />
+                                                            <Text>{t('dataAnalysis.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong></Text>
+                                                            <Divider type="vertical" />
+                                                            <Text>{t('dataAnalysis.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
+                                                        </Space>
+                                                    </Col>
+                                                    <Col>
+                                                        <Space>
+                                                            <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                            <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                        </Space>
+                                                    </Col>
+                                                </Row>
                                             </div>
-                                        </div>
+
+                                            {fileInfo.preview_data ? (
+                                                <Table
+                                                    columns={fileInfo.columns.map(col => ({
+                                                        title: col,
+                                                        dataIndex: col,
+                                                        key: col,
+                                                        width: 120,
+                                                        ellipsis: true,
+                                                        render: (text: any) => (
+                                                            <span title={text?.toString()}>
+                                                                {text !== null && text !== undefined ? String(text) : '-'}
+                                                            </span>
+                                                        )
+                                                    }))}
+                                                    dataSource={fileInfo.preview_data.map((row: any, index: number) => ({
+                                                        key: index,
+                                                        ...row
+                                                    }))}
+                                                    pagination={false}
+                                                    size="small"
+                                                    scroll={{ x: 'max-content', y: 300 }}
+                                                    bordered
+                                                    style={{ fontSize: '12px' }}
+                                                />
+                                            ) : (
+                                                <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+                                                    <Text type="secondary">{t('dataAnalysis.preview.unavailable')}</Text>
+                                                </div>
+                                            )}
+                                        </Card>
                                     )}
                                 </Col>
                             </Row>
-                        </Card>
 
-                        {/* 数据预览 */}
-                        {fileInfo && (
-                            <Card
-                                title={
-                                    <Space>
-                                        <FileTextOutlined />
-                                        <span>{t('dataAnalysis.preview.title')}</span>
-                                        <Text type="secondary" style={{ fontSize: '12px' }}>
-                                            {t('dataAnalysis.preview.showFirst')}
-                                        </Text>
-                                    </Space>
-                                }
-                                style={{ marginTop: 16, marginBottom: 16 }}
-                                size="small"
-                            >
-                                {/* 数据统计信息 */}
-                                <div style={{
-                                    marginBottom: 16,
-                                    padding: '12px',
-                                    backgroundColor: '#f5f5f5',
-                                    borderRadius: '4px',
-                                    fontSize: '14px'
-                                }}>
-                                    <Row justify="space-between" align="middle">
-                                        <Col>
-                                            <Space>
-                                                <Text>{t('dataAnalysis.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong> {t('dataVisualization.preview.rows')}</Text>
-                                                <Text>|</Text>
-                                                <Text>{t('dataAnalysis.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong> {t('dataVisualization.preview.columns')}</Text>
-                                                <Text>|</Text>
-                                                <Text>{t('dataAnalysis.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
-                                            </Space>
-                                        </Col>
-                                        <Col>
-                                            <Space>
-                                                <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
-                                                <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
-                                            </Space>
-                                        </Col>
-                                    </Row>
-                                </div>
-
-                                {/* 数据预览表格 */}
-                                {fileInfo.preview_data ? (
-                                    <div style={{ overflowX: 'auto' }}>
-                                        <Table
-                                            columns={fileInfo.columns.map(col => ({
-                                                title: col,
-                                                dataIndex: col,
-                                                key: col,
-                                                width: 120,
-                                                ellipsis: true,
-                                                render: (text: any) => (
-                                                    <span title={text?.toString()}>
-                                                        {text !== null && text !== undefined ? String(text) : '-'}
-                                                    </span>
-                                                )
-                                            }))}
-                                            dataSource={fileInfo.preview_data.map((row: any, index: number) => ({
-                                                key: index,
-                                                ...row
-                                            }))}
-                                            pagination={false}
-                                            size="small"
-                                            scroll={{ x: 'max-content', y: 300 }}
-                                            bordered
-                                            style={{
-                                                fontSize: '12px'
-                                            }}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
-                                        <FileTextOutlined style={{ fontSize: '48px', marginBottom: '16px' }} />
-                                        <br />
-                                        <Text type="secondary">{t('dataAnalysis.preview.unavailable')}</Text>
-                                        <br />
-                                        <Text type="secondary" style={{ fontSize: '12px' }}>
-                                            {t('dataAnalysis.preview.checkFormat')}
-                                        </Text>
-                                    </div>
-                                )}
-                            </Card>
-                        )}
-
-                        <Row gutter={24}>
-                            <Col span={8}>
-                                <Card title={t('dataAnalysis.methods.title')} size="small">
-                                    <List
-                                        dataSource={getAnalysisTypes(t)}
-                                        renderItem={(item) => (
-                                            <List.Item
-                                                key={item.key}
-                                                style={{
-                                                    cursor: 'pointer',
-                                                    backgroundColor: selectedAnalysis === item.key
-                                                        ? '#f0f8ff'
-                                                        : 'transparent',
-                                                    border: selectedAnalysis === item.key
-                                                        ? '1px solid #1890ff'
-                                                        : '1px solid #d9d9d9',
-                                                    borderRadius: 4,
-                                                    padding: 12,
-                                                    marginBottom: 8,
-                                                    color: '#333',
-                                                }}
-                                                onClick={() => setSelectedAnalysis(item.key)}
-                                            >
-                                                <List.Item.Meta
-                                                    avatar={<span style={{ color: '#1890ff' }}>{item.icon}</span>}
-                                                    title={<span style={{ color: '#333' }}>{item.name}</span>}
-                                                    description={
-                                                        <Text type="secondary" style={{
-                                                            fontSize: '12px',
-                                                            color: '#666'
-                                                        }}>
-                                                            {item.description}
-                                                        </Text>
-                                                    }
-                                                />
-                                            </List.Item>
-                                        )}
-                                    />
-                                </Card>
-                            </Col>
-
-                            <Col span={16}>
-                                <Card title={t('dataAnalysis.config.title')} size="small" style={{ marginBottom: 16 }}>
-                                    <Form
-                                        form={form}
-                                        layout="vertical"
-                                    >
-                                        {selectedAnalysis === 'cox_regression' ? (
-                                            // Cox回归特殊参数
-                                            <>
-                                                <Alert
-                                                    message={t('dataAnalysis.config.cox.title')}
-                                                    description={t('dataAnalysis.config.cox.description')}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.cox.covariates.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.cox.covariates.hint')}
-                                                                    </Text>
-                                                                </span>
+                            <Row gutter={32}>
+                                <Col span={8}>
+                                    <div style={{ marginBottom: 24 }}>
+                                        <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.methods.title')}</Title>
+                                        <div style={{
+                                            background: 'rgba(255,255,255,0.4)',
+                                            borderRadius: '12px',
+                                            padding: '16px',
+                                            maxHeight: '600px',
+                                            overflowY: 'auto'
+                                        }}>
+                                            <List
+                                                dataSource={getAnalysisTypes(t)}
+                                                renderItem={item => (
+                                                    <List.Item
+                                                        key={item.key}
+                                                        style={{
+                                                            cursor: 'pointer',
+                                                            backgroundColor: selectedAnalysis === item.key
+                                                                ? 'rgba(24, 144, 255, 0.1)'
+                                                                : 'transparent',
+                                                            border: selectedAnalysis === item.key
+                                                                ? '1px solid #1890ff'
+                                                                : '1px solid transparent',
+                                                            borderRadius: 8,
+                                                            padding: '12px 16px',
+                                                            marginBottom: 8,
+                                                            transition: 'all 0.3s ease'
+                                                        }}
+                                                        onClick={() => setSelectedAnalysis(item.key)}
+                                                        className="method-list-item"
+                                                    >
+                                                        <List.Item.Meta
+                                                            avatar={<span style={{ color: selectedAnalysis === item.key ? '#1890ff' : '#666', fontSize: '20px' }}>{item.icon}</span>}
+                                                            title={<span style={{ fontWeight: selectedAnalysis === item.key ? 600 : 400, color: '#333' }}>{item.name}</span>}
+                                                            description={
+                                                                <Text type="secondary" style={{
+                                                                    fontSize: '12px',
+                                                                    display: '-webkit-box',
+                                                                    WebkitLineClamp: 2,
+                                                                    WebkitBoxOrient: 'vertical',
+                                                                    overflow: 'hidden'
+                                                                }}>
+                                                                    {item.description}
+                                                                </Text>
                                                             }
-                                                            name="covariateVars"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.covariates.required') }]}
-                                                        >
-                                                            <Select
-                                                                mode="multiple"
-                                                                placeholder={t('dataAnalysis.config.cox.covariates.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                maxTagCount="responsive"
-                                                                allowClear
-                                                                style={{ minHeight: '32px' }}
-                                                                tagRender={(props) => {
-                                                                    const { label, closable, onClose } = props;
-                                                                    return (
-                                                                        <Tag
-                                                                            color="blue"
-                                                                            closable={closable}
-                                                                            onClose={onClose}
-                                                                            style={{ margin: '2px' }}
-                                                                        >
-                                                                            {label}
-                                                                        </Tag>
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.cox.timeVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.cox.timeVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="timeVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.timeVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.cox.timeVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('numeric')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.cox.eventVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.cox.eventVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="eventVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.cox.eventVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.cox.eventVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.cox.alpha.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.cox.alpha.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="alpha"
-                                                            initialValue="0.05"
-                                                        >
-                                                            <Select>
-                                                                <Option value="0.01">{t('dataAnalysis.config.cox.alpha.options.0.01')}</Option>
-                                                                <Option value="0.05">{t('dataAnalysis.config.cox.alpha.options.0.05')}</Option>
-                                                                <Option value="0.10">{t('dataAnalysis.config.cox.alpha.options.0.10')}</Option>
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        ) : selectedAnalysis === 'linear_regression' ? (
-                                            // 线性回归参数
-                                            <>
-                                                <Alert
-                                                    message={t('dataAnalysis.config.linear.title')}
-                                                    description={t('dataAnalysis.config.linear.description')}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.linear.yVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.linear.yVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="yVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.linear.yVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('numeric')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.linear.xVars.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.linear.xVars.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="xVars"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                mode="multiple"
-                                                                placeholder={t('dataAnalysis.config.linear.xVars.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                maxTagCount="responsive"
-                                                                allowClear
-                                                                style={{ minHeight: '32px' }}
-                                                                tagRender={(props) => {
-                                                                    const { label, closable, onClose } = props;
-                                                                    return (
-                                                                        <Tag
-                                                                            color="green"
-                                                                            closable={closable}
-                                                                            onClose={onClose}
-                                                                            style={{ margin: '2px' }}
-                                                                        >
-                                                                            {label}
-                                                                        </Tag>
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        ) : selectedAnalysis === 'logistic_regression' ? (
-                                            // 逻辑回归参数
-                                            <>
-                                                <Alert
-                                                    message={t('dataAnalysis.config.logistic.title')}
-                                                    description={t('dataAnalysis.config.logistic.description')}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.logistic.yVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.logistic.yVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="yVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.logistic.yVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.logistic.xVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.logistic.xVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="xVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.logistic.xVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        ) : selectedAnalysis === 'multinomial_logistic_regression' ? (
-                                            // 多分类逻辑回归参数
-                                            <>
-                                                <Alert
-                                                    message={t('dataAnalysis.config.multinomial.title')}
-                                                    description={t('dataAnalysis.config.multinomial.description')}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.multinomial.yVar.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.multinomial.yVar.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="yVar"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.multinomial.yVar.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={
-                                                                <span>
-                                                                    {t('dataAnalysis.config.multinomial.xVars.label')}
-                                                                    <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
-                                                                        {t('dataAnalysis.config.multinomial.xVars.hint')}
-                                                                    </Text>
-                                                                </span>
-                                                            }
-                                                            name="xVars"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.multinomial.xVars.required') }]}
-                                                        >
-                                                            <Select
-                                                                mode="multiple"
-                                                                placeholder={t('dataAnalysis.config.multinomial.xVars.placeholder')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                maxTagCount="responsive"
-                                                                allowClear
-                                                                style={{ minHeight: '32px' }}
-                                                                tagRender={(props) => {
-                                                                    const { label, closable, onClose } = props;
-                                                                    return (
-                                                                        <Tag
-                                                                            color="blue"
-                                                                            closable={closable}
-                                                                            onClose={onClose}
-                                                                            style={{ margin: '2px' }}
-                                                                        >
-                                                                            {label}
-                                                                        </Tag>
-                                                                    );
-                                                                }}
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                                <Alert
-                                                    message={t('common.info')}
-                                                    description={t('dataAnalysis.config.multinomial.tip')}
-                                                    type="warning"
-                                                    showIcon
-                                                    style={{ marginTop: 16 }}
-                                                />
-                                            </>
-                                        ) : ['ttest', 'anova', 'ranksum'].includes(selectedAnalysis) ? (
-                                            // T检验、ANOVA、秩和检验参数
-                                            <>
-                                                <Alert
-                                                    message={t(`dataAnalysis.config.${selectedAnalysis}.title`)}
-                                                    description={t(`dataAnalysis.config.${selectedAnalysis}.description`)}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.groupCol')}</span>}
-                                                            name="groupCol"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.groupColRequired') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.selectGroupCol')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.valueCol')}</span>}
-                                                            name="valueCol"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.valueColRequired') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.selectValueCol')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('numeric')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        ) : selectedAnalysis === 'chisquare' ? (
-                                            // 卡方检验参数
-                                            <>
-                                                <Alert
-                                                    message={t('dataAnalysis.config.chisquare.title')}
-                                                    description={t('dataAnalysis.config.chisquare.description')}
-                                                    type="info"
-                                                    showIcon
-                                                    style={{ marginBottom: 16 }}
-                                                />
-                                                <Row gutter={16}>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col1')}</span>}
-                                                            name="col1"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.col1Required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.selectCol1')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                    <Col span={12}>
-                                                        <Form.Item
-                                                            label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col2')}</span>}
-                                                            name="col2"
-                                                            rules={[{ required: true, message: t('dataAnalysis.config.col2Required') }]}
-                                                        >
-                                                            <Select
-                                                                placeholder={t('dataAnalysis.config.selectCol2')}
-                                                                disabled={!fileInfo}
-                                                                showSearch
-                                                                optionFilterProp="children"
-                                                                allowClear
-                                                            >
-                                                                {renderColumnOptions('all')}
-                                                            </Select>
-                                                        </Form.Item>
-                                                    </Col>
-                                                </Row>
-                                            </>
-                                        ) : null}
-                                    </Form>
-                                </Card>
-
-
-                            </Col>
-                        </Row>
-
-                        <Divider />
-
-                        <div>
-                            <Space direction="vertical" style={{ width: '100%' }}>
-                                <Space>
-                                    <Button
-                                        type="primary"
-                                        icon={<PlayCircleOutlined />}
-                                        onClick={() => {
-                                            console.log('按钮被点击');
-                                            console.log('当前状态:', {
-                                                selectedAnalysis,
-                                                fileInfo: !!fileInfo,
-                                                uploadedFile: !!uploadedFile,
-                                                analyzing
-                                            });
-                                            handleRunAnalysis();
-                                        }}
-                                        size="large"
-                                        disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
-                                        loading={analyzing && !showAnalysisTimeoutWarning}
-                                    >
-                                        {t('dataAnalysis.analysis.start')}
-                                    </Button>
-
-                                    {analyzing && showAnalysisTimeoutWarning && (
-                                        <Space>
-                                            <Button
-                                                danger
-                                                icon={<StopOutlined />}
-                                                onClick={handleCancelAnalysis}
-                                                size="large"
-                                            >
-                                                {t('dataAnalysis.analysis.cancel')}
-                                            </Button>
-                                            <Button
-                                                type="default"
-                                                icon={<ReloadOutlined />}
-                                                onClick={handleRetryAnalysis}
-                                                size="large"
-                                            >
-                                                {t('dataAnalysis.analysis.retry')}
-                                            </Button>
-                                        </Space>
-                                    )}
-
-                                    {!analyzing && (
-                                        <Text style={{ color: '#666' }}>
-                                            {t('dataAnalysis.analysis.currentMethod')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}
-                                            {selectedAnalysis === 'cox_regression' && !fileInfo && t('dataAnalysis.analysis.needUpload')}
-                                        </Text>
-                                    )}
-                                </Space>
-
-                                {showAnalysisTimeoutWarning && (
-                                    <Alert
-                                        message={t('dataAnalysis.analysis.timeoutWarning.title')}
-                                        description={
-                                            <div>
-                                                {t('dataAnalysis.analysis.timeoutWarning.description')}
-                                                <br />
-                                                {t('dataAnalysis.analysis.timeoutWarning.options')}
-                                            </div>
-                                        }
-                                        type="warning"
-                                        showIcon
-                                        style={{ marginTop: 8 }}
-                                    />
-                                )}
-                            </Space>
-                        </div>
-                    </TabPane>
-
-                    <TabPane tab={t('dataAnalysis.results.tab')} key="results">
-                        {analyzing ? (
-                            <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                                <Progress
-                                    type="circle"
-                                    percent={progress}
-                                    style={{ marginBottom: 16 }}
-                                />
-                                <div>
-                                    <Text>{t('dataAnalysis.analysis.progress')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}...</Text>
-                                    {showAnalysisTimeoutWarning && (
-                                        <div style={{ marginTop: 16, maxWidth: 400, margin: '16px auto' }}>
-                                            <Alert
-                                                message={t('dataAnalysis.analysis.timeoutWarning.title')}
-                                                description={t('dataAnalysis.analysis.timeoutWarning.waitMessage')}
-                                                type="warning"
-                                                showIcon
-                                                action={
-                                                    <Space direction="vertical">
-                                                        <Button
-                                                            size="small"
-                                                            danger
-                                                            onClick={handleCancelAnalysis}
-                                                        >
-                                                            {t('dataAnalysis.analysis.cancel')}
-                                                        </Button>
-                                                        <Button
-                                                            size="small"
-                                                            type="primary"
-                                                            onClick={handleRetryAnalysis}
-                                                        >
-                                                            {t('dataAnalysis.analysis.retry')}
-                                                        </Button>
-                                                    </Space>
-                                                }
+                                                        />
+                                                    </List.Item>
+                                                )}
                                             />
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-                        ) : results ? (
+                                    </div>
+                                </Col>
+
+                                <Col span={16}>
+                                    <div style={{ marginBottom: 24 }}>
+                                        <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.config.title')}</Title>
+                                        <div style={{
+                                            background: 'rgba(255,255,255,0.4)',
+                                            borderRadius: '12px',
+                                            padding: '24px'
+                                        }}>
+                                            <Form
+                                                form={form}
+                                                layout="vertical"
+                                            >
+                                                {selectedAnalysis === 'cox_regression' ? (
+                                                    // Cox回归特殊参数
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.cox.title')}
+                                                            description={t('dataAnalysis.config.cox.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.cox.covariates.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.cox.covariates.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="covariateVars"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.cox.covariates.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        mode="multiple"
+                                                                        placeholder={t('dataAnalysis.config.cox.covariates.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        maxTagCount="responsive"
+                                                                        allowClear
+                                                                        style={{ minHeight: '32px' }}
+                                                                        tagRender={(props) => {
+                                                                            const { label, closable, onClose } = props;
+                                                                            return (
+                                                                                <Tag
+                                                                                    color="blue"
+                                                                                    closable={closable}
+                                                                                    onClose={onClose}
+                                                                                    style={{ margin: '2px' }}
+                                                                                >
+                                                                                    {label}
+                                                                                </Tag>
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.cox.timeVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.cox.timeVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="timeVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.cox.timeVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.cox.timeVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('numeric')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.cox.eventVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.cox.eventVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="eventVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.cox.eventVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.cox.eventVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.cox.alpha.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.cox.alpha.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="alpha"
+                                                                    initialValue="0.05"
+                                                                >
+                                                                    <Select>
+                                                                        <Option value="0.01">{t('dataAnalysis.config.cox.alpha.options.0.01')}</Option>
+                                                                        <Option value="0.05">{t('dataAnalysis.config.cox.alpha.options.0.05')}</Option>
+                                                                        <Option value="0.10">{t('dataAnalysis.config.cox.alpha.options.0.10')}</Option>
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                ) : selectedAnalysis === 'linear_regression' ? (
+                                                    // 线性回归参数
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.linear.title')}
+                                                            description={t('dataAnalysis.config.linear.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.linear.yVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.linear.yVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="yVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.linear.yVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('numeric')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.linear.xVars.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.linear.xVars.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="xVars"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        mode="multiple"
+                                                                        placeholder={t('dataAnalysis.config.linear.xVars.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        maxTagCount="responsive"
+                                                                        allowClear
+                                                                        style={{ minHeight: '32px' }}
+                                                                        tagRender={(props) => {
+                                                                            const { label, closable, onClose } = props;
+                                                                            return (
+                                                                                <Tag
+                                                                                    color="green"
+                                                                                    closable={closable}
+                                                                                    onClose={onClose}
+                                                                                    style={{ margin: '2px' }}
+                                                                                >
+                                                                                    {label}
+                                                                                </Tag>
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                ) : selectedAnalysis === 'logistic_regression' ? (
+                                                    // 逻辑回归参数
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.logistic.title')}
+                                                            description={t('dataAnalysis.config.logistic.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.logistic.yVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.logistic.yVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="yVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.logistic.yVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.logistic.xVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.logistic.xVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="xVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.logistic.xVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.logistic.xVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                ) : selectedAnalysis === 'multinomial_logistic_regression' ? (
+                                                    // 多分类逻辑回归参数
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.multinomial.title')}
+                                                            description={t('dataAnalysis.config.multinomial.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.multinomial.yVar.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.multinomial.yVar.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="yVar"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.linear.yVar.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.multinomial.yVar.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={
+                                                                        <span>
+                                                                            {t('dataAnalysis.config.multinomial.xVars.label')}
+                                                                            <Text type="secondary" style={{ fontSize: '12px', marginLeft: '8px' }}>
+                                                                                {t('dataAnalysis.config.multinomial.xVars.hint')}
+                                                                            </Text>
+                                                                        </span>
+                                                                    }
+                                                                    name="xVars"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.multinomial.xVars.required') }]}
+                                                                >
+                                                                    <Select
+                                                                        mode="multiple"
+                                                                        placeholder={t('dataAnalysis.config.multinomial.xVars.placeholder')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        maxTagCount="responsive"
+                                                                        allowClear
+                                                                        style={{ minHeight: '32px' }}
+                                                                        tagRender={(props) => {
+                                                                            const { label, closable, onClose } = props;
+                                                                            return (
+                                                                                <Tag
+                                                                                    color="blue"
+                                                                                    closable={closable}
+                                                                                    onClose={onClose}
+                                                                                    style={{ margin: '2px' }}
+                                                                                >
+                                                                                    {label}
+                                                                                </Tag>
+                                                                            );
+                                                                        }}
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                        <Alert
+                                                            message={t('common.info')}
+                                                            description={t('dataAnalysis.config.multinomial.tip')}
+                                                            type="warning"
+                                                            showIcon
+                                                            style={{ marginTop: 16 }}
+                                                        />
+                                                    </>
+                                                ) : ['ttest', 'anova', 'ranksum'].includes(selectedAnalysis) ? (
+                                                    // T检验、ANOVA、秩和检验参数
+                                                    <>
+                                                        <Alert
+                                                            message={t(`dataAnalysis.config.${selectedAnalysis}.title`)}
+                                                            description={t(`dataAnalysis.config.${selectedAnalysis}.description`)}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.groupCol')}</span>}
+                                                                    name="groupCol"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.groupColRequired') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.selectGroupCol')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.valueCol')}</span>}
+                                                                    name="valueCol"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.valueColRequired') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.selectValueCol')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('numeric')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                ) : selectedAnalysis === 'chisquare' ? (
+                                                    // 卡方检验参数
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.chisquare.title')}
+                                                            description={t('dataAnalysis.config.chisquare.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col1')}</span>}
+                                                                    name="col1"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.col1Required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.selectCol1')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col2')}</span>}
+                                                                    name="col2"
+                                                                    rules={[{ required: true, message: t('dataAnalysis.config.col2Required') }]}
+                                                                >
+                                                                    <Select
+                                                                        placeholder={t('dataAnalysis.config.selectCol2')}
+                                                                        disabled={!fileInfo}
+                                                                        showSearch
+                                                                        optionFilterProp="children"
+                                                                        allowClear
+                                                                    >
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
+                                                ) : null}
+                                            </Form>
+
+                                        </div>
+                                    </div>
+
+
+                                </Col>
+                            </Row>
+
+                            <Divider />
+
                             <div>
-                                <Row gutter={24}>
-                                    <Col span={selectedAnalysis === 'cox_regression' ? 24 : 18}>
-                                        <Card
-                                            title={`${getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name} ${t('dataAnalysis.results.title')}`}
-                                            extra={
-                                                <Space>
-                                                    <Button icon={<DownloadOutlined />} size="small">
-                                                        {t('dataAnalysis.results.export')}
-                                                    </Button>
-                                                    <Button icon={<FileTextOutlined />} size="small">
-                                                        {t('dataAnalysis.results.generateReport')}
-                                                    </Button>
-                                                </Space>
-                                            }
+                                <Space direction="vertical" style={{ width: '100%' }}>
+                                    <Space>
+                                        <Button
+                                            type="primary"
+                                            icon={<PlayCircleOutlined />}
+                                            onClick={() => {
+                                                console.log('按钮被点击');
+                                                console.log('当前状态:', {
+                                                    selectedAnalysis,
+                                                    fileInfo: !!fileInfo,
+                                                    uploadedFile: !!uploadedFile,
+                                                    analyzing
+                                                });
+                                                handleRunAnalysis();
+                                            }}
+                                            size="large"
+                                            disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
+                                            loading={analyzing && !showAnalysisTimeoutWarning}
                                         >
-                                            {renderResults()}
-                                        </Card>
-                                    </Col>
+                                            {t('dataAnalysis.analysis.start')}
+                                        </Button>
 
-                                    {selectedAnalysis !== 'cox_regression' && (
-                                        <Col span={6}>
-                                            <Card title={t('dataAnalysis.results.info.title')} size="small">
-                                                <Space direction="vertical" style={{ width: '100%' }}>
-                                                    <div>
-                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.method')}</Text>
-                                                        <br />
-                                                        <Text style={{ color: '#333' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
-                                                    </div>
+                                        {analyzing && showAnalysisTimeoutWarning && (
+                                            <Space>
+                                                <Button
+                                                    danger
+                                                    icon={<StopOutlined />}
+                                                    onClick={handleCancelAnalysis}
+                                                    size="large"
+                                                >
+                                                    {t('dataAnalysis.analysis.cancel')}
+                                                </Button>
+                                                <Button
+                                                    type="default"
+                                                    icon={<ReloadOutlined />}
+                                                    onClick={handleRetryAnalysis}
+                                                    size="large"
+                                                >
+                                                    {t('dataAnalysis.analysis.retry')}
+                                                </Button>
+                                            </Space>
+                                        )}
 
-                                                    <div>
-                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.dataSource')}</Text>
-                                                        <br />
-                                                        <Text style={{ color: '#333' }}>{fileInfo?.filename || t('dataAnalysis.results.info.simulatedData')}</Text>
-                                                    </div>
+                                        {!analyzing && (
+                                            <Text style={{ color: '#666' }}>
+                                                {t('dataAnalysis.analysis.currentMethod')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}
+                                                {selectedAnalysis === 'cox_regression' && !fileInfo && t('dataAnalysis.analysis.needUpload')}
+                                            </Text>
+                                        )}
+                                    </Space>
 
-                                                    <div>
-                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.sampleSize')}</Text>
-                                                        <br />
-                                                        <Text style={{ color: '#333' }}>{fileInfo?.file_stats.total_rows?.toLocaleString() || '9,460'} {t('dataAnalysis.results.info.people')}</Text>
-                                                    </div>
-
-                                                    <div>
-                                                        <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.analysisTime')}</Text>
-                                                        <br />
-                                                        <Text style={{ color: '#333' }}>{new Date().toLocaleString()}</Text>
-                                                    </div>
-                                                </Space>
-                                            </Card>
-                                        </Col>
+                                    {showAnalysisTimeoutWarning && (
+                                        <Alert
+                                            message={t('dataAnalysis.analysis.timeoutWarning.title')}
+                                            description={
+                                                <div>
+                                                    {t('dataAnalysis.analysis.timeoutWarning.description')}
+                                                    <br />
+                                                    {t('dataAnalysis.analysis.timeoutWarning.options')}
+                                                </div>
+                                            }
+                                            type="warning"
+                                            showIcon
+                                            style={{ marginTop: 8 }}
+                                        />
                                     )}
-                                </Row>
+                                </Space>
                             </div>
-                        ) : (
-                            <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                                <Text type="secondary">{t('dataAnalysis.results.noResults')}</Text>
-                            </div>
-                        )}
-                    </TabPane>
-                </Tabs>
-            </Card >
+                        </TabPane>
+
+                        <TabPane tab={t('dataAnalysis.results.tab')} key="results">
+                            {analyzing ? (
+                                <div style={{ textAlign: 'center', padding: '100px 0' }}>
+                                    <Progress
+                                        type="circle"
+                                        percent={progress}
+                                        style={{ marginBottom: 16 }}
+                                    />
+                                    <div>
+                                        <Text>{t('dataAnalysis.analysis.progress')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}...</Text>
+                                        {showAnalysisTimeoutWarning && (
+                                            <div style={{ marginTop: 16, maxWidth: 400, margin: '16px auto' }}>
+                                                <Alert
+                                                    message={t('dataAnalysis.analysis.timeoutWarning.title')}
+                                                    description={t('dataAnalysis.analysis.timeoutWarning.waitMessage')}
+                                                    type="warning"
+                                                    showIcon
+                                                    action={
+                                                        <Space direction="vertical">
+                                                            <Button
+                                                                size="small"
+                                                                danger
+                                                                onClick={handleCancelAnalysis}
+                                                            >
+                                                                {t('dataAnalysis.analysis.cancel')}
+                                                            </Button>
+                                                            <Button
+                                                                size="small"
+                                                                type="primary"
+                                                                onClick={handleRetryAnalysis}
+                                                            >
+                                                                {t('dataAnalysis.analysis.retry')}
+                                                            </Button>
+                                                        </Space>
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ) : results ? (
+                                <div>
+                                    <Row gutter={24}>
+                                        <Col span={selectedAnalysis === 'cox_regression' ? 24 : 18}>
+                                            <div style={{ marginBottom: 24 }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                                    <Title level={5} style={{ margin: 0 }}>
+                                                        {`${getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name} ${t('dataAnalysis.results.title')}`}
+                                                    </Title>
+                                                    <Space>
+                                                        <Button icon={<DownloadOutlined />} size="middle" style={{ borderRadius: '20px' }}>
+                                                            {t('dataAnalysis.results.export')}
+                                                        </Button>
+                                                        <Button icon={<FileTextOutlined />} size="middle" style={{ borderRadius: '20px' }}>
+                                                            {t('dataAnalysis.results.generateReport')}
+                                                        </Button>
+                                                    </Space>
+                                                </div>
+                                                <div style={{
+                                                    background: 'rgba(255,255,255,0.4)',
+                                                    borderRadius: '12px',
+                                                    padding: '24px',
+                                                    minHeight: '400px'
+                                                }}>
+                                                    {renderResults()}
+                                                </div>
+                                            </div>
+                                        </Col>
+
+                                        {selectedAnalysis !== 'cox_regression' && (
+                                            <Col span={6}>
+                                                <div style={{ marginBottom: 24 }}>
+                                                    <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.results.info.title')}</Title>
+                                                    <div style={{
+                                                        background: 'rgba(255,255,255,0.4)',
+                                                        borderRadius: '12px',
+                                                        padding: '24px'
+                                                    }}>
+                                                        <Space direction="vertical" style={{ width: '100%' }}>
+                                                            <div>
+                                                                <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.method')}</Text>
+                                                                <br />
+                                                                <Text style={{ color: '#333' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
+                                                            </div>
+
+                                                            <div>
+                                                                <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.dataSource')}</Text>
+                                                                <br />
+                                                                <Text style={{ color: '#333' }}>{fileInfo?.filename || t('dataAnalysis.results.info.simulatedData')}</Text>
+                                                            </div>
+
+                                                            <div>
+                                                                <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.sampleSize')}</Text>
+                                                                <br />
+                                                                <Text style={{ color: '#333' }}>{fileInfo?.file_stats.total_rows?.toLocaleString() || '9,460'} {t('dataAnalysis.results.info.people')}</Text>
+                                                            </div>
+
+                                                            <div>
+                                                                <Text strong style={{ color: '#333' }}>{t('dataAnalysis.results.info.analysisTime')}</Text>
+                                                                <br />
+                                                                <Text style={{ color: '#333' }}>{new Date().toLocaleString()}</Text>
+                                                            </div>
+                                                        </Space>
+
+                                                    </div>
+                                                </div>
+                                            </Col>
+                                        )}
+                                    </Row>
+                                </div>
+                            ) : (
+                                <div style={{ textAlign: 'center', padding: '100px 0' }}>
+                                    <Text type="secondary">{t('dataAnalysis.results.noResults')}</Text>
+                                </div>
+                            )}
+                        </TabPane>
+                    </Tabs>
+                </div>
+            </div>
         </div >
     );
 };

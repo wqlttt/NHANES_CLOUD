@@ -315,6 +315,39 @@ code {
   border-radius: 4px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(108, 99, 255, 0.3);
+
+/* Glass Tabs Styling */
+.glass-tabs .ant-tabs-nav {
+  margin-bottom: 24px !important;
+}
+
+.glass-tabs .ant-tabs-nav::before {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.glass-tabs .ant-tabs-tab {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(5px);
+  margin-right: 6px !important;
+  border-radius: 8px 8px 0 0 !important;
+  transition: all 0.3s ease;
+  color: var(--text-secondary);
+}
+
+.glass-tabs .ant-tabs-tab:hover {
+  background: rgba(255, 255, 255, 0.4) !important;
+  color: var(--primary-color);
+}
+
+.glass-tabs .ant-tabs-tab-active {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: var(--primary-color) !important;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.02);
+  font-weight: 600;
+}
+
+.glass-tabs .ant-tabs-content {
+  color: var(--text-primary);
 }

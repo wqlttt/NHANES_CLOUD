@@ -50,19 +50,19 @@ const ChartResultPanel: React.FC<ChartResultPanelProps> = ({
     return (
         <Row gutter={24}>
             <Col span={18}>
-                <Card
-                    title={t('dataVisualization.result.display')}
-                    extra={
+                <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: '12px', padding: '24px', minHeight: '500px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                        <Text strong style={{ fontSize: '16px' }}>{t('dataVisualization.result.display')}</Text>
                         <Space>
-                            <Button icon={<DownloadOutlined />} size="small" disabled={!chartResult}>
+                            <Button icon={<DownloadOutlined />} size="small" disabled={!chartResult} style={{ borderRadius: '4px' }}>
                                 {t('dataVisualization.result.download.image')}
                             </Button>
-                            <Button icon={<DownloadOutlined />} size="small" disabled={!fileInfo}>
+                            <Button icon={<DownloadOutlined />} size="small" disabled={!fileInfo} style={{ borderRadius: '4px' }}>
                                 {t('dataVisualization.result.download.data')}
                             </Button>
                         </Space>
-                    }
-                >
+                    </div>
+
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '100px 0' }}>
                             <Spin size="large" />
@@ -101,11 +101,12 @@ const ChartResultPanel: React.FC<ChartResultPanelProps> = ({
                     ) : (
                         renderChart()
                     )}
-                </Card>
+                </div>
             </Col>
 
             <Col span={6}>
-                <Card title={t('dataVisualization.result.info.title')} size="small">
+                <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: '12px', padding: '20px', marginBottom: 24 }}>
+                    <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: 16 }}>{t('dataVisualization.result.info.title')}</div>
                     <Space direction="vertical" style={{ width: '100%' }}>
                         <div>
                             <Text strong>{t('dataVisualization.result.info.type')}</Text>
@@ -144,10 +145,11 @@ const ChartResultPanel: React.FC<ChartResultPanelProps> = ({
                             </div>
                         )}
                     </Space>
-                </Card>
+                </div>
 
                 {fileInfo && (
-                    <Card title={t('dataVisualization.result.summary.title')} size="small" style={{ marginTop: 16 }}>
+                    <div style={{ background: 'rgba(255,255,255,0.4)', borderRadius: '12px', padding: '20px' }}>
+                        <div style={{ fontSize: '15px', fontWeight: 600, marginBottom: 16 }}>{t('dataVisualization.result.summary.title')}</div>
                         <Space direction="vertical" style={{ width: '100%' }}>
                             <div>
                                 <Text strong>{t('dataVisualization.result.summary.totalColumns')}</Text>
@@ -166,7 +168,7 @@ const ChartResultPanel: React.FC<ChartResultPanelProps> = ({
                                 <Text> {(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</Text>
                             </div>
                         </Space>
-                    </Card>
+                    </div>
                 )}
             </Col>
         </Row>
