@@ -246,7 +246,7 @@ i18n
                 translation: enTranslations
             }
         },
-        fallbackLng: 'zh',
+        fallbackLng: 'en',
         interpolation: {
             escapeValue: false
         }

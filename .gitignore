@@ -174,7 +174,8 @@ Thumbs.db
 *.log
 
 # Deployment scripts (server-specific)
-deploy.sh
+# deploy.sh
+!deploy.sh
 
 # Documentation files (local notes)
 *.md
