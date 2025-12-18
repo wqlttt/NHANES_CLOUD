@@ -1,237 +1,177 @@
-/* NHANES系统样式 */
+/* NHANES Modern App Styles */
+
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  padding: 20px;
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* 自定义样式 */
-.nhanes-layout {
   min-height: 100vh;
 }
 
-.nhanes-header {
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.nhanes-sider {
-  background: #fff;
-  border-right: 1px solid #f0f0f0;
+@keyframes float {
+  0% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
 }
 
-.nhanes-content {
-  background: #f5f5f5;
-  padding: 24px;
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(108, 99, 255, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(108, 99, 255, 0);
+  }
 }
 
-.nhanes-card {
-  margin-bottom: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+@keyframes gradient-bg {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.chart-container {
-  min-height: 400px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Page Transitions */
+.page-enter {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.variable-tag {
-  margin: 4px;
-  border-radius: 4px;
-}
-
-.feature-item {
+/* Component Specific Styles */
+.hero-section {
+  padding: 80px 0;
+  text-align: center;
   position: relative;
   overflow: hidden;
 }
 
-.feature-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.hero-title {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 4rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -1px;
+  line-height: 1.2 !important;
+  margin-bottom: 24px !important;
+  filter: drop-shadow(0 4px 6px rgba(108, 99, 255, 0.2));
 }
 
-.feature-item::after {
+.hero-subtitle {
+  font-size: 1.25rem !important;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 40px !important;
+  line-height: 1.6;
+}
+
+.feature-grid {
+  margin-top: -40px;
+}
+
+.feature-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.feature-icon-wrapper::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  border-radius: 20px;
+  background: inherit;
+  filter: blur(15px);
+  opacity: 0.4;
+  z-index: -1;
 }
 
-.feature-item:hover::after {
-  opacity: 1;
+.glass-card:hover .feature-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
 }
 
-.analysis-item {
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 8px;
-}
-
-.analysis-item:hover {
-  background-color: #f0f8ff;
-  border-color: #1890ff;
-}
-
-.analysis-item.selected {
-  background-color: #f0f8ff;
-  border-color: #1890ff;
-}
-
-.progress-container {
+.stat-item {
   text-align: center;
-  padding: 60px 0;
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background 0.3s;
 }
 
-.stat-card {
-  text-align: center;
-  padding: 16px;
+.stat-item:hover {
+  background: rgba(0, 0, 0, 0.02);
 }
 
-.result-summary {
-  background: #f9f9f9;
-  padding: 16px;
-  border-radius: 6px;
-  margin-top: 16px;
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* 响应式设计 */
-@media (max-width: 1200px) {
-  .nhanes-card {
-    margin-bottom: 12px;
-  }
-
-  .chart-container {
-    min-height: 350px;
-  }
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
-@media (max-width: 992px) {
-  .nhanes-content {
-    padding: 18px;
-  }
-
-  .chart-container {
-    min-height: 320px;
-  }
-
-  .analysis-item {
-    padding: 10px;
-    margin-bottom: 6px;
-  }
-
-  .stat-card {
-    padding: 12px;
-  }
+/* Footer Section */
+.footer-section {
+  margin-top: 80px;
+  padding: 60px 40px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
 }
 
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-  .nhanes-content {
-    padding: 12px;
+  .hero-title {
+    font-size: 2.5rem !important;
   }
 
-  .chart-container {
-    min-height: 300px;
-    padding: 12px;
-  }
-
-  .analysis-item {
-    padding: 8px;
-    margin-bottom: 6px;
-  }
-
-  .progress-container {
+  .hero-section {
     padding: 40px 0;
-  }
-
-  .stat-card {
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-
-  .result-summary {
-    padding: 12px;
-    margin-top: 12px;
-  }
-
-  .variable-tag {
-    margin: 2px;
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 576px) {
-  .nhanes-content {
-    padding: 8px;
-  }
-
-  .chart-container {
-    min-height: 250px;
-    padding: 8px;
-  }
-
-  .analysis-item {
-    padding: 6px;
-    margin-bottom: 4px;
-  }
-
-  .progress-container {
-    padding: 30px 0;
-  }
-
-  .stat-card {
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-
-  .result-summary {
-    padding: 10px;
-    margin-top: 10px;
-  }
-
-  .variable-tag {
-    margin: 1px;
-    font-size: 11px;
   }
 }

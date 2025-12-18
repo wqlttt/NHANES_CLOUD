@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Typography,
-    Card,
-    Row,
-    Col,
-    Button,
-} from 'antd';
+import { Typography, Row, Col, Space } from 'antd';
 import {
     DatabaseOutlined,
     BarChartOutlined,
     FundOutlined,
     ArrowRightOutlined,
+    ExperimentOutlined,
+    RocketOutlined,
+    ThunderboltOutlined
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
 
@@ -24,237 +22,237 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
     const { t } = useTranslation();
+    const [isVisible, setIsVisible] = useState(false);
 
-    const mainFeatures = [
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
+    // Feature Configuration with specific brand colors
+    const features = [
         {
+            key: 'extraction',
             title: t('home.features.dataExtraction.title'),
             subtitle: t('home.features.dataExtraction.subtitle'),
             description: t('home.features.dataExtraction.description'),
-            icon: <DatabaseOutlined style={{ fontSize: '48px', color: 'var(--primary-color)' }} />,
-            features: [
-                t('home.features.dataExtraction.features.customExtraction.name'),
-                t('home.features.dataExtraction.features.presetVariables.name'),
-                t('home.features.dataExtraction.features.secondaryIndicators.name'),
-                t('home.features.dataExtraction.features.mortalityData.name')
-            ],
+            icon: <DatabaseOutlined style={{ fontSize: '36px', color: '#fff' }} />,
+            bgIcon: <DatabaseOutlined />,
+            color: '#6366f1', // Indigo
+            gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+            bg: 'rgba(99, 102, 241, 0.1)',
             stats: {
                 samples: t('home.features.dataExtraction.stats.samples'),
                 variables: t('home.features.dataExtraction.stats.variables'),
-                cycles: t('home.features.dataExtraction.stats.cycles')
             },
-            action: () => onNavigate('extraction'),
-            color: 'var(--primary-color)',
-            bg: 'rgba(24, 144, 255, 0.05)'
+            action: () => onNavigate('extraction')
         },
         {
+            key: 'visualization',
             title: t('home.features.visualization.title'),
             subtitle: t('home.features.visualization.subtitle'),
             description: t('home.features.visualization.description'),
-            icon: <BarChartOutlined style={{ fontSize: '48px', color: 'var(--secondary-color)' }} />,
-            features: [
-                t('home.features.visualization.features.chartTypes.name'),
-                t('home.features.visualization.features.interactiveConfig.name'),
-                t('home.features.visualization.features.realTimePreview.name'),
-                t('home.features.visualization.features.highQualityExport.name')
-            ],
+            icon: <BarChartOutlined style={{ fontSize: '36px', color: '#fff' }} />,
+            bgIcon: <BarChartOutlined />,
+            color: '#10b981', // Emerald
+            gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+            bg: 'rgba(16, 185, 129, 0.1)',
             stats: {
                 charts: t('home.features.visualization.stats.charts'),
                 formats: t('home.features.visualization.stats.formats'),
-                resolution: t('home.features.visualization.stats.resolution')
             },
-            action: () => onNavigate('visualization'),
-            color: 'var(--secondary-color)',
-            bg: 'rgba(82, 196, 26, 0.05)'
+            action: () => onNavigate('visualization')
         },
         {
+            key: 'analysis',
             title: t('home.features.analysis.title'),
             subtitle: t('home.features.analysis.subtitle'),
             description: t('home.features.analysis.description'),
-            icon: <FundOutlined style={{ fontSize: '48px', color: 'var(--warning-color)' }} />,
-            features: [
-                t('home.features.analysis.features.descriptiveStats.name'),
-                t('home.features.analysis.features.hypothesisTesting.name'),
-                t('home.features.analysis.features.regression.name'),
-                t('home.features.analysis.features.survivalAnalysis.name')
-            ],
+            icon: <FundOutlined style={{ fontSize: '36px', color: '#fff' }} />,
+            bgIcon: <FundOutlined />,
+            color: '#f59e0b', // Amber
+            gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+            bg: 'rgba(245, 158, 11, 0.1)',
             stats: {
-                methods: t('home.features.analysis.stats.methods'),
                 models: t('home.features.analysis.stats.models'),
                 precision: t('home.features.analysis.stats.precision')
             },
-            action: () => onNavigate('analysis'),
-            color: 'var(--warning-color)',
-            bg: 'rgba(250, 173, 20, 0.05)'
+            action: () => onNavigate('analysis')
         }
     ];
 
     return (
-        <div style={{ padding: '40px 0' }}>
+        <div className={`page-entry ${isVisible ? 'visible' : ''}`} style={{ paddingBottom: '60px' }}>
+
             {/* Hero Section */}
-            <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-                <Title level={1} style={{
-                    color: 'var(--primary-color)',
-                    marginBottom: '16px',
-                    fontSize: '36px',
-                    fontWeight: 700
-                }}>
-                    {t('home.title')}
-                </Title>
-                <Text style={{
-                    fontSize: '18px',
-                    color: 'var(--text-secondary)',
-                    maxWidth: '600px',
-                    display: 'block',
-                    margin: '0 auto'
-                }}>
-                    {t('home.subtitle')}
-                </Text>
+            <div className="hero-section">
+                <div className="hero-content">
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', fontWeight: 600, fontSize: '0.9rem', marginBottom: '24px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                        <RocketOutlined /> NHANES Cloud Platform v2.0
+                    </div>
+
+                    <Title level={1} className="hero-title">
+                        {t('home.title')}
+                    </Title>
+
+                    <p className="hero-subtitle">
+                        {t('home.subtitle')}
+                    </p>
+
+                    <Space size="large" style={{ marginTop: '20px' }}>
+                        <button
+                            onClick={() => onNavigate('extraction')}
+                            style={{
+                                padding: '12px 32px',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                borderRadius: '12px',
+                                border: 'none',
+                                background: 'var(--gradient-primary)',
+                                color: 'white',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
+                                transition: 'all 0.3s ease',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                            Get Started <ArrowRightOutlined />
+                        </button>
+
+                        <button
+                            onClick={() => window.open('.cdc.gov/nchs/nhanes/default.aspx', '_blank')}
+                            style={{
+                                padding: '12px 32px',
+                                fontSize: '1rem',
+                                fontWeight: 600,
+                                borderRadius: '12px',
+                                border: '1px solid rgba(0,0,0,0.1)',
+                                background: 'white',
+                                color: 'var(--text-primary)',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.background = '#f8f9fa';
+                                e.currentTarget.style.borderColor = 'rgba(0,0,0,0.2)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.background = 'white';
+                                e.currentTarget.style.borderColor = 'rgba(0,0,0,0.1)';
+                            }}
+                        >
+                            View Visual Documentation
+                        </button>
+                    </Space>
+                </div>
             </div>
 
             {/* Features Grid */}
-            <Row gutter={[32, 32]} justify="center">
-                {mainFeatures.map((feature, index) => (
-                    <Col key={index} xs={24} lg={8} style={{ display: 'flex' }}>
-                        <Card
-                            className="glass-card"
-                            hoverable
-                            style={{
-                                width: '100%',
-                                borderTop: `4px solid ${feature.color}`,
-                                transition: 'transform 0.3s ease'
-                            }}
-                            bodyStyle={{
-                                padding: '32px',
-                                height: '100%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '24px'
-                            }}
-                            onClick={feature.action}
-                        >
-                            {/* Header */}
-                            <div style={{ textAlign: 'center' }}>
-                                <div style={{
-                                    background: feature.bg,
-                                    width: '80px',
-                                    height: '80px',
-                                    borderRadius: '50%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    margin: '0 auto 24px'
-                                }}>
-                                    {feature.icon}
-                                </div>
-                                <Title level={3} style={{ marginBottom: '8px' }}>{feature.title}</Title>
-                                <Text type="secondary">{feature.subtitle}</Text>
-                            </div>
-
-                            {/* Description */}
-                            <Text style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>
-                                {feature.description}
-                            </Text>
-
-                            {/* Feature List */}
-                            <div style={{
-                                background: 'var(--bg-body)',
-                                padding: '16px',
-                                borderRadius: '8px',
-                                flex: 1
-                            }}>
-                                {feature.features.map((item, idx) => (
-                                    <div key={idx} style={{
-                                        marginBottom: '8px',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                        fontSize: '13px'
-                                    }}>
-                                        <div style={{
-                                            width: '6px',
-                                            height: '6px',
-                                            borderRadius: '50%',
-                                            background: feature.color
-                                        }} />
-                                        {item}
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Stats */}
-                            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
-                                {Object.entries(feature.stats).map(([key, value]) => (
-                                    <div key={key} style={{ textAlign: 'center', flex: 1 }}>
-                                        <div style={{
-                                            fontSize: '18px',
-                                            fontWeight: 'bold',
-                                            color: feature.color
-                                        }}>
-                                            {value}
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>
-                                            {key}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Action Button */}
-                            <Button
-                                type="primary"
-                                size="large"
-                                block
-                                icon={<ArrowRightOutlined />}
+            <div className="main-content-layout feature-grid">
+                <Row gutter={[32, 32]} justify="center">
+                    {features.map((feature, index) => (
+                        <Col key={feature.key} xs={24} md={12} lg={8}>
+                            <div
+                                className="glass-card"
+                                onClick={feature.action}
                                 style={{
-                                    height: '48px',
-                                    background: feature.color,
-                                    borderColor: feature.color,
-                                    marginTop: 'auto'
+                                    padding: '40px 32px',
+                                    height: '100%',
+                                    cursor: 'pointer',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    animation: `fadeIn 0.6s ease-out ${index * 0.1}s forwards`,
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'
                                 }}
                             >
-                                {t(`home.features.${feature === mainFeatures[0] ? 'dataExtraction' : feature === mainFeatures[1] ? 'visualization' : 'analysis'}.button`)}
-                            </Button>
-                        </Card>
-                    </Col>
-                ))}
-            </Row>
+                                {/* Background Decorative Icon */}
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '-20px',
+                                    right: '-20px',
+                                    fontSize: '150px',
+                                    opacity: 0.05,
+                                    transform: 'rotate(15deg)',
+                                    color: feature.color,
+                                    pointerEvents: 'none'
+                                }}>
+                                    {feature.bgIcon}
+                                </div>
 
-            {/* Footer Info */}
-            <div style={{
-                marginTop: '60px',
-                textAlign: 'center',
-                padding: '40px',
-                background: 'var(--bg-container)',
-                borderRadius: '16px',
-                border: '1px solid rgba(0,0,0,0.05)'
-            }}>
-                <Title level={4} style={{ marginBottom: '32px' }}>{t('home.introduction.title')}</Title>
-                <Row gutter={[48, 24]}>
-                    <Col xs={24} md={8}>
-                        <Text strong style={{ color: 'var(--primary-color)', fontSize: '16px' }}>
-                            {t('home.introduction.dataExtraction.title')}
-                        </Text>
-                        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
-                            {t('home.introduction.dataExtraction.description')}
-                        </p>
-                    </Col>
-                    <Col xs={24} md={8}>
-                        <Text strong style={{ color: 'var(--secondary-color)', fontSize: '16px' }}>
-                            {t('home.introduction.visualization.title')}
-                        </Text>
-                        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
-                            {t('home.introduction.visualization.description')}
-                        </p>
-                    </Col>
-                    <Col xs={24} md={8}>
-                        <Text strong style={{ color: 'var(--warning-color)', fontSize: '16px' }}>
-                            {t('home.introduction.analysis.title')}
-                        </Text>
-                        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
-                            {t('home.introduction.analysis.description')}
-                        </p>
-                    </Col>
+                                <div className="feature-icon-wrapper" style={{ background: feature.gradient }}>
+                                    {feature.icon}
+                                </div>
+
+                                <Title level={3} style={{ textAlign: 'center', marginBottom: '12px', fontSize: '1.5rem' }}>
+                                    {feature.title}
+                                </Title>
+
+                                <Text style={{
+                                    display: 'block',
+                                    textAlign: 'center',
+                                    color: 'var(--text-secondary)',
+                                    marginBottom: '32px',
+                                    lineHeight: '1.6'
+                                }}>
+                                    {feature.description}
+                                </Text>
+
+                                <div style={{
+                                    display: 'flex',
+                                    gap: '12px',
+                                    paddingTop: '24px',
+                                    borderTop: '1px solid rgba(0,0,0,0.05)'
+                                }}>
+                                    {Object.entries(feature.stats).map(([key, value]) => (
+                                        <div key={key} className="stat-item">
+                                            <div className="stat-value" style={{
+                                                background: feature.gradient,
+                                                WebkitBackgroundClip: 'text',
+                                                WebkitTextFillColor: 'transparent'
+                                            }}>
+                                                {value}
+                                            </div>
+                                            <div className="stat-label">{key}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </Col>
+                    ))}
                 </Row>
+            </div>
+
+            {/* Footer / Stats Section */}
+            <div className="footer-section">
+                <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
+                    <Title level={4} style={{ marginBottom: '40px', fontWeight: 300, color: 'var(--text-secondary)' }}>
+                        Trusted by researchers for advanced health data analytics
+                    </Title>
+                    <Row gutter={[48, 24]} justify="center">
+                        <Col>
+                            <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+                                <ThunderboltOutlined style={{ color: 'var(--primary-color)' }} />
+                                <span>Real-time Processing</span>
+                            </Space>
+                        </Col>
+                        <Col>
+                            <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+                                <ExperimentOutlined style={{ color: 'var(--secondary-color)' }} />
+                                <span>Scientific Accuracy</span>
+                            </Space>
+                        </Col>
+                        <Col>
+                            <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+                                <DatabaseOutlined style={{ color: 'var(--accent-color)' }} />
+                                <span>Complete NHANES Dataset</span>
+                            </Space>
+                        </Col>
+                    </Row>
+                </div>
             </div>
         </div>
     );
