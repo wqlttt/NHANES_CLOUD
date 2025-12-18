@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Typography,
-    Card,
+
     Row,
     Col,
     Input,
@@ -16,7 +16,6 @@ import {
     Divider,
     Progress,
     Modal,
-    Tabs,
     message,
 } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -29,13 +28,18 @@ import {
     DeleteOutlined,
     EditOutlined,
     TableOutlined,
+    TagOutlined,
+    DatabaseOutlined,
+    RocketOutlined,
+    ThunderboltOutlined,
+    ExperimentOutlined
 } from '@ant-design/icons';
 import { ListTable } from '@visactor/vtable';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
+
 
 // 年份选项
 const yearOptions = [
@@ -531,7 +535,7 @@ const DataExtraction: React.FC = () => {
     };
 
     // 创建VTable实例
-    const createVTable = (containerId: string, data: any) => {
+    const createVTable = (containerId: string, data: any, headerBgColor: string = 'rgba(99, 102, 241, 0.85)', hoverBgColor: string = 'rgba(99, 102, 241, 0.1)') => {
         const container = document.getElementById(containerId);
         if (!container || !data) return null;
 
@@ -625,38 +629,38 @@ const DataExtraction: React.FC = () => {
 
             theme: {
                 defaultStyle: {
-                    fontFamily: 'Arial, sans-serif',
+                    fontFamily: "'Inter', 'Segoe UI', Roboto, sans-serif",
                     fontSize: 14,
-                    color: '#333',
-                    bgColor: '#fff',
-                    autoWrapText: false, // 禁用默认样式的自动换行
-                    textOverflow: 'visible', // 不使用省略号
-                    textAlign: 'left' // 左对齐显示完整文本
+                    color: '#000',
+                    bgColor: 'rgba(255, 255, 255, 0.4)', // Semi-transparent
+                    autoWrapText: false,
+                    textOverflow: 'visible',
+                    textAlign: 'left',
+                    borderColor: 'rgba(0,0,0,0.05)'
                 },
                 headerStyle: {
-                    fontFamily: 'Arial, sans-serif',
+                    fontFamily: "'Inter', 'Segoe UI', Roboto, sans-serif",
                     fontSize: 14,
-                    fontWeight: 'bold',
+                    fontWeight: 600,
                     color: '#fff',
-                    bgColor: '#1890ff',
-                    autoWrapText: false, // 禁用表头的自动换行
-                    textOverflow: 'visible', // 表头也不使用省略号
-                    textAlign: 'center' // 表头居中
+                    bgColor: headerBgColor, // Dynamic color
+                    autoWrapText: false,
+                    textOverflow: 'visible',
+                    textAlign: 'center',
+                    borderColor: 'rgba(255,255,255,0.1)'
                 },
                 bodyStyle: {
                     hover: {
-                        cellBgColor: '#f5f5f5'
+                        cellBgColor: hoverBgColor // Dynamic hover color
                     },
-                    autoWrapText: false, // 禁用表体的自动换行
-                    textOverflow: 'visible' // 表体不使用省略号
+                    autoWrapText: false,
+                    textOverflow: 'visible'
                 }
             },
-            defaultRowHeight: 40, // 固定行高为40px
-            defaultHeaderRowHeight: 50, // 固定表头行高为50px
-            // 移除内置分页，使用外部分页控件
-            // 列调整配置
-            columnResizeMode: 'all', // 允许调整所有列的宽度
-            allowFrozenColCount: 1,  // 允许冻结第一列
+            defaultRowHeight: 46,
+            defaultHeaderRowHeight: 50,
+            columnResizeMode: 'all',
+            allowFrozenColCount: 1,
             transpose: false,
             showHeader: true,
             showFrozenIcon: true,
@@ -666,7 +670,6 @@ const DataExtraction: React.FC = () => {
             hover: {
                 highlightMode: 'cross'
             }
-            // 列宽调整功能已通过 columnResizeMode: 'all' 启用
         });
 
         // 防抖函数
@@ -753,7 +756,7 @@ const DataExtraction: React.FC = () => {
             if (data) {
                 setCurrentMortalityData(data);
                 setTimeout(() => {
-                    const table = createVTable('mortality-table', data);
+                    const table = createVTable('mortality-table', data, 'rgba(245, 34, 45, 0.85)', 'rgba(245, 34, 45, 0.1)'); // Red theme
                     setMortalityTable(table);
                     setLoadingMortalityData(false);
                 }, 100);
@@ -821,7 +824,7 @@ const DataExtraction: React.FC = () => {
             if (data) {
                 setCurrentIndicatorData(data);
                 setTimeout(() => {
-                    const table = createVTable('common-indicator-table', data);
+                    const table = createVTable('common-indicator-table', data, 'rgba(24, 144, 255, 0.85)', 'rgba(24, 144, 255, 0.1)'); // Blue theme
                     setCommonTable(table);
                     setLoadingIndicatorData(false);
                 }, 100);
@@ -875,7 +878,7 @@ const DataExtraction: React.FC = () => {
             const data = mockPresetGroupData[selectedPresetGroup as keyof typeof mockPresetGroupData];
             if (data) {
                 setTimeout(() => {
-                    const table = createVTable('preset-group-table', data);
+                    const table = createVTable('preset-group-table', data, 'rgba(245, 158, 11, 0.85)', 'rgba(245, 158, 11, 0.1)'); // Amber theme
                     setPresetTable(table);
                 }, 100);
             }
@@ -970,79 +973,9 @@ const DataExtraction: React.FC = () => {
         setEditForm({ years: [], fileName: '', indicators: '' });
     };
 
-    // 导出全部指标数据的函数
-    const exportAllIndicatorData = async (indicatorName: string) => {
-        if (!indicatorName) return;
 
-        setDownloadingStates(prev => ({ ...prev, exportAll: true }));
 
-        try {
-            // 调用后端API获取全部数据（不分页）
-            const response = await fetch(getApiUrl(API_ENDPOINTS.INDICATOR_DATA(indicatorName)) + '?export_all=true');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const apiData = await response.json();
 
-            if (apiData.success && apiData.columns && apiData.records) {
-                const indicatorLabel = commonIndicators.find(item => item.value === indicatorName)?.label || indicatorName;
-                const exportData = {
-                    columns: apiData.columns.map((col: any) => ({
-                        field: col.field,
-                        title: col.title || col.field,
-                        width: 'auto'
-                    })),
-                    records: apiData.records
-                };
-
-                exportToCSV(exportData, `${indicatorLabel}_全部数据.csv`);
-            } else {
-                message.error(t('dataExtraction.messages.fetchDataFailed'));
-            }
-        } catch (error) {
-            console.error('导出全部数据失败:', error);
-            message.error(t('dataExtraction.messages.exportFailed'));
-        } finally {
-            setDownloadingStates(prev => ({ ...prev, exportAll: false }));
-        }
-    };
-
-    // 导出全部死亡数据的函数
-    const exportAllMortalityData = async (mortalityYear: string) => {
-        if (!mortalityYear) return;
-
-        setDownloadingStates(prev => ({ ...prev, exportAll: true }));
-
-        try {
-            // 调用后端API获取全部死亡数据（不分页）
-            const response = await fetch(getApiUrl(API_ENDPOINTS.MORTALITY_DATA(mortalityYear)) + '?export_all=true');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const apiData = await response.json();
-
-            if (apiData.success && apiData.columns && apiData.records) {
-                const mortalityLabel = mortalityIndicators.find(item => item.value === mortalityYear)?.label || mortalityYear;
-                const exportData = {
-                    columns: apiData.columns.map((col: any) => ({
-                        field: col.field,
-                        title: col.title || col.field,
-                        width: 'auto'
-                    })),
-                    records: apiData.records
-                };
-
-                exportToCSV(exportData, `${mortalityLabel}_全部数据.csv`);
-            } else {
-                message.error('获取全部死亡数据失败');
-            }
-        } catch (error) {
-            console.error('导出全部死亡数据失败:', error);
-            message.error('导出全部死亡数据失败，请检查网络连接');
-        } finally {
-            setDownloadingStates(prev => ({ ...prev, exportAll: false }));
-        }
-    };
 
     // 导出CSV功能
     const exportToCSV = (data: any, filename: string) => {
@@ -1186,55 +1119,80 @@ const DataExtraction: React.FC = () => {
     };
 
     // 下载常见指标
-    const downloadCommonIndicator = () => {
+    // 下载常见指标
+    const downloadCommonIndicator = async () => {
         if (!selectedCommonIndicator) return;
 
         setDownloadingState('common', true);
 
-        const selectedItem = commonIndicators.find(item => item.value === selectedCommonIndicator);
-        console.log('下载常见指标:', {
-            type: 'common_indicator',
-            data: {
-                indicator: selectedCommonIndicator,
-                label: selectedItem?.label,
-                description: selectedItem?.description
+        try {
+            const indicatorName = selectedCommonIndicator;
+            // 调用后端API获取全部数据（不分页）
+            const response = await fetch(getApiUrl(API_ENDPOINTS.INDICATOR_DATA(indicatorName)) + '?export_all=true');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
+            const apiData = await response.json();
 
-        // 模拟API调用
-        setTimeout(() => {
+            if (apiData.success && apiData.columns && apiData.records) {
+                const indicatorLabel = commonIndicators.find(item => item.value === indicatorName)?.label || indicatorName;
+                const exportData = {
+                    columns: apiData.columns.map((col: any) => ({
+                        field: col.field,
+                        title: col.title || col.field,
+                        width: 'auto'
+                    })),
+                    records: apiData.records
+                };
+
+                exportToCSV(exportData, `${indicatorLabel}_全部数据.csv`);
+            } else {
+                message.error(t('dataExtraction.messages.fetchDataFailed'));
+            }
+        } catch (error) {
+            console.error('导出全部数据失败:', error);
+            message.error(t('dataExtraction.messages.exportFailed'));
+        } finally {
             setDownloadingState('common', false);
-            Modal.success({
-                title: t('dataExtraction.messages.downloadSuccess'),
-                content: t('dataExtraction.messages.downloadSuccessContent')
-            });
-        }, 1500);
+        }
     };
 
     // 下载死亡指标
-    const downloadMortalityData = () => {
+    const downloadMortalityData = async () => {
         if (!selectedMortalityIndicator) return;
 
         setDownloadingState('mortality', true);
 
-        const selectedItem = mortalityIndicators.find(item => item.value === selectedMortalityIndicator);
-        console.log('下载死亡数据:', {
-            type: 'mortality_data',
-            data: {
-                indicator: selectedMortalityIndicator,
-                label: selectedItem?.label,
-                description: selectedItem?.description
+        try {
+            const mortalityYear = selectedMortalityIndicator;
+            // 调用后端API获取全部死亡数据（不分页）
+            const response = await fetch(getApiUrl(API_ENDPOINTS.MORTALITY_DATA(mortalityYear)) + '?export_all=true');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
+            const apiData = await response.json();
 
-        // 模拟API调用
-        setTimeout(() => {
+            if (apiData.success && apiData.columns && apiData.records) {
+                const mortalityLabel = mortalityIndicators.find(item => item.value === mortalityYear)?.label || mortalityYear;
+                const exportData = {
+                    columns: apiData.columns.map((col: any) => ({
+                        field: col.field,
+                        title: col.title || col.field,
+                        width: 'auto'
+                    })),
+                    records: apiData.records
+                };
+
+                exportToCSV(exportData, `${mortalityLabel}_全部数据.csv`);
+            } else {
+                message.error('获取全部死亡数据失败');
+            }
+        } catch (error) {
+            console.error('导出全部死亡数据失败:', error);
+            message.error('导出全部死亡数据失败，请检查网络连接');
+        } finally {
             setDownloadingState('mortality', false);
-            Modal.success({
-                title: t('dataExtraction.messages.downloadSuccess'),
-                content: t('dataExtraction.messages.downloadSuccessContent')
-            });
-        }, 2500);
+        }
     };
 
     // 下载预设变量组
@@ -1622,24 +1580,50 @@ const DataExtraction: React.FC = () => {
     ];
 
     return (
-        <div>
-            <Title level={2}>{t('dataExtraction.title')}</Title>
-            <Text type="secondary">
-                {t('dataExtraction.subtitle')}
-            </Text>
+        <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
+            <div className="hero-section" style={{ padding: '40px 0 60px', textAlign: 'center', minHeight: 'auto' }}>
+                <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '6px 16px',
+                    borderRadius: '20px',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    color: '#6366f1',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    marginBottom: '24px',
+                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                }}>
+                    <DatabaseOutlined /> NHANES Data Engine
+                </div>
+                <Title level={1} className="hero-title" style={{ fontSize: '3rem', marginBottom: '16px', fontWeight: 800, background: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    {t('dataExtraction.title')}
+                </Title>
+                <Text className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', margin: '0 auto', display: 'block', maxWidth: '700px', lineHeight: 1.6 }}>
+                    {t('dataExtraction.subtitle')}
+                </Text>
+            </div>
 
-            <div style={{ marginTop: 24 }}>
+            <div className="main-content-layout">
                 {/* 变量搜索 */}
-                <Card
-                    title={
-                        <Space>
-                            <SearchOutlined style={{ color: '#1890ff' }} />
-                            <span>{t('home.features.dataExtraction.variableSearch.title', '变量搜索')}</span>
-                        </Space>
-                    }
-                    style={{ marginBottom: 16 }}
-                    bodyStyle={{ padding: '20px' }}
-                >
+                <div className="glass-card static-card" style={{ marginBottom: 32, padding: '30px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+                        <div style={{
+                            width: '40px', height: '40px',
+                            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                            borderRadius: '10px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'white', fontSize: '1.2rem',
+                            marginRight: '16px',
+                            boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                        }}>
+                            <SearchOutlined />
+                        </div>
+                        <Title level={4} style={{ margin: 0 }}>
+                            {t('home.features.dataExtraction.variableSearch.title', '变量搜索')}
+                        </Title>
+                    </div>
                     <div style={{ marginBottom: 16 }}>
                         <Input.Search
                             placeholder={t('home.features.dataExtraction.variableSearch.placeholder', '输入关键词搜索变量 (如: HDL, Glucose)')}
@@ -1798,26 +1782,35 @@ const DataExtraction: React.FC = () => {
                             )}
                         </>
                     )}
-                </Card>
+                </div>
 
                 {/* 自定义提取 */}
-                <Card
-                    title={
-                        <Space>
-                            <PlusOutlined style={{ color: '#1890ff' }} />
-                            <span>{t('dataExtraction.customExtraction.title')}</span>
-                        </Space>
-                    }
-                    style={{ marginBottom: 16 }}
-                    bodyStyle={{ padding: '20px' }}
-                >
+                <div className="glass-card static-card" style={{ marginBottom: 32, padding: '30px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+                        <div style={{
+                            width: '40px', height: '40px',
+                            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                            borderRadius: '10px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'white', fontSize: '1.2rem',
+                            marginRight: '16px',
+                            boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)'
+                        }}>
+                            <PlusOutlined />
+                        </div>
+                        <Title level={4} style={{ margin: 0 }}>
+                            {t('dataExtraction.customExtraction.title')}
+                        </Title>
+                    </div>
+
                     {/* 添加新项目表单 */}
                     <div style={{
-                        background: '#f8f9fa',
-                        padding: '16px',
-                        borderRadius: '8px',
-                        marginBottom: '20px',
-                        border: '1px solid #e9ecef'
+                        background: 'rgba(255, 255, 255, 0.4)',
+                        backdropFilter: 'blur(10px)',
+                        padding: '24px',
+                        borderRadius: '16px',
+                        marginBottom: '24px',
+                        border: '1px solid rgba(255, 255, 255, 0.5)'
                     }}>
                         <Row gutter={isMobile ? [8, 12] : [16, 16]}>
                             <Col span={24}>
@@ -1896,9 +1889,9 @@ const DataExtraction: React.FC = () => {
                                     size={isMobile ? 'middle' : 'large'}
                                     style={{
                                         borderRadius: '6px',
-                                        background: 'linear-gradient(45deg, #1890ff, #36cfc9)',
+                                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
                                         border: 'none',
-                                        boxShadow: '0 2px 8px rgba(24, 144, 255, 0.3)'
+                                        boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
                                     }}
                                 >
                                     {t('dataExtraction.customExtraction.addToList')}
@@ -1932,9 +1925,9 @@ const DataExtraction: React.FC = () => {
                                     size="large"
                                     style={{
                                         borderRadius: '6px',
-                                        background: 'linear-gradient(45deg, #52c41a, #73d13d)',
+                                        background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
                                         border: 'none',
-                                        boxShadow: '0 2px 8px rgba(82, 196, 26, 0.3)'
+                                        boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
                                     }}
                                 >
                                     {t('dataExtraction.customExtraction.batchDownload')}
@@ -1972,12 +1965,26 @@ const DataExtraction: React.FC = () => {
                             </Text>
                         </div>
                     )}
-                </Card>
+                </div>
 
                 {/* 快速提取选项 */}
-                <Row gutter={isMobile ? [8, 16] : [16, 16]}>
+                <Row gutter={isMobile ? [8, 16] : [24, 24]}>
                     <Col xs={24} sm={24} md={8}>
-                        <Card title={t('dataExtraction.commonIndicators.title')} style={{ height: 200 }}>
+                        <div className="glass-card static-card" style={{ height: '100%', minHeight: 220, padding: '24px', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                <div style={{
+                                    width: '36px', height: '36px',
+                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '12px',
+                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                }}>
+                                    <TableOutlined />
+                                </div>
+                                <Title level={5} style={{ margin: 0 }}>{t('dataExtraction.commonIndicators.title')}</Title>
+                            </div>
                             <Select
                                 placeholder={t('dataExtraction.commonIndicators.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
@@ -2001,11 +2008,25 @@ const DataExtraction: React.FC = () => {
                             >
                                 {t('dataExtraction.commonIndicators.downloadButton')}
                             </Button>
-                        </Card>
+                        </div>
                     </Col>
 
                     <Col xs={24} sm={24} md={8}>
-                        <Card title={t('dataExtraction.mortalityData.title')} style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
+                        <div className="glass-card static-card" style={{ height: '100%', minHeight: 220, padding: '24px', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                <div style={{
+                                    width: '36px', height: '36px',
+                                    background: 'linear-gradient(135deg, #f5222d 0%, #cf1322 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '12px',
+                                    boxShadow: '0 4px 10px rgba(245, 34, 45, 0.3)'
+                                }}>
+                                    <TagOutlined style={{ transform: 'rotate(45deg)' }} />
+                                </div>
+                                <Title level={5} style={{ margin: 0 }}>{t('dataExtraction.mortalityData.title')}</Title>
+                            </div>
                             <Select
                                 placeholder={t('dataExtraction.mortalityData.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
@@ -2028,11 +2049,25 @@ const DataExtraction: React.FC = () => {
                             >
                                 {t('dataExtraction.mortalityData.downloadButton')}
                             </Button>
-                        </Card>
+                        </div>
                     </Col>
 
                     <Col xs={24} sm={24} md={8}>
-                        <Card title={t('dataExtraction.presetGroups.title')} style={{ height: isMobile ? 'auto' : 200, minHeight: isMobile ? 180 : undefined }}>
+                        <div className="glass-card static-card" style={{ height: '100%', minHeight: 220, padding: '24px', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                                <div style={{
+                                    width: '36px', height: '36px',
+                                    background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '12px',
+                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                }}>
+                                    <DatabaseOutlined />
+                                </div>
+                                <Title level={5} style={{ margin: 0 }}>{t('dataExtraction.presetGroups.title')}</Title>
+                            </div>
                             <Select
                                 placeholder={t('dataExtraction.presetGroups.placeholder')}
                                 style={{ width: '100%', marginBottom: 16 }}
@@ -2055,7 +2090,7 @@ const DataExtraction: React.FC = () => {
                             >
                                 {t('dataExtraction.presetGroups.downloadButton')}
                             </Button>
-                        </Card>
+                        </div>
                     </Col>
                 </Row>
 
@@ -2064,431 +2099,428 @@ const DataExtraction: React.FC = () => {
 
 
                     {/* 常见指标详细信息 */}
+                    {/* Common Indicator Details */}
                     {selectedCommonIndicator && (
-                        <div style={{ marginBottom: 16 }}>
-                            <Card
-                                title={
-                                    <Space>
-                                        <TableOutlined />
-                                        <Tag color="blue">{t('dataExtraction.commonIndicators.title')}</Tag>
+                        <div className="glass-card static-card" style={{ marginBottom: 32, padding: '32px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
+                                <div style={{
+                                    width: '40px', height: '40px',
+                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '16px',
+                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                }}>
+                                    <TableOutlined />
+                                </div>
+                                <div>
+                                    <Title level={4} style={{ margin: 0 }}>
                                         {commonIndicators.find(item => item.value === selectedCommonIndicator)?.label}
-                                    </Space>
-                                }
-                                bodyStyle={{ padding: '16px' }}
-                            >
-                                <div style={{ marginBottom: 16 }}>
-                                    <Text type="secondary">
-                                        {commonIndicators.find(item => item.value === selectedCommonIndicator)?.description}
+                                    </Title>
+                                    <Text type="secondary" style={{ fontSize: '13px' }}>
+                                        {t('dataExtraction.commonIndicators.title')}
                                     </Text>
                                 </div>
+                            </div>
 
-                                {/* 导出按钮 */}
-                                {currentIndicatorData && (
-                                    <div style={{ marginBottom: 16, textAlign: 'right' }}>
-                                        <Button
-                                            type="default"
-                                            icon={<DownloadOutlined />}
-                                            onClick={() => exportAllIndicatorData(selectedCommonIndicator)}
-                                            loading={downloadingStates.exportAll}
-                                            style={{
-                                                background: '#52c41a',
-                                                borderColor: '#52c41a',
-                                                color: 'white'
-                                            }}
-                                        >
-                                            {t('common.exportCSV')}
-                                        </Button>
-                                    </div>
-                                )}
+                            <div style={{ marginBottom: 24, fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                                {commonIndicators.find(item => item.value === selectedCommonIndicator)?.description}
+                            </div>
 
-                                {/* 数据统计信息和控制面板 */}
-                                {paginationState.total > 0 && (
-                                    <div style={{
-                                        marginBottom: 16,
-                                        padding: '12px',
-                                        backgroundColor: '#f5f5f5',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}>
-                                        <Row justify="space-between" align="middle">
-                                            <Col>
-                                                <Space>
-                                                    <Text>{t('common.pagination.total', { total: paginationState.total })}</Text>
-                                                    <Text>|</Text>
-                                                    <Text>{t('common.pagination.page')} <strong>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
-                                                </Space>
-                                            </Col>
-                                            <Col>
-                                                <Space>
-                                                    <Text>{t('common.pagination.pageSize')}:</Text>
-                                                    <Select
-                                                        size="small"
-                                                        value={paginationState.pageSize}
-                                                        onChange={(value) => {
-                                                            console.log(`用户选择页面大小: ${value}`);
-                                                            setPaginationState(prev => ({
-                                                                ...prev,
-                                                                pageSize: value,
-                                                                currentPage: 1
-                                                            }));
-                                                            if (selectedCommonIndicator) {
-                                                                // 直接传递新的页面大小，避免状态更新延迟问题
-                                                                loadIndicatorPage(selectedCommonIndicator, 1, value);
-                                                            }
-                                                        }}
-                                                        disabled={loadingIndicatorData}
-                                                        style={{ width: 80 }}
-                                                    >
-                                                        <Option value={10}>10</Option>
-                                                        <Option value={20}>20</Option>
-                                                        <Option value={50}>50</Option>
-                                                        <Option value={100}>100</Option>
-                                                        <Option value={200}>200</Option>
-                                                    </Select>
-                                                    <Text>{t('common.pagination.items')}</Text>
-                                                </Space>
-                                            </Col>
-                                        </Row>
-                                    </div>
-                                )}
+                            {/* Export Button */}
 
-                                {/* 表格容器 */}
-                                <div
-                                    id="common-indicator-table"
-                                    style={{
-                                        width: '100%',
-                                        // 固定高度：表头50px + 最初10行*40px = 450px（默认显示完整10行）
-                                        // 最大高度：表头50px + 最多20行*40px = 850px（超过20行显示滚动）
-                                        height: paginationState.pageSize <= 10 ? '450px' :
-                                            paginationState.pageSize <= 20 ? `${50 + paginationState.pageSize * 40}px` : '850px',
-                                        border: '1px solid #d9d9d9',
-                                        borderRadius: '6px',
-                                        overflow: 'auto', // 允许垂直和水平滚动
-                                        resize: 'none', // 禁用手动调整大小
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                                    }}
-                                />
 
-                                {/* 分页控件 */}
-                                {paginationState.totalPages > 1 && (
-                                    <div style={{
-                                        marginTop: 16,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}>
-                                        <Space size="middle">
-                                            <Button
-                                                disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
-                                                onClick={() => setPaginationState(prev => ({ ...prev, currentPage: 1 }))}
-                                            >
-                                                {t('common.pagination.first')}
-                                            </Button>
-                                            <Button
-                                                disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
-                                                onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
-                                            >
-                                                {t('common.pagination.prev')}
-                                            </Button>
-
-                                            {/* 页码显示 */}
-                                            <Space>
-                                                {(() => {
-                                                    const { currentPage, totalPages } = paginationState;
-                                                    const pageNumbers = [];
-                                                    const maxDisplayPages = 5;
-
-                                                    let startPage = Math.max(1, currentPage - Math.floor(maxDisplayPages / 2));
-                                                    let endPage = Math.min(totalPages, startPage + maxDisplayPages - 1);
-
-                                                    if (endPage - startPage + 1 < maxDisplayPages) {
-                                                        startPage = Math.max(1, endPage - maxDisplayPages + 1);
-                                                    }
-
-                                                    for (let i = startPage; i <= endPage; i++) {
-                                                        pageNumbers.push(
-                                                            <Button
-                                                                key={i}
-                                                                type={i === currentPage ? 'primary' : 'default'}
-                                                                disabled={loadingIndicatorData}
-                                                                onClick={() => setPaginationState(prev => ({ ...prev, currentPage: i }))}
-                                                                size="small"
-                                                            >
-                                                                {i}
-                                                            </Button>
-                                                        );
-                                                    }
-                                                    return pageNumbers;
-                                                })()}
+                            {/* Pagination and Table */}
+                            {paginationState.total > 0 && (
+                                <div style={{
+                                    marginBottom: 16,
+                                    padding: '16px',
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(0,0,0,0.05)'
+                                }}>
+                                    <Row justify="space-between" align="middle">
+                                        <Col>
+                                            <Space split={<Divider type="vertical" />}>
+                                                <Text>{t('common.pagination.total', { total: paginationState.total })}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#1890ff' }}>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
                                             </Space>
-
-                                            <Button
-                                                disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
-                                                onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
-                                            >
-                                                {t('common.pagination.next')}
-                                            </Button>
-                                            <Button
-                                                disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
-                                                onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
-                                            >
-                                                {t('common.pagination.last')}
-                                            </Button>
-
-                                            {/* 跳转到指定页 */}
+                                        </Col>
+                                        <Col>
                                             <Space>
-                                                <Text>{t('common.pagination.jump')}</Text>
-                                                <InputNumber
+                                                <Text>{t('common.pagination.pageSize')}:</Text>
+                                                <Select
                                                     size="small"
-                                                    min={1}
-                                                    max={paginationState.totalPages}
-                                                    value={paginationState.currentPage}
+                                                    value={paginationState.pageSize}
                                                     onChange={(value) => {
-                                                        if (value && value !== paginationState.currentPage) {
-                                                            setPaginationState(prev => ({ ...prev, currentPage: value }));
+                                                        setPaginationState(prev => ({
+                                                            ...prev,
+                                                            pageSize: value,
+                                                            currentPage: 1
+                                                        }));
+                                                        if (selectedCommonIndicator) {
+                                                            loadIndicatorPage(selectedCommonIndicator, 1, value);
                                                         }
                                                     }}
                                                     disabled={loadingIndicatorData}
-                                                    style={{ width: 60 }}
-                                                />
-                                                <Text>{t('common.pagination.page')}</Text>
+                                                    style={{ width: 100 }}
+                                                >
+                                                    <Option value={10}>10 / page</Option>
+                                                    <Option value={20}>20 / page</Option>
+                                                    <Option value={50}>50 / page</Option>
+                                                    <Option value={100}>100 / page</Option>
+                                                    <Option value={200}>200 / page</Option>
+                                                </Select>
                                             </Space>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            )}
+
+                            {/* Table Container */}
+                            <div
+                                id="common-indicator-table"
+                                style={{
+                                    width: '100%',
+                                    height: paginationState.pageSize <= 10 ? '450px' :
+                                        paginationState.pageSize <= 20 ? `${50 + paginationState.pageSize * 46}px` : '850px',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                    background: 'rgba(255,255,255,0.3)'
+                                }}
+                            />
+
+                            {/* Pagination */}
+                            {paginationState.totalPages > 1 && (
+                                <div style={{
+                                    marginTop: 24,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Space size="middle">
+                                        <Button
+                                            disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
+                                            onClick={() => setPaginationState(prev => ({ ...prev, currentPage: 1 }))}
+                                        >
+                                            {t('common.pagination.first')}
+                                        </Button>
+                                        <Button
+                                            disabled={paginationState.currentPage <= 1 || loadingIndicatorData}
+                                            onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                                        >
+                                            {t('common.pagination.prev')}
+                                        </Button>
+
+                                        {/* Page Numbers */}
+                                        <Space>
+                                            {(() => {
+                                                const { currentPage, totalPages } = paginationState;
+                                                const pageNumbers = [];
+                                                const maxDisplayPages = 5;
+
+                                                let startPage = Math.max(1, currentPage - Math.floor(maxDisplayPages / 2));
+                                                let endPage = Math.min(totalPages, startPage + maxDisplayPages - 1);
+
+                                                if (endPage - startPage + 1 < maxDisplayPages) {
+                                                    startPage = Math.max(1, endPage - maxDisplayPages + 1);
+                                                }
+
+                                                for (let i = startPage; i <= endPage; i++) {
+                                                    pageNumbers.push(
+                                                        <Button
+                                                            key={i}
+                                                            type={i === currentPage ? 'primary' : 'default'}
+                                                            className={i !== currentPage ? 'glass-button' : ''}
+                                                            disabled={loadingIndicatorData}
+                                                            onClick={() => setPaginationState(prev => ({ ...prev, currentPage: i }))}
+                                                            size="small"
+                                                            style={i === currentPage ? { background: '#1890ff' } : {}}
+                                                        >
+                                                            {i}
+                                                        </Button>
+                                                    );
+                                                }
+                                                return pageNumbers;
+                                            })()}
                                         </Space>
-                                    </div>
-                                )}
-                            </Card>
+
+                                        <Button
+                                            disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
+                                            onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                                        >
+                                            {t('common.pagination.next')}
+                                        </Button>
+                                        <Button
+                                            disabled={paginationState.currentPage >= paginationState.totalPages || loadingIndicatorData}
+                                            onClick={() => setPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
+                                        >
+                                            {t('common.pagination.last')}
+                                        </Button>
+
+                                        {/* Jump */}
+                                        <Space>
+                                            <Text>{t('common.pagination.jump')}</Text>
+                                            <InputNumber
+                                                size="small"
+                                                min={1}
+                                                max={paginationState.totalPages}
+                                                value={paginationState.currentPage}
+                                                onChange={(value) => {
+                                                    if (value && value !== paginationState.currentPage) {
+                                                        setPaginationState(prev => ({ ...prev, currentPage: value }));
+                                                    }
+                                                }}
+                                                disabled={loadingIndicatorData}
+                                                style={{ width: 60 }}
+                                            />
+                                            <Text>{t('common.pagination.page')}</Text>
+                                        </Space>
+                                    </Space>
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* 死亡指标详细信息 */}
                     {selectedMortalityIndicator && (
-                        <div style={{ marginBottom: 16 }}>
-                            <Card
-                                title={
-                                    <Space>
-                                        <TableOutlined />
-                                        <Tag color="red">{t('dataExtraction.mortalityData.title')}</Tag>
+                        <div className="glass-card static-card" style={{ marginBottom: 32, padding: '32px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
+                                <div style={{
+                                    width: '40px', height: '40px',
+                                    background: 'linear-gradient(135deg, #f5222d 0%, #cf1322 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '16px',
+                                    boxShadow: '0 4px 10px rgba(245, 34, 45, 0.3)'
+                                }}>
+                                    <TagOutlined style={{ transform: 'rotate(45deg)' }} />
+                                </div>
+                                <div>
+                                    <Title level={4} style={{ margin: 0 }}>
                                         {mortalityIndicators.find(item => item.value === selectedMortalityIndicator)?.label}
-                                    </Space>
-                                }
-                                bodyStyle={{ padding: '16px' }}
-                            >
-                                <div style={{ marginBottom: 16 }}>
-                                    <Text type="secondary">
-                                        {mortalityIndicators.find(item => item.value === selectedMortalityIndicator)?.description}
+                                    </Title>
+                                    <Text type="secondary" style={{ fontSize: '13px' }}>
+                                        {t('dataExtraction.mortalityData.title')}
                                     </Text>
                                 </div>
+                            </div>
 
-                                {/* 导出按钮 */}
-                                {currentMortalityData && (
-                                    <div style={{ marginBottom: 16, textAlign: 'right' }}>
-                                        <Button
-                                            type="default"
-                                            icon={<DownloadOutlined />}
-                                            onClick={() => exportAllMortalityData(selectedMortalityIndicator)}
-                                            loading={downloadingStates.exportAll}
-                                            style={{
-                                                background: '#f5222d',
-                                                borderColor: '#f5222d',
-                                                color: 'white'
-                                            }}
-                                        >
-                                            {t('common.exportCSV')}
-                                        </Button>
-                                    </div>
-                                )}
+                            <div style={{ marginBottom: 24, fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+                                {mortalityIndicators.find(item => item.value === selectedMortalityIndicator)?.description}
+                            </div>
 
-                                {/* 数据统计信息和控制面板 */}
-                                {mortalityPaginationState.total > 0 && (
-                                    <div style={{
-                                        marginBottom: 16,
-                                        padding: '12px',
-                                        backgroundColor: '#f5f5f5',
-                                        borderRadius: '4px',
-                                        fontSize: '14px'
-                                    }}>
-                                        <Row justify="space-between" align="middle">
-                                            <Col>
-                                                <Space>
-                                                    <Text>{t('common.pagination.total', { total: mortalityPaginationState.total })}</Text>
-                                                    <Text>|</Text>
-                                                    <Text>当前页: <strong>{mortalityPaginationState.currentPage}</strong> / {mortalityPaginationState.totalPages}</Text>
-                                                </Space>
-                                            </Col>
-                                            <Col>
-                                                <Space>
-                                                    <Text>{t('common.pagination.pageSize')}:</Text>
-                                                    <Select
-                                                        value={mortalityPaginationState.pageSize}
-                                                        onChange={(value) => {
-                                                            setMortalityPaginationState(prev => ({
-                                                                ...prev,
-                                                                currentPage: 1,
-                                                                pageSize: value
-                                                            }));
-                                                            if (selectedMortalityIndicator) {
-                                                                loadMortalityPage(selectedMortalityIndicator, 1, value);
-                                                            }
-                                                        }}
-                                                        disabled={loadingMortalityData}
-                                                        style={{ width: 80 }}
-                                                    >
-                                                        <Option value={10}>10</Option>
-                                                        <Option value={20}>20</Option>
-                                                        <Option value={50}>50</Option>
-                                                        <Option value={100}>100</Option>
-                                                        <Option value={200}>200</Option>
-                                                    </Select>
-                                                    <Text>{t('common.pagination.items')}</Text>
-                                                </Space>
-                                            </Col>
-                                        </Row>
-                                    </div>
-                                )}
+                            {/* Export Button */}
 
-                                {/* 表格容器 */}
-                                <div
-                                    id="mortality-table"
-                                    style={{
-                                        width: '100%',
-                                        height: mortalityPaginationState.pageSize <= 10 ? '450px' :
-                                            mortalityPaginationState.pageSize <= 20 ? `${50 + mortalityPaginationState.pageSize * 40}px` : '850px',
-                                        border: '1px solid #d9d9d9',
-                                        borderRadius: '6px',
-                                        overflow: 'auto',
-                                        resize: 'none',
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                                    }}
-                                />
 
-                                {/* 分页控件 */}
-                                {mortalityPaginationState.totalPages > 1 && (
-                                    <div style={{
-                                        marginTop: 16,
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center'
-                                    }}>
-                                        <Space size="middle">
-                                            <Button
-                                                disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
-                                                onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: 1 }))}
-                                            >
-                                                {t('common.pagination.first')}
-                                            </Button>
-                                            <Button
-                                                disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
-                                                onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
-                                            >
-                                                {t('common.pagination.prev')}
-                                            </Button>
-
-                                            {/* 页码显示 */}
-                                            <Space>
-                                                {(() => {
-                                                    const { currentPage, totalPages } = mortalityPaginationState;
-                                                    const pageNumbers = [];
-                                                    const maxDisplayPages = 5;
-
-                                                    let startPage = Math.max(1, currentPage - Math.floor(maxDisplayPages / 2));
-                                                    let endPage = Math.min(totalPages, startPage + maxDisplayPages - 1);
-
-                                                    if (endPage - startPage + 1 < maxDisplayPages) {
-                                                        startPage = Math.max(1, endPage - maxDisplayPages + 1);
-                                                    }
-
-                                                    for (let i = startPage; i <= endPage; i++) {
-                                                        pageNumbers.push(
-                                                            <Button
-                                                                key={i}
-                                                                type={i === currentPage ? 'primary' : 'default'}
-                                                                disabled={loadingMortalityData}
-                                                                onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: i }))}
-                                                                size="small"
-                                                            >
-                                                                {i}
-                                                            </Button>
-                                                        );
-                                                    }
-                                                    return pageNumbers;
-                                                })()}
+                            {/* Pagination and Table Info */}
+                            {mortalityPaginationState.total > 0 && (
+                                <div style={{
+                                    marginBottom: 16,
+                                    padding: '16px',
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(0,0,0,0.05)'
+                                }}>
+                                    <Row justify="space-between" align="middle">
+                                        <Col>
+                                            <Space split={<Divider type="vertical" />}>
+                                                <Text>{t('common.pagination.total', { total: mortalityPaginationState.total })}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#f5222d' }}>{mortalityPaginationState.currentPage}</strong> / {mortalityPaginationState.totalPages}</Text>
                                             </Space>
-
-                                            <Button
-                                                disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
-                                                onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
-                                            >
-                                                {t('common.pagination.next')}
-                                            </Button>
-                                            <Button
-                                                disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
-                                                onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
-                                            >
-                                                {t('common.pagination.last')}
-                                            </Button>
-
-                                            {/* 跳转到指定页 */}
+                                        </Col>
+                                        <Col>
                                             <Space>
-                                                <Text>{t('common.pagination.jump')}</Text>
-                                                <InputNumber
+                                                <Text>{t('common.pagination.pageSize')}:</Text>
+                                                <Select
                                                     size="small"
-                                                    min={1}
-                                                    max={mortalityPaginationState.totalPages}
-                                                    value={mortalityPaginationState.currentPage}
+                                                    value={mortalityPaginationState.pageSize}
                                                     onChange={(value) => {
-                                                        if (value && value !== mortalityPaginationState.currentPage) {
-                                                            setMortalityPaginationState(prev => ({ ...prev, currentPage: value }));
+                                                        setMortalityPaginationState(prev => ({
+                                                            ...prev,
+                                                            currentPage: 1,
+                                                            pageSize: value
+                                                        }));
+                                                        if (selectedMortalityIndicator) {
+                                                            loadMortalityPage(selectedMortalityIndicator, 1, value);
                                                         }
                                                     }}
                                                     disabled={loadingMortalityData}
-                                                    style={{ width: 60 }}
-                                                />
-                                                <Text>{t('common.pagination.page')}</Text>
+                                                    style={{ width: 100 }}
+                                                >
+                                                    <Option value={10}>10 / page</Option>
+                                                    <Option value={20}>20 / page</Option>
+                                                    <Option value={50}>50 / page</Option>
+                                                    <Option value={100}>100 / page</Option>
+                                                    <Option value={200}>200 / page</Option>
+                                                </Select>
                                             </Space>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            )}
+
+                            {/* Table Container */}
+                            <div
+                                id="mortality-table"
+                                style={{
+                                    width: '100%',
+                                    height: mortalityPaginationState.pageSize <= 10 ? '450px' :
+                                        mortalityPaginationState.pageSize <= 20 ? `${50 + mortalityPaginationState.pageSize * 46}px` : '850px',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                    background: 'rgba(255,255,255,0.3)',
+                                    position: 'relative'
+                                }}
+                            />
+
+                            {/* Pagination */}
+                            {mortalityPaginationState.totalPages > 1 && (
+                                <div style={{
+                                    marginTop: 24,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Space size="middle">
+                                        <Button
+                                            disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
+                                            onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: 1 }))}
+                                        >
+                                            {t('common.pagination.first')}
+                                        </Button>
+                                        <Button
+                                            disabled={mortalityPaginationState.currentPage <= 1 || loadingMortalityData}
+                                            onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                                        >
+                                            {t('common.pagination.prev')}
+                                        </Button>
+
+                                        {/* Page Numbers */}
+                                        <Space>
+                                            {(() => {
+                                                const { currentPage, totalPages } = mortalityPaginationState;
+                                                const pageNumbers = [];
+                                                const maxDisplayPages = 5;
+
+                                                let startPage = Math.max(1, currentPage - Math.floor(maxDisplayPages / 2));
+                                                let endPage = Math.min(totalPages, startPage + maxDisplayPages - 1);
+
+                                                if (endPage - startPage + 1 < maxDisplayPages) {
+                                                    startPage = Math.max(1, endPage - maxDisplayPages + 1);
+                                                }
+
+                                                for (let i = startPage; i <= endPage; i++) {
+                                                    pageNumbers.push(
+                                                        <Button
+                                                            key={i}
+                                                            type={i === currentPage ? 'primary' : 'default'}
+                                                            className={i !== currentPage ? 'glass-button' : ''}
+                                                            disabled={loadingMortalityData}
+                                                            onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: i }))}
+                                                            size="small"
+                                                            style={i === currentPage ? { background: '#f5222d' } : {}}
+                                                        >
+                                                            {i}
+                                                        </Button>
+                                                    );
+                                                }
+                                                return pageNumbers;
+                                            })()}
                                         </Space>
-                                    </div>
-                                )}
-                            </Card>
+
+                                        <Button
+                                            disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
+                                            onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                                        >
+                                            {t('common.pagination.next')}
+                                        </Button>
+                                        <Button
+                                            disabled={mortalityPaginationState.currentPage >= mortalityPaginationState.totalPages || loadingMortalityData}
+                                            onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
+                                        >
+                                            {t('common.pagination.last')}
+                                        </Button>
+
+                                        {/* Jump */}
+                                        <Space>
+                                            <Text>{t('common.pagination.jump')}</Text>
+                                            <InputNumber
+                                                size="small"
+                                                min={1}
+                                                max={mortalityPaginationState.totalPages}
+                                                value={mortalityPaginationState.currentPage}
+                                                onChange={(value) => {
+                                                    if (value && value !== mortalityPaginationState.currentPage) {
+                                                        setMortalityPaginationState(prev => ({ ...prev, currentPage: value }));
+                                                    }
+                                                }}
+                                                disabled={loadingMortalityData}
+                                                style={{ width: 60 }}
+                                            />
+                                            <Text>{t('common.pagination.page')}</Text>
+                                        </Space>
+                                    </Space>
+                                </div>
+                            )}
                         </div>
                     )}
 
                     {/* 预设变量组详细信息 */}
                     {selectedPresetGroup && (
-                        <div style={{ marginBottom: 16 }}>
-                            <Card
-                                title={
-                                    <Space>
-                                        <TableOutlined />
-                                        <Tag color="green">{t('dataExtraction.presetGroups.title')}</Tag>
-                                        {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.label}
-                                    </Space>
-                                }
-                            >
-                                <div style={{ marginBottom: 16 }}>
-                                    <Text type="secondary">
-                                        {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.description}
-                                    </Text>
-                                    <div style={{ marginTop: 8 }}>
-                                        <Text>包含变量：</Text>
-                                        {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.variables.map(variable => (
-                                            <Tag key={variable} style={{ margin: '2px' }}>{variable}</Tag>
-                                        ))}
-                                    </div>
+                        <div className="glass-card static-card" style={{ marginBottom: 32, padding: '32px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
+                                <div style={{
+                                    width: '40px', height: '40px',
+                                    background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                                    borderRadius: '10px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    color: 'white', fontSize: '1.2rem',
+                                    marginRight: '16px',
+                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                }}>
+                                    <DatabaseOutlined />
                                 </div>
-                                <div
-                                    id="preset-group-table"
-                                    style={{
-                                        width: '100%',
-                                        height: 'auto',
-                                        minHeight: '300px',
-                                        maxHeight: '500px',
-                                        border: '1px solid #d9d9d9',
-                                        borderRadius: '6px',
-                                        overflow: 'hidden',
-                                        resize: 'vertical'
-                                    }}
-                                />
-                            </Card>
+                                <div style={{ flex: 1 }}>
+                                    <Title level={4} style={{ margin: 0 }}>
+                                        {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.label}
+                                    </Title>
+                                    <Text type="secondary" style={{ fontSize: '13px' }}>
+                                        {t('dataExtraction.presetGroups.title')}
+                                    </Text>
+                                </div>
+                            </div>
+
+                            <div style={{ marginBottom: 24 }}>
+                                <div style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: '1.6', marginBottom: '16px' }}>
+                                    {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.description}
+                                </div>
+                                <div style={{ marginTop: 8 }}>
+                                    <Text type="secondary" style={{ marginRight: '8px' }}>包含变量：</Text>
+                                    {presetVariableGroups.find(item => item.value === selectedPresetGroup)?.variables.map(variable => (
+                                        <Tag key={variable} color="blue" style={{ margin: '2px' }}>{variable}</Tag>
+                                    ))}
+                                </div>
+                            </div>
+                            <div
+                                id="preset-group-table"
+                                style={{
+                                    width: '100%',
+                                    height: 'auto',
+                                    minHeight: '300px',
+                                    maxHeight: '500px',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    resize: 'vertical',
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                                    background: 'rgba(255,255,255,0.3)',
+                                    marginBottom: '16px'
+                                }}
+                            />
                         </div>
                     )}
                 </div>

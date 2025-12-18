@@ -123,7 +123,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                         </button>
 
                         <button
-                            onClick={() => window.open('.cdc.gov/nchs/nhanes/default.aspx', '_blank')}
+                            onClick={() => window.open('https://wwwn.cdc.gov/nchs/nhanes/default.aspx', '_blank')}
                             style={{
                                 padding: '12px 32px',
                                 fontSize: '1rem',
