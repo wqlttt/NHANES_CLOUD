@@ -1581,7 +1581,7 @@ const DataExtraction: React.FC = () => {
 
     return (
         <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
-            <div className="hero-section" style={{ padding: '40px 0 60px', textAlign: 'center', minHeight: 'auto' }}>
+            <div className="hero-section">
                 <div style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -1595,12 +1595,12 @@ const DataExtraction: React.FC = () => {
                     marginBottom: '24px',
                     border: '1px solid rgba(99, 102, 241, 0.2)'
                 }}>
-                    <DatabaseOutlined /> NHANES Data Engine
+                    <DatabaseOutlined /> NHANES Data Extraction
                 </div>
-                <Title level={1} className="hero-title" style={{ fontSize: '3rem', marginBottom: '16px', fontWeight: 800, background: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <Title level={1} className="hero-title">
                     {t('dataExtraction.title')}
                 </Title>
-                <Text className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', margin: '0 auto', display: 'block', maxWidth: '700px', lineHeight: 1.6 }}>
+                <Text className="hero-subtitle">
                     {t('dataExtraction.subtitle')}
                 </Text>
             </div>

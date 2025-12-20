@@ -34,6 +34,11 @@ import {
     LineChartOutlined,
     StopOutlined,
     ReloadOutlined,
+    SettingOutlined,
+    BarChartOutlined,
+    CloudUploadOutlined,
+    TableOutlined,
+    LoadingOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text, Paragraph } = Typography;
@@ -965,9 +970,32 @@ const DataAnalysis: React.FC = () => {
 
         if (selectedAnalysis === 'rcs' && rcsResult) {
             return (
-                <Row gutter={24}>
-                    <Col span={24}>
-                        <Card title={t('dataAnalysis.results.rcs.plot')} bordered={false} style={{ marginBottom: 24, borderRadius: '12px' }}>
+                <div>
+                    <div style={{ marginBottom: 32 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '8px',
+                                background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight: '12px',
+                                boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                            }}>
+                                <LineChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                            </div>
+                            <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.rcs.plot')}</Title>
+                        </div>
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.4)',
+                            backdropFilter: 'blur(10px)',
+                            borderRadius: '16px',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                            padding: '24px',
+                        }}>
                             {rcsResult.plot ? (
                                 <Image
                                     src={rcsResult.plot}
@@ -975,19 +1003,45 @@ const DataAnalysis: React.FC = () => {
                                     style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }}
                                 />
                             ) : (
-                                <Text>{t('dataAnalysis.results.rcs.noPlot')}</Text>
+                                <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+                                    <Text>{t('dataAnalysis.results.rcs.noPlot')}</Text>
+                                </div>
                             )}
-                        </Card>
-                    </Col>
-                    <Col span={24}>
-                        <Card title={t('dataAnalysis.results.rcs.statistics')} bordered={false} style={{ borderRadius: '12px' }}>
+                        </div>
+                    </div>
+
+                    <div style={{ marginBottom: 24 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                borderRadius: '8px',
+                                background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight: '12px',
+                                boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                            }}>
+                                <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                            </div>
+                            <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.rcs.statistics')}</Title>
+                        </div>
+                        <div style={{
+                            background: 'rgba(255, 255, 255, 0.4)',
+                            backdropFilter: 'blur(10px)',
+                            borderRadius: '16px',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                            padding: '24px',
+                        }}>
                             <Space direction="vertical">
                                 <Text><strong>{t('dataAnalysis.results.rcs.modelType')}</strong> {rcsResult.model_type}</Text>
                                 {rcsResult.aic && <Text><strong>{t('dataAnalysis.results.rcs.aic')}</strong> {rcsResult.aic.toFixed(2)}</Text>}
                             </Space>
-                        </Card>
-                    </Col>
-                </Row>
+                        </div>
+                    </div>
+                </div>
             );
         }
         if (selectedAnalysis === 'ttest' && !ttestResult) return null;
@@ -1011,29 +1065,80 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.cox.forestPlot')} size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Image
-                                            src={coxResult.plot}
-                                            alt={t('dataAnalysis.results.cox.forestPlot')}
-                                            style={{ maxWidth: '100%', height: 'auto' }}
-                                            preview={{
-                                                mask: t('dataVisualization.result.previewImage')
-                                            }}
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.cox.forestPlot')}</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Image
+                                                src={coxResult.plot}
+                                                alt={t('dataAnalysis.results.cox.forestPlot')}
+                                                style={{ maxWidth: '100%', height: 'auto' }}
+                                                preview={{
+                                                    mask: t('dataVisualization.result.previewImage')
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.cox.hazardRatios')}</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Table
+                                            columns={coxColumns}
+                                            dataSource={coxTableData}
+                                            pagination={false}
+                                            size="small"
+                                            style={{ background: 'transparent' }}
                                         />
                                     </div>
-                                </Card>
-                            </Col>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.cox.hazardRatios')} size="small">
-                                    <Table
-                                        columns={coxColumns}
-                                        dataSource={coxTableData}
-                                        pagination={false}
-                                        size="small"
-                                    />
-                                </Card>
+                                </div>
                             </Col>
                         </Row>
 
@@ -1042,6 +1147,7 @@ const DataAnalysis: React.FC = () => {
                             description={t('dataAnalysis.results.cox.summary.description', { count: coxResult.covariates.length })}
                             type="success"
                             showIcon
+                            style={{ borderRadius: '12px' }}
                         />
                     </div>
                 );
@@ -1085,73 +1191,149 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.linear.plot')} size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        {linearResult.plot ? (
-                                            <Image
-                                                src={linearResult.plot}
-                                                alt={t('dataAnalysis.results.linear.plot')}
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                                preview={{
-                                                    mask: t('dataVisualization.result.previewImage')
-                                                }}
-                                                onError={(e) => {
-                                                    console.error('线性回归图片加载失败:', e);
-                                                    console.log('图片URL:', linearResult.plot?.substring(0, 100));
-                                                }}
-                                            />
-                                        ) : (
-                                            <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                {t('dataVisualization.result.noData')}
-                                            </div>
-                                        )}
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(6, 182, 212, 0.3)'
+                                        }}>
+                                            <FundOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.linear.plot')}</Title>
                                     </div>
-                                </Card>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            {linearResult.plot ? (
+                                                <Image
+                                                    src={linearResult.plot}
+                                                    alt={t('dataAnalysis.results.linear.plot')}
+                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                    preview={{
+                                                        mask: t('dataVisualization.result.previewImage')
+                                                    }}
+                                                    onError={(e) => {
+                                                        console.error('线性回归图片加载失败:', e);
+                                                        console.log('图片URL:', linearResult.plot?.substring(0, 100));
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                                    {t('dataVisualization.result.noData')}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.linear.statistics')} size="small">
-                                    <Row gutter={16} style={{ marginBottom: 16 }}>
-                                        <Col span={12}>
-                                            <Statistic title={t('dataAnalysis.results.linear.stats.r2')} value={linearResult.r2_score} precision={4} />
-                                        </Col>
-                                        <Col span={12}>
-                                            <Statistic title={t('dataAnalysis.results.linear.stats.mse')} value={linearResult.mse} precision={4} />
-                                        </Col>
-                                    </Row>
-                                    {linearResult.correlation && (
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.linear.statistics')}</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
                                         <Row gutter={16} style={{ marginBottom: 16 }}>
-                                            <Col span={12}>
-                                                <Statistic title={t('dataAnalysis.results.linear.stats.correlation')} value={linearResult.correlation} precision={4} />
+                                            <Col xs={24} lg={12}>
+                                                <Statistic title={t('dataAnalysis.results.linear.stats.r2')} value={linearResult.r2_score} precision={4} />
                                             </Col>
-                                            <Col span={12}>
-                                                <Statistic title={t('dataAnalysis.results.linear.stats.sampleSize')} value={linearResult.sample_size} />
+                                            <Col xs={24} lg={12}>
+                                                <Statistic title={t('dataAnalysis.results.linear.stats.mse')} value={linearResult.mse} precision={4} />
                                             </Col>
                                         </Row>
-                                    )}
-                                    <Divider />
-                                    <Text strong>{t('dataAnalysis.results.linear.equation')}</Text>
-                                    <div style={{
-                                        backgroundColor: '#f5f5f5',
-                                        padding: '8px 12px',
-                                        borderRadius: '4px',
-                                        marginTop: '8px',
-                                        fontFamily: 'monospace'
-                                    }}>
-                                        {linearResult.equation}
+                                        {linearResult.correlation && (
+                                            <Row gutter={16} style={{ marginBottom: 16 }}>
+                                                <Col xs={24} lg={12}>
+                                                    <Statistic title={t('dataAnalysis.results.linear.stats.correlation')} value={linearResult.correlation} precision={4} />
+                                                </Col>
+                                                <Col xs={24} lg={12}>
+                                                    <Statistic title={t('dataAnalysis.results.linear.stats.sampleSize')} value={linearResult.sample_size} />
+                                                </Col>
+                                            </Row>
+                                        )}
+                                        <Divider />
+                                        <Text strong>{t('dataAnalysis.results.linear.equation')}</Text>
+                                        <div style={{
+                                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                                            padding: '8px 12px',
+                                            borderRadius: '4px',
+                                            marginTop: '8px',
+                                            fontFamily: 'monospace'
+                                        }}>
+                                            {linearResult.equation}
+                                        </div>
                                     </div>
-                                </Card>
+                                </div>
                             </Col>
                         </Row>
 
-                        <Card title={t('dataAnalysis.results.linear.coefficients')} size="small" style={{ marginBottom: 16 }}>
-                            <Table
-                                columns={linearColumns}
-                                dataSource={linearTableData}
-                                pagination={false}
-                                size="small"
-                            />
-                        </Card>
+                        <div style={{ marginBottom: 16 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                <div style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: '12px',
+                                    boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                }}>
+                                    <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                </div>
+                                <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.linear.coefficients')}</Title>
+                            </div>
+                            <div style={{
+                                background: 'rgba(255, 255, 255, 0.4)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                padding: '24px',
+                            }}>
+                                <Table
+                                    columns={linearColumns}
+                                    dataSource={linearTableData}
+                                    pagination={false}
+                                    size="small"
+                                    style={{ background: 'transparent' }}
+                                />
+                            </div>
+                        </div>
 
                         <Alert
                             message={t('dataAnalysis.results.linear.summary.title')}
@@ -1163,6 +1345,7 @@ const DataAnalysis: React.FC = () => {
                             })}
                             type="success"
                             showIcon
+                            style={{ borderRadius: '12px' }}
                         />
                     </div>
                 );
@@ -1195,58 +1378,134 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.logistic.plot')} size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        {logisticResult.plot ? (
-                                            <Image
-                                                src={logisticResult.plot}
-                                                alt={t('dataAnalysis.results.logistic.plot')}
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                                preview={{
-                                                    mask: t('dataVisualization.result.previewImage')
-                                                }}
-                                                onError={(e) => {
-                                                    console.error('逻辑回归图片加载失败:', e);
-                                                    console.log('图片URL:', logisticResult.plot?.substring(0, 100));
-                                                }}
-                                            />
-                                        ) : (
-                                            <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                {t('dataVisualization.result.noData')}
-                                            </div>
-                                        )}
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                        }}>
+                                            <CalculatorOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.logistic.plot')}</Title>
                                     </div>
-                                </Card>
-                            </Col>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.logistic.statistics')} size="small">
-                                    <Row gutter={16} style={{ marginBottom: 16 }}>
-                                        <Col span={24}>
-                                            <Statistic title={t('dataAnalysis.results.logistic.accuracy')} value={logisticResult.accuracy * 100} precision={2} suffix="%" />
-                                        </Col>
-                                    </Row>
-                                    <Divider />
-                                    <div>
-                                        <Text strong>{t('dataAnalysis.results.logistic.modelInfo.title')}</Text>
-                                        <div style={{ marginTop: '8px' }}>
-                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.xVar')} {logisticResult.x_var}</Text><br />
-                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.yVar')} {logisticResult.y_var}</Text><br />
-                                            <Text>{t('dataAnalysis.results.logistic.modelInfo.type')}</Text>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            {logisticResult.plot ? (
+                                                <Image
+                                                    src={logisticResult.plot}
+                                                    alt={t('dataAnalysis.results.logistic.plot')}
+                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                    preview={{
+                                                        mask: t('dataVisualization.result.previewImage')
+                                                    }}
+                                                    onError={(e) => {
+                                                        console.error('逻辑回归图片加载失败:', e);
+                                                        console.log('图片URL:', logisticResult.plot?.substring(0, 100));
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                                    {t('dataVisualization.result.noData')}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </Card>
+                                </div>
+                            </Col>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.logistic.statistics')}</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Row gutter={16} style={{ marginBottom: 16 }}>
+                                            <Col span={24}>
+                                                <Statistic title={t('dataAnalysis.results.logistic.accuracy')} value={logisticResult.accuracy * 100} precision={2} suffix="%" />
+                                            </Col>
+                                        </Row>
+                                        <Divider />
+                                        <div>
+                                            <Text strong>{t('dataAnalysis.results.logistic.modelInfo.title')}</Text>
+                                            <div style={{ marginTop: '8px' }}>
+                                                <Text>{t('dataAnalysis.results.logistic.modelInfo.xVar')} {logisticResult.x_var}</Text><br />
+                                                <Text>{t('dataAnalysis.results.logistic.modelInfo.yVar')} {logisticResult.y_var}</Text><br />
+                                                <Text>{t('dataAnalysis.results.logistic.modelInfo.type')}</Text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
 
-                        <Card title={t('dataAnalysis.results.logistic.coefficients')} size="small" style={{ marginBottom: 16 }}>
-                            <Table
-                                columns={logisticColumns}
-                                dataSource={logisticTableData}
-                                pagination={false}
-                                size="small"
-                            />
-                        </Card>
+                        <div style={{ marginBottom: 16 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                <div style={{
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '8px',
+                                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    marginRight: '12px',
+                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                }}>
+                                    <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                </div>
+                                <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.logistic.coefficients')}</Title>
+                            </div>
+                            <div style={{
+                                background: 'rgba(255, 255, 255, 0.4)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                padding: '24px',
+                            }}>
+                                <Table
+                                    columns={logisticColumns}
+                                    dataSource={logisticTableData}
+                                    pagination={false}
+                                    size="small"
+                                    style={{ background: 'transparent' }}
+                                />
+                            </div>
+                        </div>
 
                         <Alert
                             message={t('dataAnalysis.results.logistic.summary.title')}
@@ -1258,6 +1517,7 @@ const DataAnalysis: React.FC = () => {
                             })}
                             type="success"
                             showIcon
+                            style={{ borderRadius: '12px' }}
                         />
                     </div>
                 );
@@ -1268,56 +1528,106 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.multinomial.plot')} size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        {multinomialResult.plot ? (
-                                            <Image
-                                                src={multinomialResult.plot}
-                                                alt={t('dataAnalysis.results.multinomial.plot')}
-                                                style={{ maxWidth: '100%', height: 'auto' }}
-                                                preview={{
-                                                    mask: t('dataVisualization.result.previewImage')
-                                                }}
-                                                onError={(e) => {
-                                                    console.error('多分类回归图片加载失败:', e);
-                                                    console.log('图片URL:', multinomialResult.plot?.substring(0, 100));
-                                                }}
-                                            />
-                                        ) : (
-                                            <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
-                                                {t('dataVisualization.result.noData')}
-                                            </div>
-                                        )}
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                        }}>
+                                            <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.multinomial.plot')}</Title>
                                     </div>
-                                </Card>
-                            </Col>
-                            <Col span={12}>
-                                <Card title={t('dataAnalysis.results.multinomial.statistics')} size="small">
-                                    <Row gutter={16} style={{ marginBottom: 16 }}>
-                                        <Col span={12}>
-                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.accuracy')} value={multinomialResult.accuracy * 100} precision={2} suffix="%" />
-                                        </Col>
-                                        <Col span={12}>
-                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.classes')} value={multinomialResult.n_classes} />
-                                        </Col>
-                                    </Row>
-                                    <Row gutter={16} style={{ marginBottom: 16 }}>
-                                        <Col span={24}>
-                                            <Statistic title={t('dataAnalysis.results.multinomial.stats.sampleSize')} value={multinomialResult.sample_size} />
-                                        </Col>
-                                    </Row>
-                                    <Divider />
-                                    <div>
-                                        <Text strong>{t('dataAnalysis.results.multinomial.modelInfo.title')}</Text>
-                                        <div style={{ marginTop: '8px' }}>
-                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.xVars')} {multinomialResult.x_vars.join(', ')}</Text><br />
-                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.yVar')} {multinomialResult.y_var}</Text><br />
-                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.labels')} {multinomialResult.class_labels.join(', ')}</Text><br />
-                                            <Text>{t('dataAnalysis.results.multinomial.modelInfo.type')}</Text>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            {multinomialResult.plot ? (
+                                                <Image
+                                                    src={multinomialResult.plot}
+                                                    alt={t('dataAnalysis.results.multinomial.plot')}
+                                                    style={{ maxWidth: '100%', height: 'auto' }}
+                                                    preview={{
+                                                        mask: t('dataVisualization.result.previewImage')
+                                                    }}
+                                                    onError={(e) => {
+                                                        console.error('多分类回归图片加载失败:', e);
+                                                        console.log('图片URL:', multinomialResult.plot?.substring(0, 100));
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div style={{ padding: '40px', textAlign: 'center', color: '#999' }}>
+                                                    {t('dataVisualization.result.noData')}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
-                                </Card>
+                                </div>
+                            </Col>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.results.multinomial.statistics')}</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Row gutter={16} style={{ marginBottom: 16 }}>
+                                            <Col xs={24} lg={12}>
+                                                <Statistic title={t('dataAnalysis.results.multinomial.stats.accuracy')} value={multinomialResult.accuracy * 100} precision={2} suffix="%" />
+                                            </Col>
+                                            <Col xs={24} lg={12}>
+                                                <Statistic title={t('dataAnalysis.results.multinomial.stats.classes')} value={multinomialResult.n_classes} />
+                                            </Col>
+                                        </Row>
+                                        <Row gutter={16} style={{ marginBottom: 16 }}>
+                                            <Col span={24}>
+                                                <Statistic title={t('dataAnalysis.results.multinomial.stats.sampleSize')} value={multinomialResult.sample_size} />
+                                            </Col>
+                                        </Row>
+                                        <Divider />
+                                        <div>
+                                            <Text strong>{t('dataAnalysis.results.multinomial.modelInfo.title')}</Text>
+                                            <div style={{ marginTop: '8px' }}>
+                                                <Text>{t('dataAnalysis.results.multinomial.modelInfo.xVars')} {multinomialResult.x_vars.join(', ')}</Text><br />
+                                                <Text>{t('dataAnalysis.results.multinomial.modelInfo.yVar')} {multinomialResult.y_var}</Text><br />
+                                                <Text>{t('dataAnalysis.results.multinomial.modelInfo.labels')} {multinomialResult.class_labels.join(', ')}</Text><br />
+                                                <Text>{t('dataAnalysis.results.multinomial.modelInfo.type')}</Text>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
 
@@ -1330,6 +1640,7 @@ const DataAnalysis: React.FC = () => {
                             })}
                             type="success"
                             showIcon
+                            style={{ borderRadius: '12px' }}
                         />
                     </div>
                 );
@@ -1339,26 +1650,76 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title="Boxplot" size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Image src={ttestResult.plot} style={{ maxWidth: '100%' }} />
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                        }}>
+                                            <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Boxplot</Title>
                                     </div>
-                                </Card>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Image src={ttestResult.plot} style={{ maxWidth: '100%' }} />
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
-                            <Col span={12}>
-                                <Card title="T-Test Results" size="small">
-                                    <Statistic title="T-Statistic" value={ttestResult.statistic} precision={4} />
-                                    <Statistic title="P-Value" value={ttestResult.p_value} precision={4} valueStyle={{ color: ttestResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
-                                    <Divider />
-                                    <Paragraph>Groups: {ttestResult.groups.join(', ')}</Paragraph>
-                                    <Text strong>Means:</Text>
-                                    <ul>
-                                        {Object.entries(ttestResult.means).map(([group, mean]) => (
-                                            <li key={group}>{group}: {mean.toFixed(4)}</li>
-                                        ))}
-                                    </ul>
-                                </Card>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>T-Test Results</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Statistic title="T-Statistic" value={ttestResult.statistic} precision={4} />
+                                        <Statistic title="P-Value" value={ttestResult.p_value} precision={4} valueStyle={{ color: ttestResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Divider />
+                                        <Paragraph>Groups: {ttestResult.groups.join(', ')}</Paragraph>
+                                        <Text strong>Means:</Text>
+                                        <ul>
+                                            {Object.entries(ttestResult.means).map(([group, mean]) => (
+                                                <li key={group}>{group}: {mean.toFixed(4)}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
                     </div>
@@ -1368,19 +1729,69 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title="Heatmap" size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Image src={chisquareResult.plot} style={{ maxWidth: '100%' }} />
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #f43f5e 0%, #e11d48 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(244, 63, 94, 0.3)'
+                                        }}>
+                                            <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Heatmap</Title>
                                     </div>
-                                </Card>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Image src={chisquareResult.plot} style={{ maxWidth: '100%' }} />
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
-                            <Col span={12}>
-                                <Card title="Chi-Square Test Results" size="small">
-                                    <Statistic title="Chi-Square Statistic" value={chisquareResult.statistic} precision={4} />
-                                    <Statistic title="P-Value" value={chisquareResult.p_value} precision={4} valueStyle={{ color: chisquareResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
-                                    <Statistic title="Degrees of Freedom" value={chisquareResult.dof} />
-                                </Card>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Chi-Square Test Results</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Statistic title="Chi-Square Statistic" value={chisquareResult.statistic} precision={4} />
+                                        <Statistic title="P-Value" value={chisquareResult.p_value} precision={4} valueStyle={{ color: chisquareResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Statistic title="Degrees of Freedom" value={chisquareResult.dof} />
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
                     </div>
@@ -1390,20 +1801,70 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title="Violin Plot" size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Image src={anovaResult.plot} style={{ maxWidth: '100%' }} />
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                        }}>
+                                            <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Violin Plot</Title>
                                     </div>
-                                </Card>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Image src={anovaResult.plot} style={{ maxWidth: '100%' }} />
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
-                            <Col span={12}>
-                                <Card title="ANOVA Results" size="small">
-                                    <Statistic title="F-Statistic" value={anovaResult.statistic} precision={4} />
-                                    <Statistic title="P-Value" value={anovaResult.p_value} precision={4} valueStyle={{ color: anovaResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
-                                    <Divider />
-                                    <Paragraph>Groups: {anovaResult.groups.join(', ')}</Paragraph>
-                                </Card>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>ANOVA Results</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Statistic title="F-Statistic" value={anovaResult.statistic} precision={4} />
+                                        <Statistic title="P-Value" value={anovaResult.p_value} precision={4} valueStyle={{ color: anovaResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Divider />
+                                        <Paragraph>Groups: {anovaResult.groups.join(', ')}</Paragraph>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
                     </div>
@@ -1413,32 +1874,93 @@ const DataAnalysis: React.FC = () => {
                 return (
                     <div>
                         <Row gutter={24} style={{ marginBottom: 24 }}>
-                            <Col span={12}>
-                                <Card title="Boxplot" size="small">
-                                    <div style={{ textAlign: 'center' }}>
-                                        <Image src={rankSumResult.plot} style={{ maxWidth: '100%' }} />
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                        }}>
+                                            <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Boxplot</Title>
                                     </div>
-                                </Card>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <Image src={rankSumResult.plot} style={{ maxWidth: '100%' }} />
+                                        </div>
+                                    </div>
+                                </div>
                             </Col>
-                            <Col span={12}>
-                                <Card title="Mann-Whitney U Test Results" size="small">
-                                    <Statistic title="U-Statistic" value={rankSumResult.statistic} precision={4} />
-                                    <Statistic title="P-Value" value={rankSumResult.p_value} precision={4} valueStyle={{ color: rankSumResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
-                                    <Divider />
-                                    <Paragraph>Groups: {rankSumResult.groups.join(', ')}</Paragraph>
-                                </Card>
+                            <Col xs={24} lg={12}>
+                                <div style={{ marginBottom: 24 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                        <div style={{
+                                            width: '32px',
+                                            height: '32px',
+                                            borderRadius: '8px',
+                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginRight: '12px',
+                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                        }}>
+                                            <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                        </div>
+                                        <Title level={5} style={{ margin: 0 }}>Mann-Whitney U Test Results</Title>
+                                    </div>
+                                    <div style={{
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                        padding: '24px',
+                                    }}>
+                                        <Statistic title="U-Statistic" value={rankSumResult.statistic} precision={4} />
+                                        <Statistic title="P-Value" value={rankSumResult.p_value} precision={4} valueStyle={{ color: rankSumResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Divider />
+                                        <Paragraph>Groups: {rankSumResult.groups.join(', ')}</Paragraph>
+                                    </div>
+                                </div>
                             </Col>
                         </Row>
                     </div>
                 );
             default:
-                return <Alert message="分析结果" description="分析完成" type="success" />;
+                return (
+                    <div style={{
+                        background: 'rgba(255, 255, 255, 0.4)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '16px',
+                        border: '1px solid rgba(255, 255, 255, 0.3)',
+                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                        padding: '24px',
+                    }}>
+                        <Alert message="分析结果" description="分析完成" type="success" style={{ borderRadius: '12px' }} />
+                    </div>
+                );
         }
     };
 
     return (
         <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
-            <div className="hero-section" style={{ padding: '40px 0 60px', textAlign: 'center', minHeight: 'auto' }}>
+            <div className="hero-section">
                 <div style={{
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -1454,10 +1976,10 @@ const DataAnalysis: React.FC = () => {
                 }}>
                     <ExperimentOutlined /> Data Analysis Engine
                 </div>
-                <Title level={1} className="hero-title" style={{ fontSize: '3rem', marginBottom: '16px', fontWeight: 800, background: 'linear-gradient(135deg, #1f2937 0%, #4b5563 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <Title level={1} className="hero-title">
                     {t('dataAnalysis.title')}
                 </Title>
-                <Text className="hero-subtitle" style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', margin: '0 auto', display: 'block', maxWidth: '700px', lineHeight: 1.6 }}>
+                <Text className="hero-subtitle">
                     {t('dataAnalysis.subtitle')}
                 </Text>
             </div>
@@ -1468,140 +1990,209 @@ const DataAnalysis: React.FC = () => {
                         <TabPane tab={t('dataAnalysis.config.title')} key="config">
                             <Row gutter={24}>
                                 <Col span={24}>
-                                    <Card title={t('dataAnalysis.upload.title')} size="small" style={{ marginBottom: 16 }}>
-                                        <Row gutter={24} align="middle">
-                                            <Col span={12} style={{ textAlign: 'center' }}>
-                                                <Upload
-                                                    accept=".csv"
-                                                    showUploadList={false}
-                                                    beforeUpload={handleFileUpload}
-                                                    disabled={uploadLoading}
-                                                >
-                                                    <Button
-                                                        icon={<UploadOutlined />}
-                                                        loading={uploadLoading}
-                                                        type="primary"
+                                    <div style={{ marginBottom: 24 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                            <div style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '8px',
+                                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                marginRight: '12px',
+                                                boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                                            }}>
+                                                <CloudUploadOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                            </div>
+                                            <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.upload.title')}</Title>
+                                        </div>
+                                        <div style={{
+                                            background: 'rgba(255, 255, 255, 0.4)',
+                                            backdropFilter: 'blur(10px)',
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                            padding: '24px',
+                                        }}>
+                                            <Row gutter={24} align="middle">
+                                                <Col xs={24} md={12} style={{ textAlign: 'center' }}>
+                                                    <Upload
+                                                        accept=".csv"
+                                                        showUploadList={false}
+                                                        beforeUpload={handleFileUpload}
+                                                        disabled={uploadLoading}
                                                     >
-                                                        {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
-                                                    </Button>
-                                                </Upload>
-                                                <div style={{ marginTop: 8 }}>
-                                                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                                                        {t('dataAnalysis.upload.supportFormat')}
-                                                    </Text>
-                                                </div>
-                                            </Col>
-                                            <Col span={12}>
-                                                {fileInfo ? (
-                                                    <Alert
-                                                        message={t('dataAnalysis.upload.fileInfo')}
-                                                        description={
-                                                            <div>
-                                                                <div><Text strong>{t('dataAnalysis.upload.fileName')}:</Text> {fileInfo.filename}</div>
-                                                                <div><Text strong>{t('dataAnalysis.upload.rowCount')}:</Text> {fileInfo.file_stats.total_rows}</div>
-                                                                <div><Text strong>{t('dataAnalysis.upload.columnCount')}:</Text> {fileInfo.file_stats.total_columns}</div>
-                                                                <div>
-                                                                    <Space>
-                                                                        <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
-                                                                        <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
-                                                                    </Space>
-                                                                </div>
-                                                            </div>
-                                                        }
-                                                        type="info"
-                                                        showIcon
-                                                        icon={<FileTextOutlined />}
-                                                    />
-                                                ) : (
-                                                    <div style={{ textAlign: 'center', color: '#999' }}>
-                                                        <FileTextOutlined style={{ fontSize: 24, marginBottom: 8 }} />
-                                                        <div>{t('dataVisualization.upload.hint', { defaultValue: 'Please upload a file to start analysis' })}</div>
+                                                        <Button
+                                                            icon={<UploadOutlined />}
+                                                            loading={uploadLoading}
+                                                            type="primary"
+                                                            style={{
+                                                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                                                border: 'none',
+                                                                height: '40px',
+                                                                padding: '0 24px',
+                                                                borderRadius: '20px',
+                                                                fontWeight: 500,
+                                                                boxShadow: '0 4px 10px rgba(37, 99, 235, 0.3)'
+                                                            }}
+                                                        >
+                                                            {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
+                                                        </Button>
+                                                    </Upload>
+                                                    <div style={{ marginTop: 12 }}>
+                                                        <Text type="secondary" style={{ fontSize: '12px' }}>
+                                                            {t('dataAnalysis.upload.supportFormat')}
+                                                        </Text>
                                                     </div>
-                                                )}
-                                            </Col>
-                                        </Row>
-                                    </Card>
+                                                </Col>
+                                                <Col xs={24} md={12}>
+                                                    {fileInfo ? (
+                                                        <Alert
+                                                            message={t('dataAnalysis.upload.fileInfo')}
+                                                            description={
+                                                                <div>
+                                                                    <div style={{ marginBottom: 4 }}><Text strong>{t('dataAnalysis.upload.fileName')}:</Text> {fileInfo.filename}</div>
+                                                                    <div style={{ marginBottom: 4 }}><Text strong>{t('dataAnalysis.upload.rowCount')}:</Text> {fileInfo.file_stats.total_rows}</div>
+                                                                    <div style={{ marginBottom: 8 }}><Text strong>{t('dataAnalysis.upload.columnCount')}:</Text> {fileInfo.file_stats.total_columns}</div>
+                                                                    <div>
+                                                                        <Space wrap>
+                                                                            <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                                            <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                                        </Space>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            type="info"
+                                                            showIcon
+                                                            icon={<FileTextOutlined />}
+                                                            style={{ borderRadius: '12px' }}
+                                                        />
+                                                    ) : (
+                                                        <div style={{ textAlign: 'center', color: '#999' }}>
+                                                            <FileTextOutlined style={{ fontSize: 24, marginBottom: 8 }} />
+                                                            <div>{t('dataVisualization.upload.hint', { defaultValue: 'Please upload a file to start analysis' })}</div>
+                                                        </div>
+                                                    )}
+                                                </Col>
+                                            </Row>
+                                        </div>
+                                    </div>
 
                                     {fileInfo && (
-                                        <Card
-                                            title={
-                                                <Space>
-                                                    <FileTextOutlined />
-                                                    <span>{t('dataAnalysis.preview.title')}</span>
-                                                    <Text type="secondary" style={{ fontSize: '12px' }}>
-                                                        {t('dataAnalysis.preview.showFirst')}
-                                                    </Text>
-                                                </Space>
-                                            }
-                                            size="small"
-                                            style={{ marginBottom: 16 }}
-                                        >
-                                            <div style={{
-                                                marginBottom: 16,
-                                                padding: '12px',
-                                                backgroundColor: '#f5f5f5',
-                                                borderRadius: '4px',
-                                            }}>
-                                                <Row justify="space-between" align="middle">
-                                                    <Col>
-                                                        <Space>
-                                                            <Text>{t('dataAnalysis.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong></Text>
-                                                            <Divider type="vertical" />
-                                                            <Text>{t('dataAnalysis.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong></Text>
-                                                            <Divider type="vertical" />
-                                                            <Text>{t('dataAnalysis.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
-                                                        </Space>
-                                                    </Col>
-                                                    <Col>
-                                                        <Space>
-                                                            <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
-                                                            <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
-                                                        </Space>
-                                                    </Col>
-                                                </Row>
-                                            </div>
-
-                                            {fileInfo.preview_data ? (
-                                                <Table
-                                                    columns={fileInfo.columns.map(col => ({
-                                                        title: col,
-                                                        dataIndex: col,
-                                                        key: col,
-                                                        width: 120,
-                                                        ellipsis: true,
-                                                        render: (text: any) => (
-                                                            <span title={text?.toString()}>
-                                                                {text !== null && text !== undefined ? String(text) : '-'}
-                                                            </span>
-                                                        )
-                                                    }))}
-                                                    dataSource={fileInfo.preview_data.map((row: any, index: number) => ({
-                                                        key: index,
-                                                        ...row
-                                                    }))}
-                                                    pagination={false}
-                                                    size="small"
-                                                    scroll={{ x: 'max-content', y: 300 }}
-                                                    bordered
-                                                    style={{ fontSize: '12px' }}
-                                                />
-                                            ) : (
-                                                <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
-                                                    <Text type="secondary">{t('dataAnalysis.preview.unavailable')}</Text>
+                                        <div style={{ marginBottom: 24 }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <div style={{
+                                                        width: '32px',
+                                                        height: '32px',
+                                                        borderRadius: '8px',
+                                                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        marginRight: '12px',
+                                                        boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                                    }}>
+                                                        <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                                    </div>
+                                                    <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.preview.title')}</Title>
                                                 </div>
-                                            )}
-                                        </Card>
+                                                <Text type="secondary" style={{ fontSize: '12px' }}>
+                                                    {t('dataAnalysis.preview.showFirst')}
+                                                </Text>
+                                            </div>
+                                            <div style={{
+                                                background: 'rgba(255, 255, 255, 0.4)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderRadius: '16px',
+                                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                                padding: '24px',
+                                            }}>
+                                                <div style={{
+                                                    marginBottom: 16,
+                                                    padding: '12px',
+                                                    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                                                    borderRadius: '8px',
+                                                }}>
+                                                    <Row justify="space-between" align="middle">
+                                                        <Col>
+                                                            <Space split={<Divider type="vertical" />}>
+                                                                <Text>{t('dataAnalysis.preview.totalData')}: <strong>{fileInfo.file_stats.total_rows.toLocaleString()}</strong></Text>
+                                                                <Text>{t('dataAnalysis.preview.totalColumns')}: <strong>{fileInfo.file_stats.total_columns}</strong></Text>
+                                                                <Text>{t('dataAnalysis.preview.fileSize')}: <strong>{(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB</strong></Text>
+                                                            </Space>
+                                                        </Col>
+                                                        <Col>
+                                                            <Space>
+                                                                <Tag color="blue">{t('dataAnalysis.upload.numericType')}: {fileInfo.file_stats.numeric_columns_count}</Tag>
+                                                                <Tag color="green">{t('dataAnalysis.upload.categoricalType')}: {fileInfo.file_stats.categorical_columns_count}</Tag>
+                                                            </Space>
+                                                        </Col>
+                                                    </Row>
+                                                </div>
+
+                                                {fileInfo.preview_data ? (
+                                                    <Table
+                                                        columns={fileInfo.columns.map(col => ({
+                                                            title: col,
+                                                            dataIndex: col,
+                                                            key: col,
+                                                            width: 120,
+                                                            ellipsis: true,
+                                                            render: (text: any) => (
+                                                                <span title={text?.toString()}>
+                                                                    {text !== null && text !== undefined ? String(text) : '-'}
+                                                                </span>
+                                                            )
+                                                        }))}
+                                                        dataSource={fileInfo.preview_data.map((row: any, index: number) => ({
+                                                            key: index,
+                                                            ...row
+                                                        }))}
+                                                        pagination={false}
+                                                        size="small"
+                                                        scroll={{ x: 'max-content', y: 300 }}
+                                                        bordered={false}
+                                                        style={{ background: 'transparent' }}
+                                                    />
+                                                ) : (
+                                                    <div style={{ textAlign: 'center', padding: '40px', color: '#999' }}>
+                                                        <Text type="secondary">{t('dataAnalysis.preview.unavailable')}</Text>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     )}
                                 </Col>
                             </Row>
 
                             <Row gutter={32}>
-                                <Col span={8}>
+                                <Col xs={24} lg={8}>
                                     <div style={{ marginBottom: 24 }}>
-                                        <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.methods.title')}</Title>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                            <div style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '8px',
+                                                background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                marginRight: '12px',
+                                                boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                            }}>
+                                                <ExperimentOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                            </div>
+                                            <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.methods.title')}</Title>
+                                        </div>
                                         <div style={{
-                                            background: 'rgba(255,255,255,0.4)',
-                                            borderRadius: '12px',
+                                            background: 'rgba(255, 255, 255, 0.4)',
+                                            backdropFilter: 'blur(10px)',
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                                             padding: '16px',
                                             maxHeight: '600px',
                                             overflowY: 'auto'
@@ -1614,22 +2205,38 @@ const DataAnalysis: React.FC = () => {
                                                         style={{
                                                             cursor: 'pointer',
                                                             backgroundColor: selectedAnalysis === item.key
-                                                                ? 'rgba(24, 144, 255, 0.1)'
+                                                                ? 'rgba(255, 255, 255, 0.6)'
                                                                 : 'transparent',
                                                             border: selectedAnalysis === item.key
                                                                 ? '1px solid #1890ff'
                                                                 : '1px solid transparent',
-                                                            borderRadius: 8,
+                                                            borderRadius: '12px',
                                                             padding: '12px 16px',
                                                             marginBottom: 8,
-                                                            transition: 'all 0.3s ease'
+                                                            transition: 'all 0.3s ease',
+                                                            backdropFilter: selectedAnalysis === item.key ? 'blur(5px)' : 'none',
+                                                            boxShadow: selectedAnalysis === item.key ? '0 4px 12px rgba(24, 144, 255, 0.15)' : 'none'
                                                         }}
                                                         onClick={() => setSelectedAnalysis(item.key)}
                                                         className="method-list-item"
                                                     >
                                                         <List.Item.Meta
-                                                            avatar={<span style={{ color: selectedAnalysis === item.key ? '#1890ff' : '#666', fontSize: '20px' }}>{item.icon}</span>}
-                                                            title={<span style={{ fontWeight: selectedAnalysis === item.key ? 600 : 400, color: '#333' }}>{item.name}</span>}
+                                                            avatar={
+                                                                <div style={{
+                                                                    width: '36px',
+                                                                    height: '36px',
+                                                                    borderRadius: '8px',
+                                                                    background: selectedAnalysis === item.key ? 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)' : '#f0f2f5',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    color: selectedAnalysis === item.key ? 'white' : '#666',
+                                                                    transition: 'all 0.3s ease'
+                                                                }}>
+                                                                    <span style={{ fontSize: '18px' }}>{item.icon}</span>
+                                                                </div>
+                                                            }
+                                                            title={<span style={{ fontWeight: selectedAnalysis === item.key ? 600 : 500, color: '#333' }}>{item.name}</span>}
                                                             description={
                                                                 <Text type="secondary" style={{
                                                                     fontSize: '12px',
@@ -1649,12 +2256,30 @@ const DataAnalysis: React.FC = () => {
                                     </div>
                                 </Col>
 
-                                <Col span={16}>
+                                <Col xs={24} lg={16}>
                                     <div style={{ marginBottom: 24 }}>
-                                        <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.config.title')}</Title>
+                                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                            <div style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '8px',
+                                                background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                marginRight: '12px',
+                                                boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
+                                            }}>
+                                                <SettingOutlined style={{ color: 'white', fontSize: '18px' }} />
+                                            </div>
+                                            <Title level={5} style={{ margin: 0 }}>{t('dataAnalysis.config.title')}</Title>
+                                        </div>
                                         <div style={{
-                                            background: 'rgba(255,255,255,0.4)',
-                                            borderRadius: '12px',
+                                            background: 'rgba(255, 255, 255, 0.4)',
+                                            backdropFilter: 'blur(10px)',
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                                            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                                             padding: '24px'
                                         }}>
                                             <Form
@@ -1672,7 +2297,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1712,7 +2337,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1738,7 +2363,7 @@ const DataAnalysis: React.FC = () => {
                                                             </Col>
                                                         </Row>
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1762,7 +2387,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1795,7 +2420,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1819,7 +2444,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1872,7 +2497,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1896,7 +2521,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1933,7 +2558,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -1957,7 +2582,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={
                                                                         <span>
@@ -2017,7 +2642,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.groupCol')}</span>}
                                                                     name="groupCol"
@@ -2034,7 +2659,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.valueCol')}</span>}
                                                                     name="valueCol"
@@ -2064,7 +2689,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col1')}</span>}
                                                                     name="col1"
@@ -2081,7 +2706,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={<span style={{ color: '#333' }}>{t('dataAnalysis.config.col2')}</span>}
                                                                     name="col2"
@@ -2111,7 +2736,7 @@ const DataAnalysis: React.FC = () => {
                                                             style={{ marginBottom: 16 }}
                                                         />
                                                         <Row gutter={16}>
-                                                            <Col span={8}>
+                                                            <Col xs={24} md={8}>
                                                                 <Form.Item
                                                                     label={t('dataAnalysis.config.rcs.modelType')}
                                                                     name="modelType"
@@ -2125,7 +2750,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={8}>
+                                                            <Col xs={24} md={8}>
                                                                 <Form.Item
                                                                     label={t('dataAnalysis.config.rcs.knots')}
                                                                     name="knots"
@@ -2142,7 +2767,7 @@ const DataAnalysis: React.FC = () => {
                                                             </Col>
                                                         </Row>
                                                         <Row gutter={16}>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 {/* Dynamic Y Variable Label based on model type? */}
                                                                 <Form.Item
                                                                     label={t('dataAnalysis.config.rcs.yVar')}
@@ -2155,7 +2780,7 @@ const DataAnalysis: React.FC = () => {
                                                                     </Select>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col span={12}>
+                                                            <Col xs={24} md={12}>
                                                                 <Form.Item
                                                                     label={t('dataAnalysis.config.rcs.xVar')}
                                                                     name="xVar"
@@ -2174,7 +2799,7 @@ const DataAnalysis: React.FC = () => {
                                                             {({ getFieldValue }) =>
                                                                 getFieldValue('modelType') === 'cox' ? (
                                                                     <Row gutter={16}>
-                                                                        <Col span={12}>
+                                                                        <Col xs={24} md={12}>
                                                                             <Form.Item
                                                                                 label={t('dataAnalysis.config.rcs.timeVar')}
                                                                                 name="timeVar"
@@ -2214,75 +2839,106 @@ const DataAnalysis: React.FC = () => {
 
                             <Divider />
 
-                            <div>
-                                <Space direction="vertical" style={{ width: '100%' }}>
-                                    <Space>
-                                        <Button
-                                            type="primary"
-                                            icon={<PlayCircleOutlined />}
-                                            onClick={() => {
-                                                console.log('按钮被点击');
-                                                console.log('当前状态:', {
-                                                    selectedAnalysis,
-                                                    fileInfo: !!fileInfo,
-                                                    uploadedFile: !!uploadedFile,
-                                                    analyzing
-                                                });
-                                                handleRunAnalysis();
-                                            }}
-                                            size="large"
-                                            disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
-                                            loading={analyzing && !showAnalysisTimeoutWarning}
-                                        >
-                                            {t('dataAnalysis.analysis.start')}
-                                        </Button>
+                            <div style={{
+                                marginTop: 32,
+                                background: 'rgba(255, 255, 255, 0.4)',
+                                backdropFilter: 'blur(10px)',
+                                borderRadius: '16px',
+                                border: '1px solid rgba(255, 255, 255, 0.3)',
+                                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                padding: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                flexWrap: 'wrap',
+                                gap: '16px'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div style={{
+                                        width: '40px',
+                                        height: '40px',
+                                        borderRadius: '10px',
+                                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        marginRight: '16px',
+                                        boxShadow: '0 4px 10px rgba(79, 70, 229, 0.3)'
+                                    }}>
+                                        <PlayCircleOutlined style={{ color: 'white', fontSize: '20px' }} />
+                                    </div>
+                                    <div>
+                                        <Title level={4} style={{ margin: 0 }}>{t('dataAnalysis.analysis.start')}</Title>
+                                        <Text type="secondary">
+                                            {t('dataAnalysis.analysis.currentMethod')}: <Text strong style={{ color: '#6366f1' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
+                                        </Text>
+                                    </div>
+                                </div>
 
-                                        {analyzing && showAnalysisTimeoutWarning && (
-                                            <Space>
-                                                <Button
-                                                    danger
-                                                    icon={<StopOutlined />}
-                                                    onClick={handleCancelAnalysis}
-                                                    size="large"
-                                                >
-                                                    {t('dataAnalysis.analysis.cancel')}
-                                                </Button>
-                                                <Button
-                                                    type="default"
-                                                    icon={<ReloadOutlined />}
-                                                    onClick={handleRetryAnalysis}
-                                                    size="large"
-                                                >
-                                                    {t('dataAnalysis.analysis.retry')}
-                                                </Button>
-                                            </Space>
-                                        )}
-
-                                        {!analyzing && (
-                                            <Text style={{ color: '#666' }}>
-                                                {t('dataAnalysis.analysis.currentMethod')} {getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}
-                                                {selectedAnalysis === 'cox_regression' && !fileInfo && t('dataAnalysis.analysis.needUpload')}
-                                            </Text>
-                                        )}
-                                    </Space>
-
-                                    {showAnalysisTimeoutWarning && (
-                                        <Alert
-                                            message={t('dataAnalysis.analysis.timeoutWarning.title')}
-                                            description={
-                                                <div>
-                                                    {t('dataAnalysis.analysis.timeoutWarning.description')}
-                                                    <br />
-                                                    {t('dataAnalysis.analysis.timeoutWarning.options')}
-                                                </div>
-                                            }
-                                            type="warning"
-                                            showIcon
-                                            style={{ marginTop: 8 }}
-                                        />
+                                <Space wrap>
+                                    {analyzing && showAnalysisTimeoutWarning && (
+                                        <>
+                                            <Button
+                                                danger
+                                                icon={<StopOutlined />}
+                                                onClick={handleCancelAnalysis}
+                                                size="large"
+                                                style={{ borderRadius: '20px', height: '40px' }}
+                                            >
+                                                {t('dataAnalysis.analysis.cancel')}
+                                            </Button>
+                                            <Button
+                                                icon={<ReloadOutlined />}
+                                                onClick={handleRetryAnalysis}
+                                                size="large"
+                                                style={{ borderRadius: '20px', height: '40px' }}
+                                            >
+                                                {t('dataAnalysis.analysis.retry')}
+                                            </Button>
+                                        </>
                                     )}
+
+                                    <Button
+                                        type="primary"
+                                        icon={analyzing ? <LoadingOutlined /> : <PlayCircleOutlined />}
+                                        onClick={() => {
+                                            console.log('按钮被点击');
+                                            console.log('当前状态:', {
+                                                selectedAnalysis,
+                                                fileInfo: !!fileInfo,
+                                                uploadedFile: !!uploadedFile,
+                                                analyzing
+                                            });
+                                            handleRunAnalysis();
+                                        }}
+                                        size="large"
+                                        disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
+                                        loading={analyzing && !showAnalysisTimeoutWarning}
+                                        style={{
+                                            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                                            border: 'none',
+                                            boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
+                                            height: '48px',
+                                            padding: '0 32px',
+                                            borderRadius: '24px',
+                                            fontWeight: 600,
+                                            fontSize: '16px',
+                                            minWidth: '160px'
+                                        }}
+                                    >
+                                        {analyzing ? t('dataAnalysis.analysis.running') : t('dataAnalysis.analysis.start')}
+                                    </Button>
                                 </Space>
                             </div>
+
+                            {!analyzing && (!fileInfo && selectedAnalysis === 'cox_regression') && (
+                                <Alert
+                                    message={t('dataAnalysis.analysis.needUpload')}
+                                    type="warning"
+                                    showIcon
+                                    style={{ marginTop: 16, borderRadius: '12px' }}
+                                />
+                            )}
                         </TabPane>
 
                         <TabPane tab={t('dataAnalysis.results.tab')} key="results">
@@ -2423,8 +3079,8 @@ const DataAnalysis: React.FC = () => {
                             )}
                         </TabPane>
                     </Tabs>
-                </div>
-            </div>
+                </div >
+            </div >
         </div >
     );
 };
