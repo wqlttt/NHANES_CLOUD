@@ -42,11 +42,13 @@ import {
     SettingOutlined,
     ToolOutlined,
     CloudUploadOutlined,
+    InboxOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { Dragger } = Upload;
 
 // 图表类型配置 - 匹配后端支持的类型
 const getChartTypes = (t: any) => [
@@ -450,29 +452,30 @@ const DataVisualization: React.FC = () => {
                                             transition: 'all 0.3s ease'
                                         }}>
                                             <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                                                <Upload
+                                                <Dragger
+                                                    name="file"
+                                                    multiple={false}
+                                                    maxCount={1}
                                                     accept=".csv"
-                                                    showUploadList={false}
                                                     beforeUpload={handleFileUpload}
+                                                    onRemove={() => {
+                                                        setUploadedFile(null);
+                                                        setFileInfo(null);
+                                                        setChartResult(null);
+                                                        setChartGenerated(false);
+                                                        form.resetFields(['xVar', 'yVar', 'groupVar']);
+                                                    }}
+                                                    style={{ background: 'rgba(255,255,255,0.4)', borderColor: 'rgba(0,0,0,0.1)' }}
                                                     disabled={uploadLoading}
                                                 >
-                                                    <Button
-                                                        type="primary"
-                                                        icon={<UploadOutlined />}
-                                                        size="large"
-                                                        loading={uploadLoading}
-                                                        style={{
-                                                            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                                            border: 'none',
-                                                            boxShadow: '0 4px 15px rgba(59, 130, 246, 0.3)',
-                                                            height: '48px',
-                                                            padding: '0 32px',
-                                                            borderRadius: '24px'
-                                                        }}
-                                                    >
-                                                        {t('dataVisualization.upload.button')}
-                                                    </Button>
-                                                </Upload>
+                                                    <p className="ant-upload-drag-icon">
+                                                        <InboxOutlined style={{ color: '#3b82f6' }} />
+                                                    </p>
+                                                    <p className="ant-upload-text">{t('dataProcessing.upload.dragText')}</p>
+                                                    <p className="ant-upload-hint">
+                                                        {t('dataProcessing.upload.hint')}
+                                                    </p>
+                                                </Dragger>
 
                                                 {fileInfo ? (
                                                     <div style={{

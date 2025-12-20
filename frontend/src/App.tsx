@@ -6,6 +6,7 @@ import './App.css';
 
 const Home = lazy(() => import('./pages/Home'));
 const DataExtraction = lazy(() => import('./pages/DataExtraction'));
+const DataProcessing = lazy(() => import('./pages/DataProcessing'));
 const DataVisualization = lazy(() => import('./pages/DataVisualization'));
 const DataAnalysis = lazy(() => import('./pages/DataAnalysis'));
 
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home onNavigate={(key) => navigate(key === 'home' ? '/' : `/${key}`)} />} />
           <Route path="/extraction" element={<DataExtraction />} />
+          <Route path="/processing" element={<DataProcessing />} />
           <Route path="/visualization" element={<DataVisualization />} />
           <Route path="/analysis" element={<DataAnalysis />} />
           <Route path="*" element={<Home onNavigate={(key) => navigate(key === 'home' ? '/' : `/${key}`)} />} />

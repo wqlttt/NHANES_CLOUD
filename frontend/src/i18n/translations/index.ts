@@ -702,6 +702,74 @@ export const zhTranslations = {
                 originalError: '原始错误信息'
             }
         }
+    },
+    dataProcessing: {
+        title: '数据处理',
+        hero: {
+            tag: '数据处理',
+            title: '高级数据处理',
+            subtitle: '使用高级工具准备分析数据集。处理缺失值，筛选数据队列，并计算新变量。'
+        },
+        tabs: {
+            imputation: '缺失值填补',
+            filtering: '数据筛选',
+            calculation: '变量计算'
+        },
+        imputation: {
+            title: '缺失值填补',
+            description: '使用统计方法或机器学习算法处理缺失数据。可视化缺失模式并为您的数据集选择最佳策略。',
+            completeCase: {
+                title: '完整案例分析',
+                desc: '移除包含缺失值的行'
+            },
+            meanMedian: {
+                title: '均值/中位数填补',
+                desc: '使用统计平均值填充'
+            },
+            mice: {
+                title: '多重填补 (MICE)',
+                desc: '高级预测填充'
+            },
+            startBtn: '开始填补'
+        },
+        filtering: {
+            title: '队列选择与筛选',
+            description: '通过应用包含和排除标准定义您的研究人群。基于人口统计学、实验室结果或问卷调查进行筛选。',
+            steps: {
+                selectVariables: '选择变量',
+                selectVariablesDesc: '选择目标列',
+                defineCriteria: '定义条件',
+                defineCriteriaDesc: '设置逻辑规则',
+                previewCohort: '预览队列',
+                previewCohortDesc: '验证数量'
+            },
+            createBtn: '创建筛选器'
+        },
+        calculation: {
+            title: '自定义变量计算',
+            description: '使用数学公式或逻辑从现有数据创建新变量。支持简单算术和复杂条件逻辑。',
+            examples: '示例：',
+            defineBtn: '定义新变量'
+        },
+        upload: {
+            title: '数据源',
+            dragText: '点击或拖拽文件到此区域上传',
+            hint: '支持格式：CSV文件，最大50MB',
+            uploading: '上传中...',
+            success: '文件上传成功',
+            error: '文件上传失败',
+            fileInfo: '文件信息',
+            fileName: '文件名',
+            fileSize: '文件大小'
+        },
+        preview: {
+            title: '数据预览',
+            unavailable: '暂无数据预览',
+            totalData: '总行数',
+            totalColumns: '总列数',
+            fileSize: '文件大小',
+            showFirst: '仅展示前5行数据'
+        }
     }
 };
 
@@ -1408,6 +1476,74 @@ export const enTranslations = {
                 inconsistentSamples: 'Inconsistent numbers of samples (Check for missing values)',
                 originalError: 'Original Error'
             }
+        }
+    },
+    dataProcessing: {
+        title: 'Data Processing',
+        hero: {
+            tag: 'Data Processing',
+            title: 'Advanced Data Processing',
+            subtitle: 'Prepare your dataset for analysis with advanced tools. Handle missing values, filter data cohorts, and calculate new variables.'
+        },
+        tabs: {
+            imputation: 'Missing Value Imputation',
+            filtering: 'Data Filtering',
+            calculation: 'Variable Calculation'
+        },
+        imputation: {
+            title: 'Missing Value Imputation',
+            description: 'Handle missing data using statistical methods or machine learning algorithms. Visualize missing patterns and choose the best strategy for your dataset.',
+            completeCase: {
+                title: 'Complete Case Analysis',
+                desc: 'Remove rows with missing values'
+            },
+            meanMedian: {
+                title: 'Mean/Median Imputation',
+                desc: 'Fill with statistical averages'
+            },
+            mice: {
+                title: 'Multiple Imputation (MICE)',
+                desc: 'Advanced predictive filling'
+            },
+            startBtn: 'Start Imputation'
+        },
+        filtering: {
+            title: 'Cohort Selection & Filtering',
+            description: 'Define your study population by applying inclusion and exclusion criteria. Filter based on demographics, lab results, or questionnaire responses.',
+            steps: {
+                selectVariables: 'Select Variables',
+                selectVariablesDesc: 'Choose target columns',
+                defineCriteria: 'Define Criteria',
+                defineCriteriaDesc: 'Set logical rules',
+                previewCohort: 'Preview Cohort',
+                previewCohortDesc: 'Verify count'
+            },
+            createBtn: 'Create Filter'
+        },
+        calculation: {
+            title: 'Custom Variable Calculation',
+            description: 'Create new variables derived from existing data using mathematical formulas or logic. Supports simple arithmetic and complex conditional logic.',
+            examples: 'Examples:',
+            defineBtn: 'Define New Variable'
+        },
+        upload: {
+            title: 'Data Source',
+            dragText: 'Click or drag file to this area to upload',
+            hint: 'Supported Format: CSV file, max 50MB',
+            uploading: 'Uploading...',
+            success: 'File uploaded successfully',
+            error: 'File upload failed',
+            fileInfo: 'File Information',
+            fileName: 'File Name',
+            fileSize: 'File Size'
+        },
+        preview: {
+            title: 'Data Preview',
+            unavailable: 'Data preview not available',
+            totalData: 'Total Rows',
+            totalColumns: 'Total Columns',
+            fileSize: 'File Size',
+            showFirst: 'Showing first 5 rows'
         }
     }
 };

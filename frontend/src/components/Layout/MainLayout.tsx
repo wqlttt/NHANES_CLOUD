@@ -6,7 +6,8 @@ import {
   FundOutlined,
   HomeOutlined,
   GlobalOutlined,
-  MenuOutlined
+  MenuOutlined,
+  ToolOutlined
 } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -55,6 +56,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       key: '/extraction',
       icon: <DatabaseOutlined />,
       label: t('home.features.dataExtraction.title'),
+    },
+    {
+      key: '/processing',
+      icon: <ToolOutlined />,
+      label: 'Data Processing',
     },
     {
       key: '/visualization',

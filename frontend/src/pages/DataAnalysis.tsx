@@ -39,11 +39,13 @@ import {
     CloudUploadOutlined,
     TableOutlined,
     LoadingOutlined,
+    InboxOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
 const { TabPane } = Tabs;
+const { Dragger } = Upload;
 const { TextArea } = Input;
 
 // 分析方法配置
@@ -2017,34 +2019,30 @@ const DataAnalysis: React.FC = () => {
                                         }}>
                                             <Row gutter={24} align="middle">
                                                 <Col xs={24} md={12} style={{ textAlign: 'center' }}>
-                                                    <Upload
+                                                    <Dragger
+                                                        name="file"
+                                                        multiple={false}
+                                                        maxCount={1}
                                                         accept=".csv"
-                                                        showUploadList={false}
                                                         beforeUpload={handleFileUpload}
+                                                        onRemove={() => {
+                                                            setUploadedFile(null);
+                                                            setFileInfo(null);
+                                                            setResults(null);
+                                                            setErrorMsg(null);
+                                                            form.resetFields();
+                                                        }}
+                                                        style={{ background: 'rgba(255,255,255,0.4)', borderColor: 'rgba(0,0,0,0.1)' }}
                                                         disabled={uploadLoading}
                                                     >
-                                                        <Button
-                                                            icon={<UploadOutlined />}
-                                                            loading={uploadLoading}
-                                                            type="primary"
-                                                            style={{
-                                                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                                                border: 'none',
-                                                                height: '40px',
-                                                                padding: '0 24px',
-                                                                borderRadius: '20px',
-                                                                fontWeight: 500,
-                                                                boxShadow: '0 4px 10px rgba(37, 99, 235, 0.3)'
-                                                            }}
-                                                        >
-                                                            {uploadedFile ? t('dataAnalysis.upload.reupload') : t('dataAnalysis.upload.button')}
-                                                        </Button>
-                                                    </Upload>
-                                                    <div style={{ marginTop: 12 }}>
-                                                        <Text type="secondary" style={{ fontSize: '12px' }}>
-                                                            {t('dataAnalysis.upload.supportFormat')}
-                                                        </Text>
-                                                    </div>
+                                                        <p className="ant-upload-drag-icon">
+                                                            <InboxOutlined style={{ color: '#1890ff' }} />
+                                                        </p>
+                                                        <p className="ant-upload-text">{t('dataProcessing.upload.dragText')}</p>
+                                                        <p className="ant-upload-hint">
+                                                            {t('dataProcessing.upload.hint')}
+                                                        </p>
+                                                    </Dragger>
                                                 </Col>
                                                 <Col xs={24} md={12}>
                                                     {fileInfo ? (
@@ -2931,15 +2929,17 @@ const DataAnalysis: React.FC = () => {
                                 </Space>
                             </div>
 
-                            {!analyzing && (!fileInfo && selectedAnalysis === 'cox_regression') && (
-                                <Alert
-                                    message={t('dataAnalysis.analysis.needUpload')}
-                                    type="warning"
-                                    showIcon
-                                    style={{ marginTop: 16, borderRadius: '12px' }}
-                                />
-                            )}
-                        </TabPane>
+                            {
+                                !analyzing && (!fileInfo && selectedAnalysis === 'cox_regression') && (
+                                    <Alert
+                                        message={t('dataAnalysis.analysis.needUpload')}
+                                        type="warning"
+                                        showIcon
+                                        style={{ marginTop: 16, borderRadius: '12px' }}
+                                    />
+                                )
+                            }
+                        </TabPane >
 
                         <TabPane tab={t('dataAnalysis.results.tab')} key="results">
                             {analyzing ? (
@@ -3078,7 +3078,7 @@ const DataAnalysis: React.FC = () => {
                                 </div>
                             )}
                         </TabPane>
-                    </Tabs>
+                    </Tabs >
                 </div >
             </div >
         </div >
