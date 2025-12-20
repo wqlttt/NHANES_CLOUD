@@ -7,6 +7,7 @@ from DataAnalysis.logisticRegression import logistic_regression_analysis, multin
 from DataAnalysis.linearRegression import linear_regression_analysis, multiple_linear_regression_analysis
 from DataAnalysis.coxRegression import cox_regression_analysis
 from DataAnalysis.hypothesisTesting import ttest_analysis, chisquare_analysis, anova_analysis, ranksum_analysis
+from DataAnalysis.rcsAnalysis import rcs_analysis, rcs_cox_analysis
 from utils.serialization import convert_to_serializable
 
 analysis_bp = Blueprint('data_analysis', __name__)
@@ -382,6 +383,58 @@ def ranksum_route():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         print(f"Rank-sum Exception: {str(e)}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@analysis_bp.route('/rcs', methods=["POST"])
+def rcs_route():
+    """Restricted Cubic Spline (RCS) Analysis"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"success": False, "error": "No file selected"}), 400
+        
+        model_type = request.form.get('model_type') # linear, logistic, cox
+        x_var = request.form.get('x_var')
+        y_var = request.form.get('y_var') # event_var for Cox, outcome for others
+        covariates = request.form.getlist('covariates')
+        knots = int(request.form.get('knots', 4))
+        
+        if not model_type or not x_var or not y_var:
+            return jsonify({"success": False, "error": "Missing required parameters"}), 400
+            
+        if not covariates:
+            # Handle single covariate passed as string
+            cov = request.form.get('covariates')
+            if cov:
+                covariates = [cov]
+
+        if model_type == 'cox':
+            time_var = request.form.get('time_var')
+            if not time_var:
+                return jsonify({"success": False, "error": "Cox model requires time_var"}), 400
+            result = rcs_cox_analysis(file, time_var, y_var, x_var, covariates, knots)
+        else:
+            result = rcs_analysis(file, model_type, x_var, y_var, covariates, knots)
+        
+        return jsonify({
+            "success": True,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "aic": convert_to_serializable(result.get('aic')),
+            "analysis_type": "rcs",
+            "model_type": model_type
+        })
+
+    except ValueError as e:
+        print(f"RCS ValueError: {str(e)}", file=sys.stderr)
+        return jsonify({"success": False, "error": str(e)}), 400
+    except Exception as e:
+        print(f"RCS Exception: {str(e)}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         return jsonify({"success": False, "error": str(e)}), 500

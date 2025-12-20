@@ -42,6 +42,19 @@ export const zhTranslations = {
         dataAnalysis: '数据分析'
     },
     home: {
+        hero: {
+            platformName: 'NHANES 云平台 v2.0',
+            getStarted: '开始使用',
+            viewDocs: '查看可视化文档'
+        },
+        footer: {
+            trustedBy: '深受研究人员信赖的高级健康数据分析平台',
+            stats: {
+                realTime: '实时处理',
+                accuracy: '科学准确',
+                complete: '完整 NHANES 数据集'
+            }
+        },
         title: 'NHANES 数据处理系统',
         subtitle: '美国国家健康与营养检查调查数据库处理平台',
         features: {
@@ -410,6 +423,10 @@ export const zhTranslations = {
             ranksum: {
                 name: '秩和检验',
                 description: 'Mann-Whitney U检验，非参数比较两组数据的分布差异'
+            },
+            rcs: {
+                name: '限制性立方样条 (RCS)',
+                description: '利用节点可视化非线性关系'
             }
         },
         config: {
@@ -521,6 +538,24 @@ export const zhTranslations = {
             ranksum: {
                 title: '秩和检验说明',
                 description: '曼-惠特尼 U 检验（Mann-Whitney U Test）是T检验的非参数替代方法，用于比较两个独立组别的分布差异，无需假设数据服从正态分布。',
+            },
+            rcs: {
+                title: '限制性立方样条 (RCS)',
+                description: '使用样条函数可视化非线性关系。',
+                modelType: '模型类型',
+                knots: '节点数',
+                yVar: 'Y变量 (结果/事件)',
+                yVarTooltip: '线性：连续结果。逻辑：二分类结果(0/1)。Cox：事件状态(0/1)。',
+                xVar: 'X变量 (连续)',
+                timeVar: '时间变量',
+                timeVarRequired: 'Cox回归必填',
+                covariates: '协变量 (校正)',
+                options: {
+                    linear: '线性回归 (OLS)',
+                    logistic: '逻辑回归 (Logit)',
+                    cox: 'Cox回归'
+                },
+                knotOptions: '{{count}} 节点'
             }
         },
         analysis: {
@@ -652,6 +687,19 @@ export const zhTranslations = {
                     title: '多分类逻辑回归分析结果',
                     description: '多分类逻辑回归分析完成。模型准确率：{accuracy}%。成功分类 {classes} 个类别（{labels}）。适用于CKMStage等多分类因变量的分析。'
                 }
+            },
+            rcs: {
+                plot: 'RCS 图',
+                noPlot: '暂无图表',
+                statistics: '模型统计',
+                modelType: '模型类型:',
+                aic: 'AIC:'
+            },
+            errors: {
+                unitInterval: '因变量必须在单位区间内（0-1，通常意味着你需要二分类变量）',
+                backendModuleMissing: '后端模块缺失: {{error}} (请联系管理员重建Docker)',
+                inconsistentSamples: '样本数量不一致 (请检查是否有缺失值)',
+                originalError: '原始错误信息'
             }
         }
     }
@@ -701,6 +749,19 @@ export const enTranslations = {
         dataAnalysis: 'Data Analysis'
     },
     home: {
+        hero: {
+            platformName: 'NHANES Cloud Platform v1.0',
+            getStarted: 'Get Started',
+            viewDocs: 'View Visual Documentation'
+        },
+        footer: {
+            trustedBy: 'Trusted by researchers for advanced health data analytics',
+            stats: {
+                realTime: 'Real-time Processing',
+                accuracy: 'Scientific Accuracy',
+                complete: 'Complete NHANES Dataset'
+            }
+        },
         title: 'NHANES Data Processing System',
         subtitle: 'National Health and Nutrition Examination Survey Database Processing Platform',
         features: {
@@ -1069,6 +1130,10 @@ export const enTranslations = {
             ranksum: {
                 name: 'Rank-Sum Test',
                 description: 'Mann-Whitney U test (non-parametric comparison)'
+            },
+            rcs: {
+                name: 'Restricted Cubic Spline (RCS)',
+                description: 'Visualize non-linear relationships with knots'
             }
         },
         config: {
@@ -1121,6 +1186,24 @@ export const enTranslations = {
                 ranksum: {
                     title: 'Rank-Sum Test Guide',
                     description: 'Mann-Whitney U Test is a non-parametric alternative to the T-test for comparing distributions of two independent groups, without assuming normality.',
+                },
+                rcs: {
+                    title: 'Restricted Cubic Spline (RCS)',
+                    description: 'Visualize non-linear relationships using spline functions.',
+                    modelType: 'Model Type',
+                    knots: 'Knots',
+                    yVar: 'Y Variable (Outcome/Event)',
+                    yVarTooltip: 'For Linear: Continuous outcome. For Logistic: Binary outcome (0/1). For Cox: Event status (0/1).',
+                    xVar: 'X Variable (Continuous)',
+                    timeVar: 'Time Variable',
+                    timeVarRequired: 'Required for Cox',
+                    covariates: 'Covariates (Adjustments)',
+                    options: {
+                        linear: 'Linear (OLS)',
+                        logistic: 'Logistic (Logit)',
+                        cox: 'Cox Regression'
+                    },
+                    knotOptions: '{{count}} Knots'
                 },
                 alpha: {
                     label: 'Significance Level',
@@ -1311,6 +1394,19 @@ export const enTranslations = {
                     title: 'Multinomial Logistic Regression Analysis Results',
                     description: 'Multinomial logistic regression completed. Model accuracy: {accuracy}%. Successfully classified {classes} classes ({labels}). Suitable for multi-class dependent variables like CKMStage.'
                 }
+            },
+            rcs: {
+                plot: 'RCS Plot',
+                noPlot: 'No Plot Available',
+                statistics: 'Model Statistics',
+                modelType: 'Model Type:',
+                aic: 'AIC:'
+            },
+            errors: {
+                unitInterval: 'The dependent variable must be in the unit interval (0-1, usually means you need a binary variable)',
+                backendModuleMissing: 'Backend module missing: {{error}} (Please contact admin to rebuild Docker)',
+                inconsistentSamples: 'Inconsistent numbers of samples (Check for missing values)',
+                originalError: 'Original Error'
             }
         }
     }

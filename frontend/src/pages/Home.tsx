@@ -87,7 +87,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             <div className="hero-section">
                 <div className="hero-content">
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', fontWeight: 600, fontSize: '0.9rem', marginBottom: '24px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
-                        <RocketOutlined /> NHANES Cloud Platform v2.0
+                        <RocketOutlined /> {t('home.hero.platformName')}
                     </div>
 
                     <Title level={1} className="hero-title">
@@ -119,7 +119,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                             onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                         >
-                            Get Started <ArrowRightOutlined />
+                            {t('home.hero.getStarted')} <ArrowRightOutlined />
                         </button>
 
                         <button
@@ -144,7 +144,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                 e.currentTarget.style.borderColor = 'rgba(0,0,0,0.1)';
                             }}
                         >
-                            View Visual Documentation
+                            {t('home.hero.viewDocs')}
                         </button>
                     </Space>
                 </div>
@@ -230,25 +230,25 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             <div className="footer-section">
                 <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
                     <Title level={4} style={{ marginBottom: '40px', fontWeight: 300, color: 'var(--text-secondary)' }}>
-                        Trusted by researchers for advanced health data analytics
+                        {t('home.footer.trustedBy')}
                     </Title>
                     <Row gutter={[48, 24]} justify="center">
                         <Col>
                             <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                                 <ThunderboltOutlined style={{ color: 'var(--primary-color)' }} />
-                                <span>Real-time Processing</span>
+                                <span>{t('home.footer.stats.realTime')}</span>
                             </Space>
                         </Col>
                         <Col>
                             <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                                 <ExperimentOutlined style={{ color: 'var(--secondary-color)' }} />
-                                <span>Scientific Accuracy</span>
+                                <span>{t('home.footer.stats.accuracy')}</span>
                             </Space>
                         </Col>
                         <Col>
                             <Space align="center" style={{ fontSize: '1.2rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                                 <DatabaseOutlined style={{ color: 'var(--accent-color)' }} />
-                                <span>Complete NHANES Dataset</span>
+                                <span>{t('home.footer.stats.complete')}</span>
                             </Space>
                         </Col>
                     </Row>

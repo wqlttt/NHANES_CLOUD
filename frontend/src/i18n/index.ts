@@ -5,6 +5,19 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // 中文翻译
 const zhTranslations = {
     home: {
+        hero: {
+            platformName: 'NHANES 云平台 v2.0',
+            getStarted: '开始使用',
+            viewDocs: '查看可视化文档'
+        },
+        footer: {
+            trustedBy: '深受研究人员信赖的高级健康数据分析平台',
+            stats: {
+                realTime: '实时处理',
+                accuracy: '科学准确',
+                complete: '完整 NHANES 数据集'
+            }
+        },
         title: 'NHANES 数据处理系统',
         subtitle: '美国国家健康与营养检查调查数据库处理平台',
         features: {
@@ -114,13 +127,26 @@ const zhTranslations = {
                 title: '数据分析：',
                 description: '执行各种统计分析方法，获得科学结论'
             }
-        }
+        },
     }
 };
 
 // 英文翻译
 const enTranslations = {
     home: {
+        hero: {
+            platformName: 'NHANES Cloud Platform v1.0',
+            getStarted: 'Get Started',
+            viewDocs: 'View Visual Documentation'
+        },
+        footer: {
+            trustedBy: 'Trusted by researchers for advanced health data analytics',
+            stats: {
+                realTime: 'Real-time Processing',
+                accuracy: 'Scientific Accuracy',
+                complete: 'Complete NHANES Dataset'
+            }
+        },
         title: 'NHANES Data Processing System',
         subtitle: 'National Health and Nutrition Examination Survey Database Processing Platform',
         features: {
@@ -230,7 +256,7 @@ const enTranslations = {
                 title: 'Statistical Analysis:',
                 description: 'Execute various statistical methods to obtain scientific conclusions'
             }
-        }
+        },
     }
 };
 

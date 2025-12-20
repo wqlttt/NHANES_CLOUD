@@ -91,6 +91,12 @@ const getAnalysisTypes = (t: any) => [
         icon: <ExperimentOutlined />,
         description: t('dataAnalysis.methods.ranksum.description'),
     },
+    {
+        key: 'rcs',
+        name: t('dataAnalysis.methods.rcs.name'),
+        icon: <LineChartOutlined />,
+        description: t('dataAnalysis.methods.rcs.description'),
+    },
 ];
 
 // 接口类型定义
@@ -202,6 +208,22 @@ interface RankSumResult {
 
 
 
+interface RankSumResult {
+    success: boolean;
+    plot: string;
+    statistic: number;
+    p_value: number;
+    groups: string[];
+}
+
+interface RCSResult {
+    success: boolean;
+    plot: string;
+    aic?: number;
+    analysis_type: string;
+    model_type: string;
+}
+
 const DataAnalysis: React.FC = () => {
     const { t } = useTranslation();
     const [selectedAnalysis, setSelectedAnalysis] = useState('linear_regression');
@@ -214,6 +236,28 @@ const DataAnalysis: React.FC = () => {
     const [analysisAbortController, setAnalysisAbortController] = useState<AbortController | null>(null);
     const [results, setResults] = useState<any>(null);
     const [activeTab, setActiveTab] = useState('config');
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    // 友好的错误信息映射
+    const getFriendlyErrorMessage = (error: string) => {
+        if (!error) return t('dataAnalysis.analysis.messages.unknownError');
+
+        if (error.includes('endog must be in the unit interval')) {
+            return t('dataAnalysis.errors.unitInterval');
+        }
+        if (error.includes('No module named')) {
+            return t('dataAnalysis.errors.backendModuleMissing', { error });
+        }
+        if (error.includes('Found arrays with inconsistent numbers of samples')) {
+            return t('dataAnalysis.errors.inconsistentSamples');
+        }
+        if (error === 'Thinking...') {
+            return error; // Keep as is if it's not a real error
+        }
+
+        // Default: return the raw error but translated if possible
+        return error;
+    };
 
     // 文件相关状态
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -226,6 +270,7 @@ const DataAnalysis: React.FC = () => {
     const [chisquareResult, setChisquareResult] = useState<ChiSquareResult | null>(null);
     const [anovaResult, setAnovaResult] = useState<AnovaResult | null>(null);
     const [rankSumResult, setRankSumResult] = useState<RankSumResult | null>(null);
+    const [rcsResult, setRcsResult] = useState<RCSResult | null>(null);
 
     // 处理文件上传
     const handleFileUpload = async (file: File) => {
@@ -246,8 +291,9 @@ const DataAnalysis: React.FC = () => {
                 setFileInfo(result);
                 message.success(t('dataVisualization.upload.success', { message: result.message }));
 
-                // 清空之前的分析结果
+                // 清空之前的分析结果和错误
                 setResults(null);
+                setErrorMsg(null);
                 setCoxResult(null);
                 setLinearResult(null);
                 setLogisticResult(null);
@@ -256,14 +302,16 @@ const DataAnalysis: React.FC = () => {
                 setChisquareResult(null);
                 setAnovaResult(null);
                 setRankSumResult(null);
+                setRcsResult(null);
 
                 // 重置表单
                 form.resetFields();
             } else {
                 message.error(t('dataVisualization.upload.error', { error: result.error }));
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('文件上传错误:', error);
+            setErrorMsg(error.message || 'Network Error');
             message.error(t('dataVisualization.upload.networkError'));
         } finally {
             setUploadLoading(false);
@@ -320,6 +368,7 @@ const DataAnalysis: React.FC = () => {
 
         setAnalyzing(true);
         setProgress(0);
+        setErrorMsg(null);
         setActiveTab('results');
         setShowAnalysisTimeoutWarning(false);
 
@@ -380,7 +429,10 @@ const DataAnalysis: React.FC = () => {
                 setResults(result);
                 message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.cox_regression.name') }));
             } else {
-                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.cox_regression.name'), error: result.error }));
+                const msg = result.error || 'Analysis failed';
+                console.error('Analysis failed:', msg);
+                setErrorMsg(msg);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.cox_regression.name'), error: msg }));
                 setResults(null);
                 setCoxResult(null);
             }
@@ -390,10 +442,13 @@ const DataAnalysis: React.FC = () => {
             if (error.name === 'AbortError') {
                 message.warning(t('dataAnalysis.analysis.messages.analysisCancelled', { method: t('dataAnalysis.methods.cox_regression.name') }));
             } else {
+                const msg = error.message || 'Network error';
+                setErrorMsg(msg);
                 message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.cox_regression.name') }));
             }
             setResults(null);
             setCoxResult(null);
+            setActiveTab('results');
         } finally {
             setAnalyzing(false);
             setShowAnalysisTimeoutWarning(false);
@@ -463,11 +518,16 @@ const DataAnalysis: React.FC = () => {
                 message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.linear_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.linear_regression.name'), error: result.error }));
+                const msg = result.error || 'Analysis failed';
+                setErrorMsg(msg);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.linear_regression.name'), error: msg }));
+                setActiveTab('results');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('线性回归分析错误:', error);
+            setErrorMsg(error.message || 'Network Error');
             message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.linear_regression.name') }));
+            setActiveTab('results');
         } finally {
             setAnalyzing(false);
         }
@@ -523,11 +583,16 @@ const DataAnalysis: React.FC = () => {
                 message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.logistic_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.logistic_regression.name'), error: result.error }));
+                const msg = result.error || 'Analysis failed';
+                setErrorMsg(msg);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.logistic_regression.name'), error: msg }));
+                setActiveTab('results');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('逻辑回归分析错误:', error);
+            setErrorMsg(error.message || 'Network Error');
             message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.logistic_regression.name') }));
+            setActiveTab('results');
         } finally {
             setAnalyzing(false);
         }
@@ -591,11 +656,16 @@ const DataAnalysis: React.FC = () => {
                 message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name') }));
                 setActiveTab('results');
             } else {
-                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name'), error: result.error }));
+                const msg = result.error || 'Analysis failed';
+                setErrorMsg(msg);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name'), error: msg }));
+                setActiveTab('results');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('多分类逻辑回归分析错误:', error);
+            setErrorMsg(error.message || 'Network Error');
             message.error(t('dataAnalysis.analysis.messages.networkError', { method: t('dataAnalysis.methods.multinomial_logistic_regression.name') }));
+            setActiveTab('results');
         } finally {
             setAnalyzing(false);
         }
@@ -658,11 +728,99 @@ const DataAnalysis: React.FC = () => {
                 message.success(t('dataAnalysis.analysis.messages.analysisSuccess', { method: selectedAnalysis }));
                 setActiveTab('results');
             } else {
-                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: selectedAnalysis, error: result.error }));
+                const msg = result.error || 'Analysis failed';
+                setErrorMsg(msg);
+                message.error(t('dataAnalysis.analysis.messages.analysisFailed', { method: selectedAnalysis, error: msg }));
+                setActiveTab('results');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Analysis error:', error);
+            setErrorMsg(error.message || 'Network Error');
             message.error(t('dataAnalysis.analysis.messages.networkError'));
+            setActiveTab('results');
+        } finally {
+            setAnalyzing(false);
+        }
+    };
+
+    // 运行RCS分析
+    const handleRCSAnalysis = async () => {
+        if (!uploadedFile) {
+            message.error(t('dataAnalysis.analysis.messages.uploadFirst'));
+            return;
+        }
+
+        const formValues = form.getFieldsValue();
+        console.log('RCS Analysis Params:', formValues);
+
+        const { modelType, xVar, yVar, covariates, knots, timeVar } = formValues;
+
+        if (!modelType) {
+            message.error("Please select a model type");
+            return;
+        }
+        if (!xVar) {
+            message.error("Please select X variable (continuous)");
+            return;
+        }
+        if (!yVar) {
+            message.error("Please select Y variable (Outcome/Event)");
+            return;
+        }
+        if (modelType === 'cox' && !timeVar) {
+            message.error("Cox model requires Time variable");
+            return;
+        }
+
+        setAnalyzing(true);
+        setProgress(20);
+
+        const formData = new FormData();
+        formData.append('file', uploadedFile);
+        formData.append('model_type', modelType);
+        formData.append('x_var', xVar);
+        formData.append('y_var', yVar);
+        formData.append('knots', knots || 4);
+
+        if (timeVar) {
+            formData.append('time_var', timeVar);
+        }
+
+        if (covariates && covariates.length > 0) {
+            if (Array.isArray(covariates)) {
+                covariates.forEach(c => formData.append('covariates', c));
+            } else {
+                formData.append('covariates', covariates);
+            }
+        }
+
+        try {
+            setProgress(60);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.RCS_ANALYSIS), {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+            setProgress(90);
+
+            if (result.success) {
+                setRcsResult(result);
+                setResults(result);
+                setProgress(100);
+                message.success("RCS Analysis Successful");
+                setActiveTab('results');
+            } else {
+                const msg = result.error || 'Unknown Error';
+                setErrorMsg(msg);
+                message.error(`RCS Analysis Failed: ${msg}`);
+                setActiveTab('results');
+            }
+        } catch (error: any) {
+            console.error('RCS Analysis Error:', error);
+            setErrorMsg(error.message || 'Network Error');
+            message.error(t('dataAnalysis.analysis.messages.networkError'));
+            setActiveTab('results');
         } finally {
             setAnalyzing(false);
         }
@@ -714,6 +872,11 @@ const DataAnalysis: React.FC = () => {
         }
         if (selectedAnalysis === 'ranksum') {
             await handleStatisticalTest(API_ENDPOINTS.RANK_SUM, setRankSumResult);
+            return;
+        }
+
+        if (selectedAnalysis === 'rcs') {
+            await handleRCSAnalysis();
             return;
         }
 
@@ -798,6 +961,35 @@ const DataAnalysis: React.FC = () => {
         if (selectedAnalysis === 'linear_regression' && !linearResult) return null;
         if (selectedAnalysis === 'logistic_regression' && !logisticResult) return null;
         if (selectedAnalysis === 'multinomial_logistic_regression' && !multinomialResult) return null;
+        if (selectedAnalysis === 'rcs' && !rcsResult) return null;
+
+        if (selectedAnalysis === 'rcs' && rcsResult) {
+            return (
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <Card title={t('dataAnalysis.results.rcs.plot')} bordered={false} style={{ marginBottom: 24, borderRadius: '12px' }}>
+                            {rcsResult.plot ? (
+                                <Image
+                                    src={rcsResult.plot}
+                                    alt={t('dataAnalysis.results.rcs.plot')}
+                                    style={{ width: '100%', maxHeight: '600px', objectFit: 'contain' }}
+                                />
+                            ) : (
+                                <Text>{t('dataAnalysis.results.rcs.noPlot')}</Text>
+                            )}
+                        </Card>
+                    </Col>
+                    <Col span={24}>
+                        <Card title={t('dataAnalysis.results.rcs.statistics')} bordered={false} style={{ borderRadius: '12px' }}>
+                            <Space direction="vertical">
+                                <Text><strong>{t('dataAnalysis.results.rcs.modelType')}</strong> {rcsResult.model_type}</Text>
+                                {rcsResult.aic && <Text><strong>{t('dataAnalysis.results.rcs.aic')}</strong> {rcsResult.aic.toFixed(2)}</Text>}
+                            </Space>
+                        </Card>
+                    </Col>
+                </Row>
+            );
+        }
         if (selectedAnalysis === 'ttest' && !ttestResult) return null;
         if (selectedAnalysis === 'chisquare' && !chisquareResult) return null;
         if (selectedAnalysis === 'anova' && !anovaResult) return null;
@@ -1908,6 +2100,108 @@ const DataAnalysis: React.FC = () => {
                                                             </Col>
                                                         </Row>
                                                     </>
+                                                ) : selectedAnalysis === 'rcs' ? (
+                                                    // RCS Parameters
+                                                    <>
+                                                        <Alert
+                                                            message={t('dataAnalysis.config.rcs.title')}
+                                                            description={t('dataAnalysis.config.rcs.description')}
+                                                            type="info"
+                                                            showIcon
+                                                            style={{ marginBottom: 16 }}
+                                                        />
+                                                        <Row gutter={16}>
+                                                            <Col span={8}>
+                                                                <Form.Item
+                                                                    label={t('dataAnalysis.config.rcs.modelType')}
+                                                                    name="modelType"
+                                                                    initialValue="logistic"
+                                                                    rules={[{ required: true }]}
+                                                                >
+                                                                    <Select>
+                                                                        <Option value="linear">{t('dataAnalysis.config.rcs.options.linear')}</Option>
+                                                                        <Option value="logistic">{t('dataAnalysis.config.rcs.options.logistic')}</Option>
+                                                                        <Option value="cox">{t('dataAnalysis.config.rcs.options.cox')}</Option>
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={8}>
+                                                                <Form.Item
+                                                                    label={t('dataAnalysis.config.rcs.knots')}
+                                                                    name="knots"
+                                                                    initialValue={4}
+                                                                >
+                                                                    <Select>
+                                                                        <Option value={3}>{t('dataAnalysis.config.rcs.knotOptions', { count: 3 })}</Option>
+                                                                        <Option value={4}>{t('dataAnalysis.config.rcs.knotOptions', { count: 4 })}</Option>
+                                                                        <Option value={5}>{t('dataAnalysis.config.rcs.knotOptions', { count: 5 })}</Option>
+                                                                        <Option value={6}>{t('dataAnalysis.config.rcs.knotOptions', { count: 6 })}</Option>
+                                                                        <Option value={7}>{t('dataAnalysis.config.rcs.knotOptions', { count: 7 })}</Option>
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                        <Row gutter={16}>
+                                                            <Col span={12}>
+                                                                {/* Dynamic Y Variable Label based on model type? */}
+                                                                <Form.Item
+                                                                    label={t('dataAnalysis.config.rcs.yVar')}
+                                                                    name="yVar"
+                                                                    tooltip={t('dataAnalysis.config.rcs.yVarTooltip')}
+                                                                    rules={[{ required: true }]}
+                                                                >
+                                                                    <Select showSearch optionFilterProp="children">
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={12}>
+                                                                <Form.Item
+                                                                    label={t('dataAnalysis.config.rcs.xVar')}
+                                                                    name="xVar"
+                                                                    rules={[{ required: true }]}
+                                                                >
+                                                                    <Select showSearch optionFilterProp="children">
+                                                                        {renderColumnOptions('numeric')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                        <Form.Item
+                                                            noStyle
+                                                            shouldUpdate={(prevValues, currentValues) => prevValues.modelType !== currentValues.modelType}
+                                                        >
+                                                            {({ getFieldValue }) =>
+                                                                getFieldValue('modelType') === 'cox' ? (
+                                                                    <Row gutter={16}>
+                                                                        <Col span={12}>
+                                                                            <Form.Item
+                                                                                label={t('dataAnalysis.config.rcs.timeVar')}
+                                                                                name="timeVar"
+                                                                                rules={[{ required: true, message: t('dataAnalysis.config.rcs.timeVarRequired') }]}
+                                                                            >
+                                                                                <Select showSearch optionFilterProp="children">
+                                                                                    {renderColumnOptions('numeric')}
+                                                                                </Select>
+                                                                            </Form.Item>
+                                                                        </Col>
+                                                                    </Row>
+                                                                ) : null
+                                                            }
+                                                        </Form.Item>
+                                                        <Row gutter={16}>
+                                                            <Col span={24}>
+                                                                <Form.Item
+                                                                    label={t('dataAnalysis.config.rcs.covariates')}
+                                                                    name="covariates"
+                                                                >
+                                                                    <Select mode="multiple" showSearch optionFilterProp="children" allowClear>
+                                                                        {renderColumnOptions('all')}
+                                                                    </Select>
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                    </>
                                                 ) : null}
                                             </Form>
 
@@ -2030,6 +2324,27 @@ const DataAnalysis: React.FC = () => {
                                             </div>
                                         )}
                                     </div>
+                                </div>
+                            ) : errorMsg ? (
+                                <div style={{ padding: '24px' }}>
+                                    <Alert
+                                        message={t('common.error')}
+                                        description={
+                                            <div>
+                                                <Paragraph>
+                                                    <strong>{getFriendlyErrorMessage(errorMsg)}</strong>
+                                                </Paragraph>
+                                                <Paragraph type="secondary" style={{ fontSize: '12px' }}>
+                                                    {t('dataAnalysis.errors.originalError')}: {errorMsg}
+                                                </Paragraph>
+                                                <Button type="primary" onClick={() => setActiveTab('config')}>
+                                                    {t('dataAnalysis.config.title')}
+                                                </Button>
+                                            </div>
+                                        }
+                                        type="error"
+                                        showIcon
+                                    />
                                 </div>
                             ) : results ? (
                                 <div>

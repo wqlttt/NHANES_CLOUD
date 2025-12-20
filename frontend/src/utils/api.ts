@@ -59,6 +59,7 @@ export const API_ENDPOINTS = {
     CHI_SQUARE: '/chisquare',
     ANOVA: '/anova',
     RANK_SUM: '/ranksum',
+    RCS_ANALYSIS: '/rcs',
 
     // 健康检查
     HEALTH: '/health'
