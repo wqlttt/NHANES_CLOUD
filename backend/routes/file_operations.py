@@ -1,8 +1,10 @@
 """
 文件操作相关路由
 """
-from flask import Blueprint, request, jsonify
 import os
+import uuid
+from pathlib import Path
+from flask import Blueprint, request, jsonify
 from utils.file_utils import allowed_file, download_file
 from services.csv_service import CSVService
 from config import MAX_FILE_SIZE
@@ -64,11 +66,26 @@ def get_csvfile():
         }), 400
 
     try:
-        result = CSVService.parse_csv_file(file, file_length)
+        # Create temp directory if not exists
+        temp_dir = Path("temp_uploads")
+        temp_dir.mkdir(exist_ok=True)
+        
+        # Save file with unique name
+        unique_filename = f"{uuid.uuid4()}_{file.filename}"
+        filepath = temp_dir / unique_filename
+        file.save(filepath)
+        
+        # Get actual file size after saving
+        file_length = os.path.getsize(filepath)
+
+        # Re-open file for processing
+        with open(filepath, 'rb') as f:
+            result = CSVService.parse_csv_file(f, file_length)
         
         return jsonify({
             "success": True,
             "filename": file.filename,
+            "filepath": str(filepath.absolute()), # Return absolute path for processing
             **result,
             "message": f"成功解析CSV文件，包含{result['total_rows']}行数据，{result['total_columns']}列"
         })

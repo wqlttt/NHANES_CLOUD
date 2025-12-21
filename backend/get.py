@@ -39,11 +39,13 @@ from routes.file_operations import file_bp
 from routes.data_visualization import visualization_bp
 from routes.data_analysis import analysis_bp
 from routes.data_extraction import extraction_bp
+from routes.data_processing import processing_bp
 
 app.register_blueprint(file_bp)
 app.register_blueprint(visualization_bp)
 app.register_blueprint(analysis_bp)
 app.register_blueprint(extraction_bp)
+app.register_blueprint(processing_bp)
 
 # 健康检查端点
 @app.route('/health', methods=['GET'])

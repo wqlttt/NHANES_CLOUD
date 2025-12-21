@@ -9,14 +9,20 @@ import {
     RocketOutlined,
     InboxOutlined,
     FileTextOutlined,
-    EyeOutlined
+    EyeOutlined,
+    CheckCircleOutlined,
+    PlusOutlined,
+    MinusCircleOutlined,
+    DownloadOutlined,
+    ReloadOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { message, Upload, UploadProps, Table, Tag, Empty, Divider } from 'antd';
+import { message, Upload, UploadProps, Table, Tag, Empty, Divider, Form, Select, Radio, Checkbox, Input, Modal } from 'antd';
 import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 
 interface FileInfo {
     filename: string;
+    filepath?: string; // Server side path
     file_stats: {
         total_rows: number;
         total_columns: number;
@@ -36,6 +42,7 @@ interface FileInfo {
         unique_count: number;
     }>;
     preview_data?: Array<Record<string, any>>;
+    last_updated?: string;
 }
 
 const { Title, Paragraph, Text } = Typography;
@@ -45,10 +52,134 @@ const { Dragger } = Upload;
 
 const DataProcessing: React.FC = () => {
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState('imputation');
-    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [fileInfo, setFileInfo] = useState<FileInfo | null>(null);
+    const [originalFileInfo, setOriginalFileInfo] = useState<FileInfo | null>(null);
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [activeTab, setActiveTab] = useState('imputation');
     const [uploadLoading, setUploadLoading] = useState(false);
+
+    // Imputation State
+    const [imputationForm] = Form.useForm();
+    const [imputationMethod, setImputationMethod] = useState('mean');
+    const [imputationLoading, setImputationLoading] = useState(false);
+
+    // Filtering State
+    const [filterForm] = Form.useForm();
+    const [filterLoading, setFilterLoading] = useState(false);
+    const [filterResult, setFilterResult] = useState<{ original: number; removed: number; remaining: number } | null>(null);
+
+    // Calculation State
+    const [calculationForm] = Form.useForm();
+    const [calculationLoading, setCalculationLoading] = useState(false);
+
+    const handleImputation = async () => {
+        if (!fileInfo?.filepath) {
+            message.error(t('dataProcessing.upload.error'));
+            return;
+        }
+
+        try {
+            const values = await imputationForm.validateFields();
+            setImputationLoading(true);
+
+            const response = await fetch(getApiUrl(API_ENDPOINTS.PROCESS_IMPUTE), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filepath: fileInfo.filepath,
+                    method: values.method,
+                    columns: values.columns
+                })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                message.success('Imputation successful');
+                // Update file info with new processed file
+                setFileInfo(prev => ({
+                    ...prev!,
+                    filepath: result.filepath,
+                    file_stats: result.stats,
+                    preview_data: result.stats.preview_data,
+                    columns_info: result.stats.columns_info // Refresh stats
+                }));
+            } else {
+                message.error(result.error || 'Imputation failed');
+            }
+        } catch (error) {
+            console.error(error);
+            message.error('Imputation failed');
+        } finally {
+            setImputationLoading(false);
+        }
+    };
+
+    const handleFilter = async () => {
+        console.log('handleFilter called', { fileInfo });
+        if (!fileInfo?.filepath) {
+            message.error('File path error: No filepath found');
+            return;
+        }
+
+        try {
+            console.log('Validating fields...');
+            const values = await filterForm.validateFields();
+            console.log('Form values:', values);
+            setFilterLoading(true);
+
+            // Transform filters to format expected by backend
+            const filters = values.filters.map((f: any) => ({
+                column: f.column,
+                operator: f.operator,
+                value: f.value
+            }));
+
+            console.log('Sending request to:', getApiUrl(API_ENDPOINTS.PROCESS_FILTER));
+            const response = await fetch(getApiUrl(API_ENDPOINTS.PROCESS_FILTER), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filepath: fileInfo.filepath,
+                    filters: filters
+                })
+            });
+
+            console.log('Response status:', response.status);
+            const result = await response.json();
+            console.log('Response result:', result);
+
+            if (result.success) {
+                const newTime = new Date().toLocaleTimeString();
+                const originalCount = fileInfo.file_stats.total_rows;
+                const newCount = result.stats.total_rows;
+                const removedCount = originalCount - newCount;
+
+                setFilterResult({
+                    original: originalCount,
+                    removed: removedCount,
+                    remaining: newCount
+                });
+
+                message.success('Filter applied successfully');
+
+                setFileInfo(prev => ({
+                    ...prev!,
+                    filepath: result.filepath,
+                    file_stats: result.stats,
+                    preview_data: result.stats.preview_data,
+                    columns_info: result.stats.columns_info,
+                    last_updated: newTime
+                }));
+            } else {
+                message.error(result.error || 'Filter failed');
+            }
+        } catch (error) {
+            console.error('Filter error:', error);
+            message.error('Filter failed: ' + ((error as any).message || String(error)));
+        } finally {
+            setFilterLoading(false);
+        }
+    };
 
     const handleFileUpload = async (file: File) => {
         setUploadLoading(true);
@@ -66,6 +197,7 @@ const DataProcessing: React.FC = () => {
             if (result.success) {
                 setUploadedFile(file);
                 setFileInfo(result);
+                setOriginalFileInfo(result);
                 message.success(t('dataProcessing.upload.success'));
             } else {
                 message.error(t('dataProcessing.upload.error'));
@@ -77,6 +209,25 @@ const DataProcessing: React.FC = () => {
             setUploadLoading(false);
         }
         return false;
+    };
+
+    const handleDownload = () => {
+        console.log('Downloading file:', fileInfo?.filepath);
+        if (!fileInfo?.filepath) {
+            message.warning('No file to download');
+            return;
+        }
+        // Add timestamp to prevent caching
+        const downloadUrl = `${getApiUrl(API_ENDPOINTS.PROCESS_DOWNLOAD)}?filepath=${encodeURIComponent(fileInfo.filepath)}&t=${new Date().getTime()}`;
+        console.log('Download URL:', downloadUrl);
+        window.open(downloadUrl, '_blank');
+    };
+
+    const handleReset = () => {
+        if (!originalFileInfo) return;
+        setFileInfo(originalFileInfo);
+        setFilterResult(null);
+        message.success('Data reset to original state');
     };
 
     return (
@@ -161,6 +312,19 @@ const DataProcessing: React.FC = () => {
                                     <EyeOutlined />
                                 </div>
                                 <Title level={5} style={{ margin: 0 }}>{t('dataProcessing.preview.title')}</Title>
+                                <div style={{ flex: 1 }} />
+                                <Button
+                                    icon={<ReloadOutlined />}
+                                    onClick={handleReset}
+                                    style={{
+                                        background: 'rgba(255, 255, 255, 0.5)',
+                                        border: '1px solid rgba(0, 0, 0, 0.1)',
+                                        borderRadius: '20px',
+                                        marginLeft: '12px'
+                                    }}
+                                >
+                                    Reset Data
+                                </Button>
                             </div>
 
                             <div style={{
@@ -184,6 +348,11 @@ const DataProcessing: React.FC = () => {
                                         <Text type="secondary" style={{ fontSize: '12px' }}>
                                             {t('dataProcessing.preview.totalData')}: {fileInfo.file_stats.total_rows}
                                         </Text>
+                                        {fileInfo.last_updated && (
+                                            <Tag color="purple" style={{ borderRadius: '6px', border: 'none', background: 'rgba(139, 92, 246, 0.1)', color: '#7c3aed' }}>
+                                                Updated: {fileInfo.last_updated}
+                                            </Tag>
+                                        )}
                                     </Space>
                                 </div>
 
@@ -264,43 +433,83 @@ const DataProcessing: React.FC = () => {
                                                 {t('dataProcessing.imputation.description')}
                                             </Paragraph>
 
-                                            <Space direction="vertical" style={{ width: '100%' }} size="middle">
-                                                <Card size="small" className="feature-card-small" style={{ borderLeft: '4px solid #1890ff' }}>
-                                                    <Space>
-                                                        <Text strong>{t('dataProcessing.imputation.completeCase.title')}</Text>
-                                                        <Text type="secondary">- {t('dataProcessing.imputation.completeCase.desc')}</Text>
-                                                    </Space>
-                                                </Card>
-                                                <Card size="small" className="feature-card-small" style={{ borderLeft: '4px solid #52c41a' }}>
-                                                    <Space>
-                                                        <Text strong>{t('dataProcessing.imputation.meanMedian.title')}</Text>
-                                                        <Text type="secondary">- {t('dataProcessing.imputation.meanMedian.desc')}</Text>
-                                                    </Space>
-                                                </Card>
-                                                <Card size="small" className="feature-card-small" style={{ borderLeft: '4px solid #722ed1' }}>
-                                                    <Space>
-                                                        <Text strong>{t('dataProcessing.imputation.mice.title')}</Text>
-                                                        <Text type="secondary">- {t('dataProcessing.imputation.mice.desc')}</Text>
-                                                    </Space>
-                                                </Card>
-                                            </Space>
+                                            <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)' }}>
+                                                <Form form={imputationForm} layout="vertical">
+                                                    <Title level={5}>{t('dataProcessing.imputation.configuration')}</Title>
 
-                                            <Button
-                                                type="primary"
-                                                size="large"
-                                                icon={<ArrowRightOutlined />}
-                                                style={{
-                                                    marginTop: '40px',
-                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-                                                    border: 'none',
-                                                    boxShadow: '0 4px 15px rgba(24, 144, 255, 0.4)',
-                                                    padding: '0 40px',
-                                                    height: '48px',
-                                                    borderRadius: '24px'
-                                                }}
-                                            >
-                                                {t('dataProcessing.imputation.startBtn')}
-                                            </Button>
+                                                    <Form.Item
+                                                        label={t('dataProcessing.imputation.selectColumns')}
+                                                        name="columns"
+                                                        rules={[{ required: true, message: 'Please select columns' }]}
+                                                        help={!fileInfo ? "Please upload a file first" : null}
+                                                    >
+                                                        <Select
+                                                            mode="multiple"
+                                                            placeholder={t('dataProcessing.imputation.selectColumns')}
+                                                            disabled={!fileInfo || imputationLoading}
+                                                            style={{ width: '100%' }}
+                                                            maxTagCount="responsive"
+                                                        >
+                                                            {fileInfo?.columns.map(col => (
+                                                                <Select.Option key={col} value={col}>
+                                                                    {col}
+                                                                    {fileInfo.columns_info.find(info => info.name === col)?.null_count ?
+                                                                        <Tag color="warning" style={{ marginLeft: 8 }}>Missing: {fileInfo.columns_info.find(info => info.name === col)?.null_count}</Tag> : null}
+                                                                </Select.Option>
+                                                            ))}
+                                                        </Select>
+                                                    </Form.Item>
+
+                                                    <Form.Item
+                                                        label={t('dataProcessing.imputation.selectMethod')}
+                                                        name="method"
+                                                        initialValue="mean"
+                                                    >
+                                                        <Radio.Group onChange={e => setImputationMethod(e.target.value)} value={imputationMethod} disabled={!fileInfo || imputationLoading}>
+                                                            <Space direction="vertical">
+                                                                <Radio value="drop">
+                                                                    <Space>
+                                                                        <Text strong>{t('dataProcessing.imputation.completeCase.title')}</Text>
+                                                                        <Text type="secondary">- {t('dataProcessing.imputation.completeCase.desc')}</Text>
+                                                                    </Space>
+                                                                </Radio>
+                                                                <Radio value="mean">
+                                                                    <Space>
+                                                                        <Text strong>{t('dataProcessing.imputation.meanMedian.title')}</Text>
+                                                                        <Text type="secondary">- {t('dataProcessing.imputation.meanMedian.desc')}</Text>
+                                                                    </Space>
+                                                                </Radio>
+                                                                <Radio value="mice">
+                                                                    <Space>
+                                                                        <Text strong>{t('dataProcessing.imputation.mice.title')}</Text>
+                                                                        <Text type="secondary">- {t('dataProcessing.imputation.mice.desc')}</Text>
+                                                                    </Space>
+                                                                </Radio>
+                                                            </Space>
+                                                        </Radio.Group>
+                                                    </Form.Item>
+
+                                                    <Button
+                                                        type="primary"
+                                                        size="large"
+                                                        icon={<ArrowRightOutlined />}
+                                                        loading={imputationLoading}
+                                                        disabled={!fileInfo}
+                                                        onClick={handleImputation}
+                                                        style={{
+                                                            marginTop: '20px',
+                                                            background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                            border: 'none',
+                                                            boxShadow: '0 4px 15px rgba(24, 144, 255, 0.4)',
+                                                            padding: '0 40px',
+                                                            height: '48px',
+                                                            borderRadius: '24px'
+                                                        }}
+                                                    >
+                                                        {t('dataProcessing.imputation.startBtn')}
+                                                    </Button>
+                                                </Form>
+                                            </div>
                                         </Col>
                                         <Col xs={24} md={10} style={{ textAlign: 'center' }}>
                                             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -353,43 +562,153 @@ const DataProcessing: React.FC = () => {
                                                 {t('dataProcessing.filtering.description')}
                                             </Paragraph>
 
-                                            <Steps direction="horizontal" current={1} style={{ marginBottom: '40px' }} className="custom-steps">
-                                                <Step title={t('dataProcessing.filtering.steps.selectVariables')} description={t('dataProcessing.filtering.steps.selectVariablesDesc')} />
-                                                <Step title={t('dataProcessing.filtering.steps.defineCriteria')} description={t('dataProcessing.filtering.steps.defineCriteriaDesc')} />
-                                                <Step title={t('dataProcessing.filtering.steps.previewCohort')} description={t('dataProcessing.filtering.steps.previewCohortDesc')} />
-                                            </Steps>
+                                            <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)' }}>
+                                                <Form form={filterForm} layout="vertical">
+                                                    <Title level={5} style={{ marginBottom: 24 }}>{t('dataProcessing.filtering.configuration')}</Title>
+                                                    <Form.List name="filters" initialValue={[{}]}>
+                                                        {(fields, { add, remove }) => (
+                                                            <>
+                                                                {fields.map(({ key, name, ...restField }) => (
+                                                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                                        <Form.Item
+                                                                            {...restField}
+                                                                            name={[name, 'column']}
+                                                                            rules={[{ required: true, message: 'Missing column' }]}
+                                                                            style={{ width: 150 }}
+                                                                        >
+                                                                            <Select placeholder={t('dataProcessing.filtering.steps.selectVariables')} disabled={!fileInfo}>
+                                                                                {fileInfo?.columns.map(col => (
+                                                                                    <Select.Option key={col} value={col}>{col}</Select.Option>
+                                                                                ))}
+                                                                            </Select>
+                                                                        </Form.Item>
+                                                                        <Form.Item
+                                                                            {...restField}
+                                                                            name={[name, 'operator']}
+                                                                            rules={[{ required: true, message: 'Missing operator' }]}
+                                                                            style={{ width: 150 }}
+                                                                        >
+                                                                            <Select placeholder="Operator" disabled={!fileInfo}>
+                                                                                <Select.Option value="gt">{t('dataProcessing.filtering.operators.gt')}</Select.Option>
+                                                                                <Select.Option value="lt">{t('dataProcessing.filtering.operators.lt')}</Select.Option>
+                                                                                <Select.Option value="eq">{t('dataProcessing.filtering.operators.eq')}</Select.Option>
+                                                                                <Select.Option value="neq">{t('dataProcessing.filtering.operators.neq')}</Select.Option>
+                                                                                <Select.Option value="gte">{t('dataProcessing.filtering.operators.gte')}</Select.Option>
+                                                                                <Select.Option value="lte">{t('dataProcessing.filtering.operators.lte')}</Select.Option>
+                                                                                <Select.Option value="contains">{t('dataProcessing.filtering.operators.contains')}</Select.Option>
+                                                                            </Select>
+                                                                        </Form.Item>
+                                                                        <Form.Item
+                                                                            {...restField}
+                                                                            name={[name, 'value']}
+                                                                            rules={[{ required: true, message: 'Missing value' }]}
+                                                                            style={{ width: 150 }}
+                                                                        >
+                                                                            <Input placeholder="Value" disabled={!fileInfo} />
+                                                                        </Form.Item>
+                                                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                                                    </Space>
+                                                                ))}
+                                                                <Form.Item>
+                                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} disabled={!fileInfo}>
+                                                                        {t('dataProcessing.filtering.addRule')}
+                                                                    </Button>
+                                                                </Form.Item>
+                                                            </>
+                                                        )}
+                                                    </Form.List>
 
-                                            <Button
-                                                type="primary"
-                                                size="large"
-                                                icon={<FilterOutlined />}
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
-                                                    border: 'none',
-                                                    boxShadow: '0 4px 15px rgba(82, 196, 26, 0.4)',
-                                                    padding: '0 40px',
-                                                    height: '48px',
-                                                    borderRadius: '24px'
-                                                }}
-                                            >
-                                                {t('dataProcessing.filtering.createBtn')}
-                                            </Button>
+                                                    <Space>
+                                                        <Button
+                                                            type="primary"
+                                                            size="large"
+                                                            loading={filterLoading}
+                                                            disabled={!fileInfo}
+                                                            onClick={handleFilter}
+                                                            style={{
+                                                                background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                                border: 'none',
+                                                                boxShadow: '0 4px 15px rgba(82, 196, 26, 0.4)',
+                                                                borderRadius: '24px',
+                                                                padding: '0 32px'
+                                                            }}
+                                                        >
+                                                            {t('dataProcessing.filtering.applyFilter')}
+                                                        </Button>
+                                                        <Button size="large" onClick={() => message.info("Preview count logic coming soon")}>
+                                                            {t('dataProcessing.filtering.previewCohort')}
+                                                        </Button>
+                                                    </Space>
+                                                </Form>
+                                            </div>
                                         </Col>
                                         <Col xs={24} md={10} style={{ textAlign: 'center' }}>
-                                            <div style={{ position: 'relative', display: 'inline-block' }}>
-                                                <div style={{
-                                                    position: 'absolute',
-                                                    top: '50%',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)',
-                                                    width: '300px',
-                                                    height: '300px',
-                                                    background: 'radial-gradient(circle, rgba(82,196,26,0.1) 0%, rgba(255,255,255,0) 70%)',
-                                                    borderRadius: '50%',
-                                                    zIndex: 0
-                                                }} />
-                                                <FilterOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(82, 196, 26, 0.2)', zIndex: 1 }} />
-                                            </div>
+                                            {filterResult ? (
+                                                <div className="glass-card" style={{
+                                                    padding: '32px',
+                                                    background: 'rgba(255, 255, 255, 0.4)',
+                                                    textAlign: 'left'
+                                                }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#52c41a', marginRight: '12px' }} />
+                                                        <Title level={4} style={{ margin: 0 }}>Filtering Results</Title>
+                                                    </div>
+
+                                                    <Space direction="vertical" style={{ width: '100%' }} size="large">
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Original Cohort</Text>
+                                                            <Text strong style={{ fontSize: '18px' }}>{filterResult.original.toLocaleString()}</Text>
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Excluded Items</Text>
+                                                            <Tag color="error" style={{ fontSize: '16px', padding: '4px 12px' }}>
+                                                                -{filterResult.removed.toLocaleString()}
+                                                            </Tag>
+                                                        </div>
+
+                                                        <Divider style={{ margin: '8px 0' }} />
+
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Final Cohort</Text>
+                                                            <Text strong style={{ fontSize: '24px', color: '#52c41a' }}>
+                                                                {filterResult.remaining.toLocaleString()}
+                                                            </Text>
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+                                                            <Button
+                                                                type="primary"
+                                                                icon={<DownloadOutlined />}
+                                                                onClick={handleDownload}
+                                                                style={{
+                                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                                    border: 'none',
+                                                                    borderRadius: '20px',
+                                                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                                                }}
+                                                            >
+                                                                Download Data
+                                                            </Button>
+                                                        </div>
+                                                    </Space>
+                                                </div>
+                                            ) : (
+                                                <div style={{ position: 'relative', display: 'inline-block' }}>
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                        width: '300px',
+                                                        height: '300px',
+                                                        background: 'radial-gradient(circle, rgba(82,196,26,0.1) 0%, rgba(255,255,255,0) 70%)',
+                                                        borderRadius: '50%',
+                                                        zIndex: 0
+                                                    }} />
+                                                    <FilterOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(82, 196, 26, 0.2)', zIndex: 1 }} />
+                                                </div>
+                                            )}
                                         </Col>
                                     </Row>
                                 </div>
@@ -426,33 +745,59 @@ const DataProcessing: React.FC = () => {
                                                 {t('dataProcessing.calculation.description')}
                                             </Paragraph>
 
-                                            <div style={{ background: 'rgba(0,0,0,0.02)', padding: '20px', borderRadius: '12px', marginBottom: '32px' }}>
-                                                <Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}>{t('dataProcessing.calculation.examples')}</Text>
-                                                <Space direction="vertical" style={{ width: '100%' }}>
-                                                    <Card size="small" bordered={false} style={{ background: 'white' }}>
-                                                        <Text code>BMI = Weight / (Height/100)²</Text>
-                                                    </Card>
-                                                    <Card size="small" bordered={false} style={{ background: 'white' }}>
-                                                        <Text code>If Age &gt; 65 then 'Elderly' else 'Adult'</Text>
-                                                    </Card>
-                                                </Space>
-                                            </div>
+                                            <div style={{ background: 'rgba(255,255,255,0.6)', padding: '24px', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.8)' }}>
+                                                <Form form={calculationForm} layout="vertical">
+                                                    <Title level={5}>{t('dataProcessing.calculation.configuration')}</Title>
 
-                                            <Button
-                                                type="primary"
-                                                size="large"
-                                                icon={<CalculatorOutlined />}
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #f59e0b 0%, #d46b08 100%)',
-                                                    border: 'none',
-                                                    boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
-                                                    padding: '0 40px',
-                                                    height: '48px',
-                                                    borderRadius: '24px'
-                                                }}
-                                            >
-                                                {t('dataProcessing.calculation.defineBtn')}
-                                            </Button>
+                                                    <Form.Item
+                                                        label={t('dataProcessing.calculation.newVariableName')}
+                                                        name="new_variable_name"
+                                                        rules={[{ required: true, message: 'Please enter a variable name' }]}
+                                                    >
+                                                        <Input placeholder={t('dataProcessing.calculation.newVariableName')} disabled={!fileInfo} />
+                                                    </Form.Item>
+
+                                                    <Form.Item
+                                                        label={t('dataProcessing.calculation.formula')}
+                                                        name="formula"
+                                                        rules={[{ required: true, message: 'Please enter a formula' }]}
+                                                    >
+                                                        <Input.TextArea
+                                                            rows={4}
+                                                            placeholder={t('dataProcessing.calculation.formulaPlaceholder')}
+                                                            disabled={!fileInfo}
+                                                            style={{ fontFamily: 'monospace' }}
+                                                        />
+                                                    </Form.Item>
+
+                                                    <div style={{ background: 'rgba(0,0,0,0.02)', padding: '12px', borderRadius: '8px', marginBottom: '24px' }}>
+                                                        <Text type="secondary" style={{ display: 'block', marginBottom: '8px', fontSize: '12px' }}>{t('dataProcessing.calculation.examples')}</Text>
+                                                        <Space direction="vertical" style={{ width: '100%' }} size="small">
+                                                            <Text code style={{ fontSize: '12px' }}>BMI = Weight / (Height/100)**2</Text>
+                                                            <Text code style={{ fontSize: '12px' }}>IsElderly = Age {'>'} 65</Text>
+                                                        </Space>
+                                                    </div>
+
+                                                    <Button
+                                                        type="primary"
+                                                        size="large"
+                                                        icon={<CalculatorOutlined />}
+                                                        loading={calculationLoading}
+                                                        disabled={!fileInfo}
+                                                        onClick={() => message.info("Calculation logic connected in next step")}
+                                                        style={{
+                                                            background: 'linear-gradient(135deg, #f59e0b 0%, #d46b08 100%)',
+                                                            border: 'none',
+                                                            boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
+                                                            padding: '0 40px',
+                                                            height: '48px',
+                                                            borderRadius: '24px'
+                                                        }}
+                                                    >
+                                                        {t('dataProcessing.calculation.defineBtn')}
+                                                    </Button>
+                                                </Form>
+                                            </div>
                                         </Col>
                                         <Col xs={24} md={10} style={{ textAlign: 'center' }}>
                                             <div style={{ position: 'relative', display: 'inline-block' }}>

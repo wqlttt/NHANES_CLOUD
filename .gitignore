@@ -190,3 +190,4 @@ convert_var_label.py
 
 # Local config
 backend/get_nhanes/nhanes_config.json
+backend/temp_uploads/

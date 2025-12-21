@@ -61,6 +61,12 @@ export const API_ENDPOINTS = {
     RANK_SUM: '/ranksum',
     RCS_ANALYSIS: '/rcs',
 
+    // Data Processing (New)
+    PROCESS_IMPUTE: '/process/impute',
+    PROCESS_FILTER: '/process/filter',
+    PROCESS_CALCULATE: '/process/calculate',
+    PROCESS_DOWNLOAD: '/process/download',
+
     // 健康检查
     HEALTH: '/health'
 };

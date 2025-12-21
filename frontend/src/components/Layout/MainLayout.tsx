@@ -94,9 +94,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {isMobile && (
               <Button
                 type="text"
-                icon={<MenuOutlined style={{ fontSize: '1.2rem' }} />}
+                icon={<MenuOutlined style={{ fontSize: '1.2rem', color: '#1a1b2e' }} />}
                 onClick={() => setDrawerVisible(true)}
-                style={{ marginRight: 8 }}
+                style={{
+                  marginRight: 8,
+                  background: 'rgba(255, 255, 255, 0.5)',
+                  border: '1px solid rgba(255, 255, 255, 0.6)',
+                  backdropFilter: 'blur(8px)',
+                  borderRadius: '12px',
+                  width: '40px',
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
               />
             )}
 
@@ -143,20 +154,45 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       </Header>
 
       <Drawer
-        title="Menu"
+        title={
+          <div className="logo-container" style={{ justifyContent: 'flex-start', padding: 0 }}>
+            <div className="logo-icon-wrapper" style={{ width: 32, height: 32, fontSize: '1.2rem' }}>
+              <DatabaseOutlined />
+            </div>
+            <span className="logo-text" style={{ fontSize: '1.2rem' }}>
+              NHANES<span>Cloud</span>
+            </span>
+          </div>
+        }
         placement="left"
         closable={true}
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
         width={280}
-        styles={{ body: { padding: 0 } }}
+        styles={{
+          header: { borderBottom: '1px solid rgba(0,0,0,0.05)' },
+          body: { padding: '12px 0' },
+          mask: { backdropFilter: 'blur(4px)' },
+          content: { background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)' }
+        }}
       >
         <Menu
           mode="inline"
           selectedKeys={[currentPath]}
-          items={menuItems}
+          items={menuItems.map(item => ({
+            ...item,
+            style: {
+              margin: '4px 12px',
+              width: 'calc(100% - 24px)',
+              borderRadius: '12px',
+              transition: 'all 0.3s ease'
+            }
+          }))}
           onClick={({ key }) => handleMenuClick(key)}
-          style={{ borderRight: 0 }}
+          style={{
+            borderRight: 0,
+            background: 'transparent'
+          }}
         />
       </Drawer>
 

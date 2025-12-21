@@ -362,6 +362,12 @@ code {
     border-radius: 16px;
     padding: 20px !important;
   }
+
+  .app-header {
+    padding: 0 16px !important;
+    height: 64px;
+    line-height: 64px;
+  }
 }
 
 /* Hero Section Responsive Override */

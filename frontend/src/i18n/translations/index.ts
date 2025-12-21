@@ -730,6 +730,9 @@ export const zhTranslations = {
                 title: '多重填补 (MICE)',
                 desc: '高级预测填充'
             },
+            configuration: '填补配置',
+            selectColumns: '选择目标列',
+            selectMethod: '选择填补方法',
             startBtn: '开始填补'
         },
         filtering: {
@@ -743,13 +746,30 @@ export const zhTranslations = {
                 previewCohort: '预览队列',
                 previewCohortDesc: '验证数量'
             },
+            configuration: '筛选规则配置',
+            addRule: '添加规则',
+            applyFilter: '应用筛选',
+            preview: '预览结果',
+            operators: {
+                gt: '大于 (>)',
+                lt: '小于 (<)',
+                eq: '等于 (=)',
+                neq: '不等于 (!=)',
+                gte: '大于等于 (>=)',
+                lte: '小于等于 (<=)',
+                contains: '包含'
+            },
             createBtn: '创建筛选器'
         },
         calculation: {
             title: '自定义变量计算',
             description: '使用数学公式或逻辑从现有数据创建新变量。支持简单算术和复杂条件逻辑。',
             examples: '示例：',
-            defineBtn: '定义新变量'
+            configuration: '变量计算配置',
+            newVariableName: '新变量名',
+            formula: '计算公式',
+            formulaPlaceholder: '例如: weight / (height/100)**2',
+            defineBtn: '定义变量'
         },
         upload: {
             title: '数据源',
@@ -1505,6 +1525,9 @@ export const enTranslations = {
                 title: 'Multiple Imputation (MICE)',
                 desc: 'Advanced predictive filling'
             },
+            configuration: 'Configuration',
+            selectColumns: 'Select Target Columns',
+            selectMethod: 'Select Imputation Method',
             startBtn: 'Start Imputation'
         },
         filtering: {
@@ -1518,13 +1541,30 @@ export const enTranslations = {
                 previewCohort: 'Preview Cohort',
                 previewCohortDesc: 'Verify count'
             },
+            configuration: 'Filter Rules Configuration',
+            addRule: 'Add Rule',
+            applyFilter: 'Apply Filter',
+            preview: 'Preview Result',
+            operators: {
+                gt: 'Greater Than (>)',
+                lt: 'Less Than (<)',
+                eq: 'Equals (=)',
+                neq: 'Not Equal (!=)',
+                gte: 'Greater Than or Equal (>=)',
+                lte: 'Less Than or Equal (<=)',
+                contains: 'Contains'
+            },
             createBtn: 'Create Filter'
         },
         calculation: {
             title: 'Custom Variable Calculation',
             description: 'Create new variables derived from existing data using mathematical formulas or logic. Supports simple arithmetic and complex conditional logic.',
             examples: 'Examples:',
-            defineBtn: 'Define New Variable'
+            configuration: 'Calculation Configuration',
+            newVariableName: 'New Variable Name',
+            formula: 'Formula',
+            formulaPlaceholder: 'e.g., weight / (height/100)**2',
+            defineBtn: 'Define Variable'
         },
         upload: {
             title: 'Data Source',
