@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 from patsy import dmatrix
-from lifelines import CoxPHFitter
 
 def rcs_analysis(csv_data, model_type, x_var, y_var, covariates=None, knots=4):
     """
@@ -90,6 +89,23 @@ def rcs_analysis(csv_data, model_type, x_var, y_var, covariates=None, knots=4):
             # Simplified: just return whole summary or key stats
 
         elif model_type == 'logistic':
+            # 检查因变量是否为二分类
+            unique_vals = np.sort(clean_data[y_var].unique())
+            
+            if len(unique_vals) == 2:
+                # 如果是二分类但不是 0/1 (例如 1/2)，自动转换
+                if not (unique_vals[0] == 0 and unique_vals[1] == 1):
+                    # 映射：也就是 min->0, max->1
+                    # 创建副本以避免 SettingWithCopyWarning
+                    clean_data = clean_data.copy()
+                    map_dict = {unique_vals[0]: 0, unique_vals[1]: 1}
+                    clean_data[y_var] = clean_data[y_var].map(map_dict)
+                    print(f"提示:检测到二分类变量 {y_var} 取值为 {unique_vals}，已自动转换为 {{0, 1}} 进行分析 (0={unique_vals[0]}, 1={unique_vals[1]})")
+            
+            # 再检查范围 (此时如果是二分类应该已经是 0/1 了；如果是概率值则要在 0-1 之间)
+            if not ((clean_data[y_var] >= 0) & (clean_data[y_var] <= 1)).all():
+                raise ValueError(f"因变量 '{y_var}' 的值超出 [0, 1] 范围且不是二分类变量。逻辑回归要求因变量必须是二分类(自动处理后为0/1)或概率值。当前唯一值: {unique_vals}。")
+
             formula = f"{y_var} ~ {formula_rhs}"
             model = smf.logit(formula, data=clean_data).fit()
             
@@ -108,21 +124,41 @@ def rcs_analysis(csv_data, model_type, x_var, y_var, covariates=None, knots=4):
             # simplest is to predict XB then transform, but statsmodels predict doesn't give CI for prob easily
             # We will use get_prediction if available (statsmodels >= 0.14) or approximation
             
-            # Using transform of linear prediction
-            pred_lin = model.get_prediction(pred_data, transform=False) 
-            predicted_logits = pred_lin.predicted_mean
-            ci_low_logit = pred_lin.conf_int()[:, 0]
-            ci_high_logit = pred_lin.conf_int()[:, 1]
-            
-            def expit(x): return 1 / (1 + np.exp(-x))
-            
-            plt.plot(x_range, expit(predicted_logits), 'r-', label='Predicted Probability')
-            plt.fill_between(x_range, expit(ci_low_logit), expit(ci_high_logit), color='r', alpha=0.1, label='95% CI')
-            
+            try:
+                # Use statsmodels get_prediction directly. 
+                # Note: We must NOT pass transform=False because pred_data is raw data, needs transformation via formula.
+                pred_res = model.get_prediction(pred_data)
+                
+                # For Logit, get_prediction normally returns generated linear predictor statistics?
+                # or probabilities?
+                # In 0.14+, get_prediction for Logit returns PredictionResults which has predicted_mean (prob) 
+                # and conf_int (on prob scale or link scale?)
+                # Usually predicted_mean is probability for Logit.
+                # Let's verify if conf_int is on probability scale.
+                # If not, we might need summary_frame().
+                
+                summary = pred_res.summary_frame(alpha=0.05)
+                # summary_frame columns: mean, mean_se, mean_ci_lower, mean_ci_upper...
+                # For Logit, 'mean' is probability.
+                
+                predicted_prob = summary['mean']
+                ci_low = summary['mean_ci_lower']
+                ci_high = summary['mean_ci_upper']
+                
+                plt.plot(x_range, predicted_prob, 'r-', label='Predicted Probability')
+                plt.fill_between(x_range, ci_low, ci_high, color='r', alpha=0.1, label='95% CI')
+                
+            except Exception as e:
+                print(f"Confidence Interval calculation failed using package: {e}")
+                # Fallback
+                y_prob = model.predict(pred_data)
+                plt.plot(x_range, y_prob, 'r-', label='Predicted Probability')
+
             # Rug plot
             plt.plot(clean_data[x_var][clean_data[y_var]==0], [0]*len(clean_data[x_var][clean_data[y_var]==0]), '|', color='b', alpha=0.5)
             plt.plot(clean_data[x_var][clean_data[y_var]==1], [1]*len(clean_data[x_var][clean_data[y_var]==1]), '|', color='r', alpha=0.5)
             plt.ylabel(f"Probability of {y_var}")
+            plt.ylim(-0.05, 1.05)
 
             result_stats['aic'] = model.aic
 

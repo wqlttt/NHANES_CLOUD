@@ -914,7 +914,12 @@ const DataAnalysis: React.FC = () => {
                 setActiveTab('results');
             }
         } catch (error: any) {
-            console.error('RCS Analysis Error:', error);
+            console.error('RCS Analysis Error Details:', error);
+            // Check if error is specifically about string pattern (Base64/atob issue)
+            if (error.message && error.message.includes("The string did not match the expected pattern")) {
+                console.error('Potentially invalid Base64 string in response');
+            }
+
             setErrorMsg(error.message || 'Network Error');
             message.error(t('dataAnalysis.analysis.messages.networkError'));
             setActiveTab('results');
