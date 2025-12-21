@@ -13,7 +13,7 @@ import numpy as np
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -81,7 +81,7 @@ def generate_correlation_heatmap(csv_data, columns=None, method='pearson', title
         vmax=1,
         square=True,  # 方形单元格
         linewidths=0.5,
-        cbar_kws={'label': '相关系数'},
+        cbar_kws={'label': 'Correlation Coefficient'},
         ax=ax
     )
     
@@ -91,7 +91,7 @@ def generate_correlation_heatmap(csv_data, columns=None, method='pearson', title
         'spearman': 'Spearman',
         'kendall': 'Kendall'
     }
-    chart_title = title if title else f"{method_names.get(method, method)} 相关性矩阵热图"
+    chart_title = title if title else f"{method_names.get(method, method)} Correlation Matrix Heatmap"
     ax.set_title(chart_title, fontsize=14, pad=20)
     
     # 旋转标签

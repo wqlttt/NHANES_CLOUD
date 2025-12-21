@@ -39,6 +39,7 @@ export const API_ENDPOINTS = {
     GET_CSV_FILE: '/get_csvfile',
     GET_CSV_INFO: '/get_csv_info',
     GET_FILE_COLUMNS: '/get_file_columns',
+    LOAD_DEMO_DATA: '/load_demo_data',
 
     // 变量搜索
     SEARCH_VARIABLES: '/search_variables',

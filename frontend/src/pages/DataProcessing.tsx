@@ -15,7 +15,8 @@ import {
     MinusCircleOutlined,
     DownloadOutlined,
     ReloadOutlined,
-    LockOutlined
+    LockOutlined,
+    ExperimentOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { message, Upload, UploadProps, Table, Tag, Empty, Divider, Form, Select, Radio, Checkbox, Input, Modal } from 'antd';
@@ -212,6 +213,59 @@ const DataProcessing: React.FC = () => {
         return false;
     };
 
+    // 加载演示数据
+    const handleLoadDemoData = async () => {
+        try {
+            setUploadLoading(true);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.LOAD_DEMO_DATA), {
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                message.success(t('dataProcessing.upload.demoSuccess', { defaultValue: 'Demo data loaded successfully!' }));
+
+                // Construct file info object
+                const demoFileInfo = {
+                    filename: data.filename,
+                    filepath: data.filepath, // Important for backend processing
+                    file_stats: {
+                        total_rows: data.total_rows,
+                        total_columns: data.total_columns,
+                        numeric_columns_count: data.numeric_columns.length,
+                        categorical_columns_count: data.categorical_columns.length,
+                        file_size: 0
+                    },
+                    columns: data.columns,
+                    numeric_columns: data.numeric_columns,
+                    categorical_columns: data.categorical_columns,
+                    columns_info: [], // Default empty array
+                    preview_data: data.preview_data,
+                    last_updated: new Date().toLocaleTimeString()
+                };
+
+                setUploadedFile({
+                    uid: 'demo-file',
+                    name: data.filename,
+                    status: 'done',
+                    url: data.filepath,
+                } as any);
+
+                setFileInfo(demoFileInfo);
+                setOriginalFileInfo(demoFileInfo);
+                setFilterResult(null);
+
+            } else {
+                message.error(data.error || t('dataProcessing.upload.demoFailed', { defaultValue: 'Failed to load demo data' }));
+            }
+        } catch (error) {
+            console.error('Error loading demo data:', error);
+            message.error(t('dataProcessing.upload.demoFailed', { defaultValue: 'Failed to load demo data' }));
+        } finally {
+            setUploadLoading(false);
+        }
+    };
+
     const handleDownload = () => {
         console.log('Downloading file:', fileInfo?.filepath);
         if (!fileInfo?.filepath) {
@@ -297,6 +351,16 @@ const DataProcessing: React.FC = () => {
                             {t('dataProcessing.upload.hint')}
                         </p>
                     </Dragger>
+
+                    <div style={{ marginTop: 16, textAlign: 'center' }}>
+                        <Button
+                            icon={<ExperimentOutlined />}
+                            onClick={handleLoadDemoData}
+                            loading={uploadLoading}
+                        >
+                            {t('dataProcessing.upload.loadDemo', { defaultValue: 'Experience Demo Data' })}
+                        </Button>
+                    </div>
 
                     {fileInfo && (
                         <div style={{ marginTop: 24 }}>

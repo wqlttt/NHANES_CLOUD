@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -91,7 +91,7 @@ def generate_scatterplot(csv_data, x_column=None, y_column=None, color='#0062FF'
     )
     
     # 设置标题和标签
-    chart_title = title if title else f"{x_col} vs {y_col} 散点图"
+    chart_title = title if title else f"{x_col} vs {y_col} Scatter Plot"
     ax.set_title(chart_title, fontsize=14, pad=20)
     ax.set_xlabel(x_col, fontsize=12)
     ax.set_ylabel(y_col, fontsize=12)

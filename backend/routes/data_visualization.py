@@ -53,7 +53,13 @@ def generate_visualization():
     
     # 相关性热图的额外参数
     method = request.form.get('method', 'pearson')
-    columns_str = request.form.get('columns', '')
+    # 处理多选列：前端可能发送多个columns参数，或者一个逗号分隔的字符串
+    columns_list = request.form.getlist('columns')
+    if not columns_list:
+        # 尝试获取单个逗号分隔的字符串
+        cols_str = request.form.get('columns', '')
+        if cols_str:
+            columns_list = [c.strip() for c in cols_str.split(',') if c.strip()]
     
     # QQ图的额外参数
     distribution = request.form.get('distribution', 'norm')
@@ -61,6 +67,7 @@ def generate_visualization():
     # 条形图的额外参数
     show_percentage = request.form.get('show_percentage', 'true').lower() == 'true'
 
+    temp_path = None
     try:
         # 保存文件到临时位置
         with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_file:
@@ -131,9 +138,7 @@ def generate_visualization():
             result = generate_barplot(temp_path, x_var, color, title or None, show_percentage)
             
         elif chart_type == 'correlation_heatmap':
-            columns_list = None
-            if columns_str:
-                columns_list = [col.strip() for col in columns_str.split(',') if col.strip()]
+            # columns_list 已在上面处理过
             result = generate_correlation_heatmap(temp_path, columns_list, method, title or None)
             
         elif chart_type == 'qqplot':
@@ -155,12 +160,6 @@ def generate_visualization():
                     "violinplot", "barplot", "correlation_heatmap", "qqplot"
                 ]
             }), 400
-
-        # 清理临时文件
-        try:
-            os.unlink(temp_path)
-        except:
-            pass
 
         # 统一返回格式
         response_data = {
@@ -203,6 +202,13 @@ def generate_visualization():
             "error": f"图表生成失败: {str(e)}",
             "error_code": "GENERATION_ERROR"
         }), 500
+    finally:
+        # 确保清理临时文件
+        if temp_path:
+            try:
+                os.unlink(temp_path)
+            except:
+                pass
 
 
 # 保留旧的单独路由以保持向后兼容

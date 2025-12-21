@@ -14,7 +14,7 @@ import numpy as np
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -105,7 +105,7 @@ def generate_qqplot(csv_data, column_name, distribution='norm', color='#0062FF',
     line.set_color('red')
     line.set_linewidth(2)
     line.set_linestyle('--')
-    line.set_label('理论分位数线')
+    line.set_label('Theoretical Quantiles Line')
     
     points.set_color(color)
     points.set_markersize(6)
@@ -115,34 +115,34 @@ def generate_qqplot(csv_data, column_name, distribution='norm', color='#0062FF',
     
     # 设置标题和标签
     dist_names = {
-        'norm': '正态分布',
-        't': 't分布',
-        'chi2': '卡方分布',
-        'f': 'F分布',
-        'gamma': 'Gamma分布',
-        'beta': 'Beta分布',
-        'uniform': '均匀分布',
-        'expon': '指数分布'
+        'norm': 'Normal',
+        't': 't',
+        'chi2': 'Chi-Square',
+        'f': 'F',
+        'gamma': 'Gamma',
+        'beta': 'Beta',
+        'uniform': 'Uniform',
+        'expon': 'Exponential'
     }
     dist_name = dist_names.get(distribution, distribution)
     
     # 在标题中显示分布参数（如果适用）
     if distribution == 't':
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name}, df={df_param})"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist, df={df_param})"
     elif distribution == 'chi2':
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name}, df={df_param})"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist, df={df_param})"
     elif distribution == 'f':
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name}, dfn={dfn}, dfd={dfd})"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist, dfn={dfn}, dfd={dfd})"
     elif distribution == 'gamma':
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name}, α=2.0)"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist, alpha=2.0)"
     elif distribution == 'beta':
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name}, a=2, b=2)"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist, a=2, b=2)"
     else:
-        chart_title = title if title else f"{column_name} QQ图 ({dist_name})"
+        chart_title = title if title else f"{column_name} Q-Q Plot ({dist_name} Dist)"
     
     ax.set_title(chart_title, fontsize=14, pad=20)
-    ax.set_xlabel("理论分位数", fontsize=12)
-    ax.set_ylabel("样本分位数", fontsize=12)
+    ax.set_xlabel("Theoretical Quantiles", fontsize=12)
+    ax.set_ylabel("Sample Quantiles", fontsize=12)
     
     # 添加图例
     ax.legend(loc='upper left', fontsize=10)

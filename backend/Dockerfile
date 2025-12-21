@@ -19,6 +19,8 @@ RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debia
 # 这里先安装基本工具，根据实际情况添加
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    fonts-wqy-microhei \
+    fonts-wqy-zenhei \
     && rm -rf /var/lib/apt/lists/*
 
 # 复制依赖文件

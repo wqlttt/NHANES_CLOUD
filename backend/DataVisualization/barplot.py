@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -89,10 +89,10 @@ def generate_barplot(csv_data, column_name, color='#0062FF', title=None, show_pe
         )
     
     # 设置标题和标签
-    chart_title = title if title else f"{column_name} 分布条形图"
+    chart_title = title if title else f"{column_name} Bar Plot"
     ax.set_title(chart_title, fontsize=14, pad=20)
     ax.set_xlabel(column_name, fontsize=12)
-    ax.set_ylabel("频数", fontsize=12)
+    ax.set_ylabel("Count", fontsize=12)
     
     # 旋转X轴标签以避免重叠
     plt.xticks(rotation=45, ha='right')

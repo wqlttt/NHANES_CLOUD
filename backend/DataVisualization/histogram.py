@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -92,7 +92,7 @@ def generate_histogram(csv_data, column_name=None, color='#0062FF', title=None):
             kde_line.set_alpha(0.8)
             
         ax.set_xlabel(target_col, fontsize=12)
-        chart_title = title if title else f"{target_col} 分布直方图"
+        chart_title = title if title else f"{target_col} Distribution Histogram"
     else:
         # 多列重叠模式
         colors = sns.color_palette("husl", len(target_cols))
@@ -111,11 +111,11 @@ def generate_histogram(csv_data, column_name=None, color='#0062FF', title=None):
             )
         ax.legend()
         ax.set_xlabel("Value", fontsize=12)
-        chart_title = title if title else f"多变量分布直方图 ({', '.join(target_cols)})"
+        chart_title = title if title else f"Multivariate Distribution Histogram ({', '.join(target_cols)})"
 
     # 设置标题和标签
     ax.set_title(chart_title, fontsize=14, pad=20)
-    ax.set_ylabel("频次", fontsize=12)
+    ax.set_ylabel("Frequency", fontsize=12)
     
     # 添加网格
     ax.grid(True, linestyle='--', alpha=0.3)

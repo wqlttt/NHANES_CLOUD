@@ -33,7 +33,9 @@ export const zhTranslations = {
             next: '下一页',
             first: '首页',
             last: '末页'
-        }
+        },
+        unknown: '未知',
+        none: '无'
     },
     nav: {
         home: '首页',
@@ -197,6 +199,10 @@ export const zhTranslations = {
             downloadButton: '下载变量组',
             variables: '包含变量：'
         },
+        variableSearch: {
+            title: '变量搜索',
+            placeholder: '输入关键词搜索变量 (如: HDL, Glucose)'
+        },
         messages: {
             completeInfo: '请完善信息',
             completeInfoContent: '请选择年份、输入文件名和指标',
@@ -209,6 +215,107 @@ export const zhTranslations = {
             exportProgress: '正在导出 {count} 条数据...',
             exportSuccess: 'CSV文件已成功导出！包含 {count} 条数据',
             exportFailed: '导出失败，请重试'
+        },
+        indicatorLabels: {
+            phenoage0: { label: 'Phenoage (表型年龄)', desc: '基于生物标志物的衰老评估指标，包含白蛋白、肌酐、血糖等10项指标' },
+            TyG: { label: 'TyG (甘油三酯-葡萄糖指数)', desc: '胰岛素抵抗评估指标，基于空腹甘油三酯和血糖计算' },
+            BMI: { label: 'BMI (身体质量指数)', desc: '体重(kg)/身高(m)²，评估体重状态的标准指标' },
+            TyG_BMI: { label: 'TyG-BMI (TyG与BMI乘积)', desc: 'TyG指数与BMI的乘积，综合代谢风险评估' },
+            AIP: { label: 'AIP (血浆致动脉硬化指数)', desc: 'log(TG/HDL-C)，评估动脉粥样硬化风险的指标' },
+            VAI: { label: 'VAI (内脏脂肪指数)', desc: '基于腰围、BMI、甘油三酯和HDL-C的内脏脂肪评估指标' },
+            UHR: { label: 'UHR (尿酸/HDL比值)', desc: '尿酸与高密度脂蛋白胆固醇的比值，评估代谢异常风险' },
+            eGFR: { label: 'eGFR (估算肾小球滤过率)', desc: '使用CKD-EPI公式计算的估算肾小球滤过率' },
+            RAR: { label: 'RAR (红细胞分布宽度/白蛋白比值)', desc: 'RDW与白蛋白的比值，评估炎症和营养状态' },
+            BRI: { label: 'BRI (身体圆度指数)', desc: '基于腰围和身高的体型评估指标' },
+            SII: { label: 'SII (系统免疫炎症指数)', desc: '(血小板 × 中性粒细胞)/淋巴细胞，评估系统性炎症状态' },
+            NPAR: { label: 'NPAR (中性粒细胞百分比/白蛋白比值)', desc: '中性粒细胞百分比与白蛋白的比值，评估炎症营养状态' },
+            MAR: { label: 'MAR (单核细胞/白蛋白比值)', desc: '单核细胞计数与白蛋白浓度的比值，炎症指标' },
+            HALP: { label: 'HALP (血红蛋白-白蛋白-淋巴细胞-血小板评分)', desc: '综合营养和免疫评估指标' },
+            NLR: { label: 'NLR (中性粒细胞/淋巴细胞比值)', desc: '中性粒细胞与淋巴细胞的比值，炎症和免疫指标' },
+            HRR: { label: 'HRR (心率储备)', desc: '心率储备相关指标' },
+            FIB4: { label: 'FIB4 (纤维化-4指数)', desc: '肝纤维化评估指标' },
+            CKMStage: { label: 'CKM Stage (心血管-肾脏-代谢分期)', desc: '基于AHA指南的CKM综合征分期(0-4)，评估代谢风险因素、肾脏功能和心血管疾病' }
+        },
+        mortalityLabels: {
+            '1999-2000': { label: '死亡数据 (1999-2000)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2001-2002': { label: '死亡数据 (2001-2002)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2003-2004': { label: '死亡数据 (2003-2004)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2005-2006': { label: '死亡数据 (2005-2006)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2007-2008': { label: '死亡数据 (2007-2008)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2009-2010': { label: '死亡数据 (2009-2010)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2011-2012': { label: '死亡数据 (2011-2012)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2013-2014': { label: '死亡数据 (2013-2014)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2015-2016': { label: '死亡数据 (2015-2016)', desc: '包含死亡状态、死亡时间、死因等信息' },
+            '2017-2018': { label: '死亡数据 (2017-2018)', desc: '包含死亡状态、死亡时间、死因等信息' }
+        },
+        presetGroupLabels: {
+            basic_demographics: { label: '基础人口学变量', desc: '包括SEQN、性别、年龄、种族等核心变量' },
+            metabolic_syndrome: { label: '代谢综合征变量', desc: '代谢综合征相关指标：BMI、血压、血糖、血脂' },
+            cardiovascular: { label: '心血管疾病变量', desc: '心血管疾病风险评估相关指标' },
+            diabetes: { label: '糖尿病变量', desc: '糖尿病诊断和管理相关指标' }
+        },
+        columns: {
+            seqn: '序列号',
+            phenoage: '表型年龄',
+            albumin: '白蛋白(g/L)',
+            creatinine: '肌酐(μmol/L)',
+            glucose: '血糖',
+            lncrp: 'ln(CRP)',
+            tyg: 'TyG指数',
+            tg: '甘油三酯(mg/dL)',
+            fbg: '空腹血糖(mg/dL)',
+            fasting: '空腹状态',
+            bmi: 'BMI',
+            height: '身高(cm)',
+            weight: '体重(kg)',
+            category: '分类',
+            risk: '风险等级',
+            aip: 'AIP指数',
+            hdl: 'HDL-C(mg/dL)',
+            vai: 'VAI指数',
+            waist: '腰围(cm)',
+            gender: '性别',
+            uhr: 'UHR(%)',
+            ua: '尿酸(mg/dL)',
+            status: '状态',
+            uacr: 'UACR(mg/g)',
+            urineAlb: '尿白蛋白(mg/L)',
+            urineCr: '尿肌酐(mg/dL)',
+            kidney: '肾功能状态',
+            egfr: 'eGFR',
+            scr: '血清肌酐(mg/dL)',
+            age: '年龄',
+            ckd: 'CKD分期',
+            rar: 'RAR比值',
+            rdw: 'RDW(%)',
+            inflammation: '炎症状态',
+            bri: 'BRI指数',
+            bodyShape: '体型评估',
+            sii: 'SII指数',
+            plt: '血小板',
+            neutrophil: '中性粒细胞',
+            lymphocyte: '淋巴细胞',
+            npar: 'NPAR比值',
+            neutrophilPct: '中性粒细胞(%)',
+            immune: '免疫状态',
+            ckm: 'CKM分期',
+            cvdRisk: 'CVD风险(%)',
+            riskDesc: '风险描述',
+            mar: 'MAR比值',
+            monocyte: '单核细胞',
+            halp: 'HALP评分',
+            hgb: '血红蛋白(g/L)',
+            nlr: 'NLR比值',
+            mortstat: '死亡状态',
+            causeavl: '死因可用性',
+            ucod: '主要死因',
+            diabetesRel: '糖尿病相关',
+            race: '种族',
+            sysbp: '收缩压',
+            diabp: '舒张压',
+            mcv: 'MCV(fL)',
+            wbc: 'WBC(1000 cells/μL)',
+            lymphocytePct: '淋巴细胞(%)'
         }
     },
     dataVisualization: {
@@ -314,7 +421,8 @@ export const zhTranslations = {
                 waitMessage: '图表生成需要较长时间，请耐心等待或返回配置页面取消操作'
             },
             errors: {
-                noFile: '请先上传CSV文件',
+                title: '生成失败',
+                noFile: '请先上传文件',
                 noColumns: '请至少选择两个列进行相关性分析',
                 noXVar: '请选择X轴变量',
                 noYVar: '请选择Y轴变量',
@@ -584,7 +692,15 @@ export const zhTranslations = {
                 analysisFailed: '{method}分析失败：{error}',
                 analysisCancelled: '{method}分析已取消',
                 cancelling: '正在取消分析...',
-                networkError: '{method}分析失败，请检查网络连接'
+                networkError: '{method}分析失败，请检查网络连接',
+                selectModelType: '请选择模型类型',
+                selectXVarContinuous: '请选择X变量（连续型）',
+                selectYVarOutcome: '请选择Y变量（结果/事件）',
+                coxRequiresTimeVar: 'Cox模型需要时间变量',
+                rcsSuccess: 'RCS分析成功',
+                rcsFailed: 'RCS分析失败: {{msg}}',
+                unknownError: '未知错误',
+                selectColumns: '请选择变量列'
             }
         },
         results: {
@@ -828,7 +944,9 @@ export const enTranslations = {
             next: 'Next',
             first: 'First',
             last: 'Last'
-        }
+        },
+        unknown: 'Unknown',
+        none: 'None'
     },
     nav: {
         home: 'Home',
@@ -1004,6 +1122,112 @@ export const enTranslations = {
             exportProgress: 'Exporting {count} records...',
             exportSuccess: 'CSV file exported successfully! Contains {count} records',
             exportFailed: 'Export failed, please try again'
+        },
+        indicatorLabels: {
+            phenoage0: { label: 'Phenoage (Phenotypic Age)', desc: 'Aging assessment indicator based on biomarkers, including 10 indicators such as albumin, creatinine, and glucose' },
+            TyG: { label: 'TyG (Triglyceride-Glucose Index)', desc: 'Insulin resistance marker based on fasting triglycerides and glucose' },
+            BMI: { label: 'BMI (Body Mass Index)', desc: 'Weight(kg)/Height(m)², standard metric for weight status' },
+            TyG_BMI: { label: 'TyG-BMI', desc: 'Product of TyG index and BMI, comprehensive metabolic risk assessment' },
+            AIP: { label: 'AIP (Atherogenic Index of Plasma)', desc: 'log(TG/HDL-C), marker for atherosclerosis risk' },
+            VAI: { label: 'VAI (Visceral Adiposity Index)', desc: 'Visceral fat assessment based on waist circumference, BMI, TG, and HDL-C' },
+            UHR: { label: 'UHR (Uric Acid/HDL Ratio)', desc: 'Ratio of uric acid to HDL-C, marker for metabolic abnormalities' },
+            eGFR: { label: 'eGFR (Estimated Glomerular Filtration Rate)', desc: 'Kidney function estimate using CKD-EPI formula' },
+            RAR: { label: 'RAR (RDW/Albumin Ratio)', desc: 'Ratio of RDW to albumin, marker for inflammation and nutrition' },
+            BRI: { label: 'BRI (Body Roundness Index)', desc: 'Body shape assessment based on waist circumference and height' },
+            SII: { label: 'SII (Systemic Immune-Inflammation Index)', desc: '(Platelet × Neutrophil)/Lymphocyte, systemic inflammation marker' },
+            NPAR: { label: 'NPAR (Neutrophil/Albumin Ratio)', desc: 'Ratio of neutrophil percentage to albumin' },
+            MAR: { label: 'MAR (Monocyte/Albumin Ratio)', desc: 'Ratio of monocyte count to albumin concentration' },
+            HALP: { label: 'HALP Score', desc: 'Hemoglobin-Albumin-Lymphocyte-Platelet score, nutrition and immune marker' },
+            NLR: { label: 'NLR (Neutrophil/Lymphocyte Ratio)', desc: 'Ratio of neutrophils to lymphocytes, inflammation and immune marker' },
+            HRR: { label: 'HRR (Heart Rate Reserve)', desc: 'Heart rate reserve related metrics' },
+            FIB4: { label: 'FIB4', desc: 'Liver fibrosis assessment index' },
+            CKMStage: { label: 'CKM Stage', desc: 'Cardiovascular-Kidney-Metabolic syndrome staging (0-4)' }
+        },
+        mortalityLabels: {
+            '1999-2000': { label: 'Mortality Data (1999-2000)', desc: 'Includes mortality status, time, and cause of death' },
+            '2001-2002': { label: 'Mortality Data (2001-2002)', desc: 'Includes mortality status, time, and cause of death' },
+            '2003-2004': { label: 'Mortality Data (2003-2004)', desc: 'Includes mortality status, time, and cause of death' },
+            '2005-2006': { label: 'Mortality Data (2005-2006)', desc: 'Includes mortality status, time, and cause of death' },
+            '2007-2008': { label: 'Mortality Data (2007-2008)', desc: 'Includes mortality status, time, and cause of death' },
+            '2009-2010': { label: 'Mortality Data (2009-2010)', desc: 'Includes mortality status, time, and cause of death' },
+            '2011-2012': { label: 'Mortality Data (2011-2012)', desc: 'Includes mortality status, time, and cause of death' },
+            '2013-2014': { label: 'Mortality Data (2013-2014)', desc: 'Includes mortality status, time, and cause of death' },
+            '2015-2016': { label: 'Mortality Data (2015-2016)', desc: 'Includes mortality status, time, and cause of death' },
+            '2017-2018': { label: 'Mortality Data (2017-2018)', desc: 'Includes mortality status, time, and cause of death' }
+        },
+        presetGroupLabels: {
+            basic_demographics: { label: 'Basic Demographics', desc: 'Core variables like SEQN, Gender, Age, Race' },
+            metabolic_syndrome: { label: 'Metabolic Syndrome', desc: 'Metabolic syndrome indicators: BMI, BP, Glucose, Lipids' },
+            cardiovascular: { label: 'Cardiovascular Disease', desc: 'CVD risk assessment indicators' },
+            diabetes: { label: 'Diabetes', desc: 'Diabetes diagnosis and management indicators' }
+        },
+        variableSearch: {
+            title: 'Variable Search',
+            placeholder: 'Enter keywords to search variables (e.g., HDL, Glucose)'
+        },
+        columns: {
+            seqn: 'SEQN',
+            phenoage: 'Phenoage',
+            albumin: 'Albumin(g/L)',
+            creatinine: 'Creatinine(μmol/L)',
+            glucose: 'Glucose',
+            lncrp: 'ln(CRP)',
+            tyg: 'TyG Index',
+            tg: 'Triglycerides(mg/dL)',
+            fbg: 'Fasting Glucose(mg/dL)',
+            fasting: 'Fasting Status',
+            bmi: 'BMI',
+            height: 'Height(cm)',
+            weight: 'Weight(kg)',
+            category: 'Category',
+            risk: 'Risk Level',
+            aip: 'AIP Index',
+            hdl: 'HDL-C(mg/dL)',
+            vai: 'VAI Index',
+            waist: 'Waist(cm)',
+            gender: 'Gender',
+            uhr: 'UHR(%)',
+            ua: 'Uric Acid(mg/dL)',
+            status: 'Status',
+            uacr: 'UACR(mg/g)',
+            urineAlb: 'Urine Albumin(mg/L)',
+            urineCr: 'Urine Creatinine(mg/dL)',
+            kidney: 'Kidney Function',
+            egfr: 'eGFR',
+            scr: 'Serum Creatinine(mg/dL)',
+            age: 'Age',
+            ckd: 'CKD Stage',
+            rar: 'RAR Ratio',
+            rdw: 'RDW(%)',
+            inflammation: 'Inflammation',
+            bri: 'BRI Index',
+            bodyShape: 'Body Shape',
+            sii: 'SII Index',
+            plt: 'Platelets',
+            neutrophil: 'Neutrophils',
+            lymphocyte: 'Lymphocytes',
+            npar: 'NPAR Ratio',
+            neutrophilPct: 'Neutrophil(%)',
+            immune: 'Immune Status',
+            ckm: 'CKM Stage',
+            cvdRisk: 'CVD Risk(%)',
+            riskDesc: 'Risk Description',
+            mar: 'MAR Ratio',
+            monocyte: 'Monocytes',
+            halp: 'HALP Score',
+            hgb: 'Hemoglobin(g/L)',
+            nlr: 'NLR Ratio',
+            limit: 'Limit',
+            mortstat: 'Mortality Status',
+            causeavl: 'Cause Available',
+            ucod: 'Leading Cause',
+            diabetesRel: 'Diabetes Related',
+            race: 'Race',
+            sysbp: 'Systolic BP',
+            diabp: 'Diastolic BP',
+            mcv: 'MCV(fL)',
+            wbc: 'WBC(1000 cells/μL)',
+            lymphocytePct: 'Lymphocyte(%)'
         }
     },
     dataVisualization: {
@@ -1103,13 +1327,14 @@ export const enTranslations = {
             loading: 'Generating chart...',
             success: 'Chart generated successfully!',
             timeoutWarning: {
-                title: 'Generation Taking Long',
-                description: 'Chart generation is in progress, may take longer due to data size or network speed.',
-                options: 'You can choose to wait, cancel the operation, or retry.',
+                title: 'Generation Timeout',
+                description: 'Chart generation is taking longer than expected.',
+                options: 'You can wait, cancel, or retry.',
                 waitMessage: 'Chart generation needs more time, please wait or return to config page to cancel'
             },
             errors: {
-                noFile: 'Please upload a CSV file first',
+                title: 'Generation Failed',
+                noFile: 'Please upload a file first',
                 noColumns: 'Please select at least two columns for correlation analysis',
                 noXVar: 'Please select X-axis variable',
                 noYVar: 'Please select Y-axis variable',
@@ -1259,40 +1484,6 @@ export const enTranslations = {
                     placeholder: 'Select event status variable (e.g., event_status)',
                     required: 'Please select event variable'
                 },
-                ttest: {
-                    title: 'T-Test Analysis Guide',
-                    description: 'Independent Two-sample T-test compares the means of two independent groups (e.g., Male vs Female) on a continuous variable (e.g., BMI).',
-                },
-                chisquare: {
-                    title: 'Chi-Square Test Guide',
-                    description: 'Chi-square Test of Independence analyzes the association between two categorical variables (e.g., Gender and Smoking Status).',
-                },
-                anova: {
-                    title: 'ANOVA Guide',
-                    description: 'One-way ANOVA compares the means of three or more groups (e.g., CKM Stages 0-4) on a continuous variable.',
-                },
-                ranksum: {
-                    title: 'Rank-Sum Test Guide',
-                    description: 'Mann-Whitney U Test is a non-parametric alternative to the T-test for comparing distributions of two independent groups, without assuming normality.',
-                },
-                rcs: {
-                    title: 'Restricted Cubic Spline (RCS)',
-                    description: 'Visualize non-linear relationships using spline functions.',
-                    modelType: 'Model Type',
-                    knots: 'Knots',
-                    yVar: 'Y Variable (Outcome/Event)',
-                    yVarTooltip: 'For Linear: Continuous outcome. For Logistic: Binary outcome (0/1). For Cox: Event status (0/1).',
-                    xVar: 'X Variable (Continuous)',
-                    timeVar: 'Time Variable',
-                    timeVarRequired: 'Required for Cox',
-                    covariates: 'Covariates (Adjustments)',
-                    options: {
-                        linear: 'Linear (OLS)',
-                        logistic: 'Logistic (Logit)',
-                        cox: 'Cox Regression'
-                    },
-                    knotOptions: '{{count}} Knots'
-                },
                 alpha: {
                     label: 'Significance Level',
                     hint: '(α level for statistical testing)',
@@ -1351,6 +1542,40 @@ export const enTranslations = {
                     required: 'Please select independent variables'
                 },
                 tip: 'Multinomial logistic regression will automatically handle missing values and standardize numeric features. The model will output prediction probabilities for each class and overall classification accuracy.'
+            },
+            ttest: {
+                title: 'T-Test Analysis Guide',
+                description: 'Independent Two-sample T-test compares the means of two independent groups (e.g., Male vs Female) on a continuous variable (e.g., BMI).',
+            },
+            chisquare: {
+                title: 'Chi-Square Test Guide',
+                description: 'Chi-square Test of Independence analyzes the association between two categorical variables (e.g., Gender and Smoking Status).',
+            },
+            anova: {
+                title: 'ANOVA Guide',
+                description: 'One-way ANOVA compares the means of three or more groups (e.g., CKM Stages 0-4) on a continuous variable.',
+            },
+            ranksum: {
+                title: 'Rank-Sum Test Guide',
+                description: 'Mann-Whitney U Test is a non-parametric alternative to the T-test for comparing distributions of two independent groups, without assuming normality.',
+            },
+            rcs: {
+                title: 'Restricted Cubic Spline (RCS)',
+                description: 'Visualize non-linear relationships using spline functions.',
+                modelType: 'Model Type',
+                knots: 'Knots',
+                yVar: 'Y Variable (Outcome/Event)',
+                yVarTooltip: 'For Linear: Continuous outcome. For Logistic: Binary outcome (0/1). For Cox: Event status (0/1).',
+                xVar: 'X Variable (Continuous)',
+                timeVar: 'Time Variable',
+                timeVarRequired: 'Required for Cox',
+                covariates: 'Covariates (Adjustments)',
+                options: {
+                    linear: 'Linear (OLS)',
+                    logistic: 'Logistic (Logit)',
+                    cox: 'Cox Regression'
+                },
+                knotOptions: '{{count}} Knots'
             }
         },
         analysis: {
@@ -1379,7 +1604,15 @@ export const enTranslations = {
                 analysisFailed: '{method} analysis failed: {error}',
                 analysisCancelled: '{method} analysis cancelled',
                 cancelling: 'Cancelling analysis...',
-                networkError: '{method} analysis failed, please check network connection'
+                networkError: '{method} analysis failed, please check network connection',
+                selectModelType: 'Please select a model type',
+                selectXVarContinuous: 'Please select X variable (continuous)',
+                selectYVarOutcome: 'Please select Y variable (Outcome/Event)',
+                coxRequiresTimeVar: 'Cox model requires Time variable',
+                rcsSuccess: 'RCS Analysis Successful',
+                rcsFailed: 'RCS Analysis Failed: {{msg}}',
+                unknownError: 'Unknown Error',
+                selectColumns: 'Please select columns'
             }
         },
         results: {

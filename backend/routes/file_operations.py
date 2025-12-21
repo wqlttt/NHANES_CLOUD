@@ -195,3 +195,51 @@ def get_file_columns():
             "error": f"获取列信息失败：{str(e)}",
             "error_code": "COLUMN_INFO_ERROR"
         }), 500
+
+@file_bp.route('/load_demo_data', methods=['POST'])
+def load_demo_data():
+    """
+    加载演示数据接口
+    读取后端预置的演示CSV文件，模拟文件上传的处理流程返回数据
+    """
+    try:
+        # Define path to demo file
+        # Assuming resources folder is at the same level as routes folder's parent (backend root)
+        # current file is in backend/routes/
+        demo_file_path = Path(__file__).parent.parent / "resources" / "demo_data.csv"
+        
+        if not demo_file_path.exists():
+            return jsonify({
+                "success": False,
+                "error": "Demo data file not found on server",
+                "error_code": "FILE_NOT_FOUND"
+            }), 404
+
+        # Get file size
+        file_length = os.path.getsize(demo_file_path)
+
+        # Process the file using CSVService
+        with open(demo_file_path, 'rb') as f:
+            result = CSVService.parse_csv_file(f, file_length)
+        
+        # We need to simulate the file upload "filepath" for the frontend to use in subsequent requests
+        # In a real scenario, we might want to copy this to the temp folder or just return the static path
+        # Returning static path is fine as long as subsequent read operations can access it
+        
+        return jsonify({
+            "success": True,
+            "filename": "nhanes_demo_data.csv",
+            "filepath": str(demo_file_path.absolute()),
+            **result,
+            "message": f"Successfully loaded demo data with {result['total_rows']} rows and {result['total_columns']} columns"
+        })
+        
+    except Exception as e:
+        import traceback
+        print("Error loading demo data:")
+        traceback.print_exc()
+        return jsonify({
+            "success": False,
+            "error": f"Failed to load demo data: {str(e)}",
+            "error_code": "DEMO_LOAD_ERROR"
+        }), 500

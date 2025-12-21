@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -88,9 +88,9 @@ def generate_boxplot(csv_data, y_column, x_column=None, color='#0062FF', title=N
     
     # 设置标题和标签
     if x_column:
-        chart_title = title if title else f"{y_column} 按 {x_column} 分组的箱线图"
+        chart_title = title if title else f"{y_column} Box Plot Grouped by {x_column}"
     else:
-        chart_title = title if title else f"{y_column} 箱线图"
+        chart_title = title if title else f"{y_column} Box Plot"
     
     ax.set_title(chart_title, fontsize=14, pad=20)
     ax.set_ylabel(y_column, fontsize=12)

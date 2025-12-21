@@ -23,6 +23,7 @@ import {
     Tag,
     Input,
     Checkbox,
+    Result,
 } from 'antd';
 import {
     BarChartOutlined,
@@ -43,6 +44,7 @@ import {
     ToolOutlined,
     CloudUploadOutlined,
     InboxOutlined,
+    ExperimentOutlined,
 } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
@@ -106,6 +108,7 @@ const DataVisualization: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [uploadLoading, setUploadLoading] = useState(false);
     const [loadingTimeout, setLoadingTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [generationError, setGenerationError] = useState<string | null>(null);
     const [showTimeoutWarning, setShowTimeoutWarning] = useState(false);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [chartGenerated, setChartGenerated] = useState(false);
@@ -169,6 +172,59 @@ const DataVisualization: React.FC = () => {
         return false; // 阻止antd默认上传行为
     };
 
+    // 加载演示数据
+    const handleLoadDemoData = async () => {
+        try {
+            setUploadLoading(true);
+            const response = await fetch(getApiUrl(API_ENDPOINTS.LOAD_DEMO_DATA), {
+                method: 'POST',
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                message.success(t('dataVisualization.upload.demoSuccess', { defaultValue: 'Demo data loaded successfully!' }));
+
+                setUploadedFile({
+                    uid: 'demo-file',
+                    name: data.filename,
+                    status: 'done',
+                    url: data.filepath,
+                } as any);
+
+                // 设置文件信息预览
+                setFileInfo({
+                    filename: data.filename,
+                    file_stats: {
+                        total_rows: data.total_rows,
+                        total_columns: data.total_columns,
+                        file_size: 0,
+                        numeric_columns_count: data.numeric_columns.length,
+                        categorical_columns_count: data.categorical_columns.length
+                    },
+                    columns: data.columns,
+                    numeric_columns: data.numeric_columns,
+                    categorical_columns: data.categorical_columns,
+                    columns_info: [], // Default empty array as we don't need detailed info right away for visual preview
+                    preview_data: data.preview_data
+                });
+
+                // 重置之前的图表结果
+                setChartResult(null);
+                setChartGenerated(false);
+
+                // 重置表单变量选择
+                form.resetFields(['xVar', 'yVar', 'groupVar']);
+            } else {
+                message.error(data.error || t('dataVisualization.upload.demoFailed', { defaultValue: 'Failed to load demo data' }));
+            }
+        } catch (error) {
+            console.error('Error loading demo data:', error);
+            message.error(t('dataVisualization.upload.demoFailed', { defaultValue: 'Failed to load demo data' }));
+        } finally {
+            setUploadLoading(false);
+        }
+    };
+
     // 生成图表
     const handleGenerateChart = async () => {
         if (!uploadedFile) {
@@ -215,6 +271,7 @@ const DataVisualization: React.FC = () => {
 
         setLoading(true);
         setShowTimeoutWarning(false);
+        setGenerationError(null);
 
         // 创建取消控制器
         const controller = new AbortController();
@@ -307,14 +364,20 @@ const DataVisualization: React.FC = () => {
                 setActiveTab('result');
                 message.success(t('dataVisualization.generate.success'));
             } else {
-                message.error(t('dataVisualization.generate.errors.failed', { error: result.error }));
+                const errorMsg = result.error || t('common.unknownError');
+                setGenerationError(errorMsg);
+                setActiveTab('result');
+                message.error(t('dataVisualization.generate.errors.failed', { error: errorMsg }));
             }
         } catch (error: any) {
             console.error('图表生成错误:', error);
             if (error.name === 'AbortError') {
-                message.warning(t('dataVisualization.generate.errors.cancelled'));
+                message.info(t('dataVisualization.generate.cancelled'));
             } else {
-                message.error(t('dataVisualization.generate.errors.networkError'));
+                const errorMsg = error.message || t('common.unknownError');
+                setGenerationError(errorMsg);
+                setActiveTab('result');
+                message.error(t('dataVisualization.generate.errors.generic'));
             }
         } finally {
             setLoading(false);
@@ -423,10 +486,11 @@ const DataVisualization: React.FC = () => {
                 <div className="glass-card static-card" style={{ padding: '30px', minHeight: '600px' }}>
                     <Tabs activeKey={activeTab} onChange={setActiveTab} className="glass-tabs" size="large" centered>
                         <TabPane tab={<span><EyeOutlined /> {t('dataVisualization.config.tab')}</span>} key="config">
-                            <Row gutter={24}>
-                                <Col xs={24} md={12}>
-                                    {/* Upload Section - Liquid Styled */}
-                                    <div style={{ marginBottom: 32 }}>
+
+                            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                    {/* Upload Section */}
+                                    <div>
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
@@ -502,6 +566,16 @@ const DataVisualization: React.FC = () => {
                                                         {t('dataVisualization.upload.supportFormat')}
                                                     </Text>
                                                 )}
+
+                                                <div style={{ marginTop: 16 }}>
+                                                    <Button
+                                                        icon={<ExperimentOutlined />}
+                                                        onClick={handleLoadDemoData}
+                                                        loading={uploadLoading}
+                                                    >
+                                                        {t('dataVisualization.upload.loadDemo', { defaultValue: 'Experience Demo Data' })}
+                                                    </Button>
+                                                </div>
                                             </Space>
                                         </div>
                                     </div>
@@ -535,10 +609,10 @@ const DataVisualization: React.FC = () => {
                                                 <div style={{ marginBottom: 16 }}>
                                                     <Space>
                                                         <Tag color="blue" style={{ borderRadius: '6px', border: 'none', background: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}>
-                                                            Numeric: {fileInfo.file_stats.numeric_columns_count}
+                                                            {t('dataVisualization.upload.numeric')}: {fileInfo.file_stats.numeric_columns_count}
                                                         </Tag>
                                                         <Tag color="green" style={{ borderRadius: '6px', border: 'none', background: 'rgba(16, 185, 129, 0.1)', color: '#059669' }}>
-                                                            Categorical: {fileInfo.file_stats.categorical_columns_count}
+                                                            {t('dataVisualization.upload.categorical')}: {fileInfo.file_stats.categorical_columns_count}
                                                         </Tag>
                                                     </Space>
                                                 </div>
@@ -655,11 +729,10 @@ const DataVisualization: React.FC = () => {
                                             </div>
                                         </div>
                                     </div>
-                                </Col>
+                                    {/* End of Left Column Content originally - now just continuing vertical stack */}
 
-                                <Col xs={24} md={12}>
-                                    {/* Variable Config Section - Liquid Styled */}
-                                    <div style={{ marginBottom: 32 }}>
+                                    {/* Variable Config Section */}
+                                    <div>
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
@@ -784,8 +857,8 @@ const DataVisualization: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    {/* Settings Section - Liquid Styled */}
-                                    <div style={{ marginBottom: 16 }}>
+                                    {/* Settings Section */}
+                                    <div>
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
@@ -903,80 +976,79 @@ const DataVisualization: React.FC = () => {
                                             </Form>
                                         </div>
                                     </div>
-                                </Col>
-                            </Row>
+                                    <Divider />
 
-                            <Divider />
-
-                            <div>
-                                <Space direction="vertical" style={{ width: '100%' }}>
-                                    <Space wrap>
-                                        <Button
-                                            type="primary"
-                                            icon={<EyeOutlined />}
-                                            onClick={handleGenerateChart}
-                                            loading={loading && !showTimeoutWarning}
-                                            size="large"
-                                            disabled={!fileInfo || loading}
-                                            style={{
-                                                background: !fileInfo || loading ? undefined : 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
-                                                border: 'none',
-                                                boxShadow: !fileInfo || loading ? 'none' : '0 4px 15px rgba(24, 144, 255, 0.4)',
-                                                height: '48px',
-                                                padding: '0 32px',
-                                                borderRadius: '24px',
-                                                fontWeight: 600,
-                                                fontSize: '16px'
-                                            }}
-                                        >
-                                            {t('dataVisualization.generate.button')}
-                                        </Button>
-
-                                        {loading && showTimeoutWarning && (
-                                            <Space>
+                                    <div>
+                                        <Space direction="vertical" style={{ width: '100%' }}>
+                                            <Space wrap>
                                                 <Button
-                                                    danger
-                                                    icon={<StopOutlined />}
-                                                    onClick={handleCancelGeneration}
+                                                    type="primary"
+                                                    icon={<EyeOutlined />}
+                                                    onClick={handleGenerateChart}
+                                                    loading={loading && !showTimeoutWarning}
                                                     size="large"
-                                                    shape="round"
+                                                    disabled={!fileInfo || loading}
+                                                    style={{
+                                                        background: !fileInfo || loading ? undefined : 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                        border: 'none',
+                                                        boxShadow: !fileInfo || loading ? 'none' : '0 4px 15px rgba(24, 144, 255, 0.4)',
+                                                        height: '48px',
+                                                        padding: '0 32px',
+                                                        borderRadius: '24px',
+                                                        fontWeight: 600,
+                                                        fontSize: '16px'
+                                                    }}
                                                 >
-                                                    {t('dataVisualization.generate.cancel')}
+                                                    {t('dataVisualization.generate.button')}
                                                 </Button>
-                                                <Button
-                                                    type="default"
-                                                    icon={<ReloadOutlined />}
-                                                    onClick={handleRetryGeneration}
-                                                    size="large"
-                                                >
-                                                    {t('dataVisualization.generate.retry')}
-                                                </Button>
+
+                                                {loading && showTimeoutWarning && (
+                                                    <Space>
+                                                        <Button
+                                                            danger
+                                                            icon={<StopOutlined />}
+                                                            onClick={handleCancelGeneration}
+                                                            size="large"
+                                                            shape="round"
+                                                        >
+                                                            {t('dataVisualization.generate.cancel')}
+                                                        </Button>
+                                                        <Button
+                                                            type="default"
+                                                            icon={<ReloadOutlined />}
+                                                            onClick={handleRetryGeneration}
+                                                            size="large"
+                                                        >
+                                                            {t('dataVisualization.generate.retry')}
+                                                        </Button>
+                                                    </Space>
+                                                )}
+
+                                                {!loading && (
+                                                    <Text type="secondary">
+                                                        {t('dataVisualization.generate.hint')}
+                                                    </Text>
+                                                )}
                                             </Space>
-                                        )}
 
-                                        {!loading && (
-                                            <Text type="secondary">
-                                                {t('dataVisualization.generate.hint')}
-                                            </Text>
-                                        )}
-                                    </Space>
-
-                                    {showTimeoutWarning && (
-                                        <Alert
-                                            message={t('dataVisualization.generate.timeoutWarning.title')}
-                                            description={
-                                                <div>
-                                                    {t('dataVisualization.generate.timeoutWarning.description')}
-                                                    <br />
-                                                    {t('dataVisualization.generate.timeoutWarning.options')}
-                                                </div>
-                                            }
-                                            type="warning"
-                                            showIcon
-                                            style={{ marginTop: 8 }}
-                                        />
-                                    )}
-                                </Space>
+                                            {showTimeoutWarning && (
+                                                <Alert
+                                                    message={t('dataVisualization.generate.timeoutWarning.title')}
+                                                    description={
+                                                        <div>
+                                                            {t('dataVisualization.generate.timeoutWarning.description')}
+                                                            <br />
+                                                            {t('dataVisualization.generate.timeoutWarning.options')}
+                                                        </div>
+                                                    }
+                                                    type="warning"
+                                                    showIcon
+                                                    style={{ marginTop: 8 }}
+                                                />
+                                            )}
+                                        </Space>
+                                    </div>
+                                </div>
                             </div>
                         </TabPane>
 
@@ -1031,6 +1103,17 @@ const DataVisualization: React.FC = () => {
                                                     )}
                                                 </div>
                                             </div>
+                                        ) : generationError ? (
+                                            <Result
+                                                status="error"
+                                                title={t('dataVisualization.generate.errors.title')}
+                                                subTitle={generationError}
+                                                extra={[
+                                                    <Button type="primary" key="retry" onClick={handleGenerateChart}>
+                                                        {t('dataVisualization.generate.retry')}
+                                                    </Button>
+                                                ]}
+                                            />
                                         ) : (
                                             renderChart()
                                         )}

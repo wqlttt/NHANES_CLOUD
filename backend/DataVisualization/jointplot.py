@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # ==================== 全局配置 ====================
 # 配置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei']
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
 
 # 统一图片尺寸和DPI
@@ -70,7 +70,7 @@ def generate_jointplot(csv_data, x_var, y_var, color='#3b82f6', title=None):
     )
     
     # 设置标题
-    chart_title = title if title else f"{x_var} vs {y_var} 联合分布图"
+    chart_title = title if title else f"{x_var} vs {y_var} Joint Distribution Plot"
     g.fig.suptitle(chart_title, fontsize=14, y=1.02)
     
     # 设置轴标签

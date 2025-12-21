@@ -17,17 +17,17 @@ analysis_bp = Blueprint('data_analysis', __name__)
 def logistic_regression():
     """逻辑回归分析"""
     if 'file' not in request.files:
-        return jsonify({"success": False, "error": "没有上传文件"}), 400
+        return jsonify({"success": False, "error": "No file uploaded"}), 400
     file = request.files['file']
     if file.filename == '':
-        return jsonify({"success": False, "error": "没有选择文件"}), 400
+        return jsonify({"success": False, "error": "No file selected"}), 400
     
     x_var = request.form.get('x_var')
     if not x_var:
-        return jsonify({"success": False, "error": "请选择自变量"}), 400
+        return jsonify({"success": False, "error": "Please select independent variable"}), 400
     y_var = request.form.get('y_var')
     if not y_var:
-        return jsonify({"success": False, "error": "请选择因变量"}), 400
+        return jsonify({"success": False, "error": "Please select dependent variable"}), 400
     
     try:
         result = logistic_regression_analysis(file, x_var, y_var)
@@ -46,9 +46,9 @@ def logistic_regression():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         import traceback
-        print("逻辑回归分析错误:")
+        print("Logistic regression analysis error:")
         traceback.print_exc()
-        return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+        return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
 @analysis_bp.route('/multinomialLogisticRegression', methods=["POST"])
@@ -60,11 +60,11 @@ def multinomial_logistic_regression():
         print("Form data:", dict(request.form))
         
         if 'file' not in request.files:
-            return jsonify({"success": False, "error": "没有上传文件"}), 400
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({"success": False, "error": "没有选择文件"}), 400
+            return jsonify({"success": False, "error": "No file selected"}), 400
         
         x_vars = request.form.getlist('x_vars')
         y_var = request.form.get('y_var')
@@ -75,9 +75,9 @@ def multinomial_logistic_regression():
                 x_vars = [x_var]
         
         if not x_vars:
-            return jsonify({"success": False, "error": "请至少选择一个自变量"}), 400
+            return jsonify({"success": False, "error": "Please select at least one independent variable"}), 400
         if not y_var:
-            return jsonify({"success": False, "error": "请选择因变量"}), 400
+            return jsonify({"success": False, "error": "Please select dependent variable"}), 400
         
         print(f"自变量: {x_vars}")
         print(f"因变量: {y_var}")
@@ -102,26 +102,26 @@ def multinomial_logistic_regression():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         import traceback
-        print("多分类逻辑回归分析错误:")
+        print("Multinomial logistic regression analysis error:")
         traceback.print_exc()
-        return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+        return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
 @analysis_bp.route('/linearRegression', methods=["POST"])
 def linear_regression():
     """线性回归分析"""
     if 'file' not in request.files:
-        return jsonify({"success": False, "error": "没有上传文件"}), 400
+        return jsonify({"success": False, "error": "No file uploaded"}), 400
     file = request.files['file']
     if file.filename == '':
-        return jsonify({"success": False, "error": "没有选择文件"}), 400
+        return jsonify({"success": False, "error": "No file selected"}), 400
     
     x_var = request.form.get('x_var')
     if not x_var:
-        return jsonify({"success": False, "error": "请选择自变量"}), 400
+        return jsonify({"success": False, "error": "Please select independent variable"}), 400
     y_var = request.form.get('y_var')
     if not y_var:
-        return jsonify({"success": False, "error": "请选择因变量"}), 400
+        return jsonify({"success": False, "error": "Please select dependent variable"}), 400
     
     try:
         result = linear_regression_analysis(file, x_var, y_var)
@@ -140,9 +140,9 @@ def linear_regression():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         import traceback
-        print("线性回归分析错误:")
+        print("Linear regression analysis error:")
         traceback.print_exc()
-        return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+        return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
 @analysis_bp.route('/multipleLinearRegression', methods=["POST"])
@@ -150,11 +150,11 @@ def multiple_linear_regression():
     """多元线性回归分析"""
     try:
         if 'file' not in request.files:
-            return jsonify({"success": False, "error": "没有上传文件"}), 400
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({"success": False, "error": "没有选择文件"}), 400
+            return jsonify({"success": False, "error": "No file selected"}), 400
         
         x_vars = request.form.getlist('x_vars')
         y_var = request.form.get('y_var')
@@ -165,9 +165,9 @@ def multiple_linear_regression():
                 x_vars = [x_var]
         
         if not x_vars:
-            return jsonify({"success": False, "error": "请至少选择一个自变量"}), 400
+            return jsonify({"success": False, "error": "Please select at least one independent variable"}), 400
         if not y_var:
-            return jsonify({"success": False, "error": "请选择因变量"}), 400
+            return jsonify({"success": False, "error": "Please select dependent variable"}), 400
         
         result = multiple_linear_regression_analysis(file, x_vars, y_var)
         
@@ -189,9 +189,9 @@ def multiple_linear_regression():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         import traceback
-        print("多元线性回归分析错误:")
+        print("Multiple linear regression analysis error:")
         traceback.print_exc()
-        return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+        return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
 @analysis_bp.route('/coxRegression', methods=["POST"])
@@ -199,27 +199,27 @@ def cox_regression():
     """Cox回归分析"""
     try:
         if 'file' not in request.files:
-            return jsonify({"success": False, "error": "没有上传文件"}), 400
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
         
         file = request.files['file']
         if file.filename == '':
-            return jsonify({"success": False, "error": "没有选择文件"}), 400
+            return jsonify({"success": False, "error": "No file selected"}), 400
         
         duration_col = request.form.get('duration_col')
         event_col = request.form.get('event_col')
         covariates = request.form.getlist('covariates')
         
         if not duration_col:
-            return jsonify({"success": False, "error": "请选择时间列"}), 400
+            return jsonify({"success": False, "error": "Please select time variable"}), 400
         if not event_col:
-            return jsonify({"success": False, "error": "请选择事件列"}), 400
+            return jsonify({"success": False, "error": "Please select event variable"}), 400
         if not covariates:
             covariate = request.form.get('covariate')
             if covariate:
                 covariates = [covariate]
         
         if not covariates:
-            return jsonify({"success": False, "error": "请至少选择一个协变量"}), 400
+            return jsonify({"success": False, "error": "Please select at least one covariate"}), 400
         
         result = cox_regression_analysis(file, duration_col, event_col, covariates)
         
@@ -242,9 +242,9 @@ def cox_regression():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         import traceback
-        print("Cox回归分析错误:")
+        print("Cox regression analysis error:")
         traceback.print_exc()
-        return jsonify({"success": False, "error": f"分析失败: {str(e)}"}), 500
+        return jsonify({"success": False, "error": f"Analysis failed: {str(e)}"}), 500
 
 
 @analysis_bp.route('/ttest', methods=["POST"])
