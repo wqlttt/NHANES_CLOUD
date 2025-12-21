@@ -64,6 +64,7 @@ const DataProcessing: React.FC = () => {
     const [imputationForm] = Form.useForm();
     const [imputationMethod, setImputationMethod] = useState('mean');
     const [imputationLoading, setImputationLoading] = useState(false);
+    const [imputationResult, setImputationResult] = useState<{ method: string; columns: string[]; timestamp: string } | null>(null);
 
     // Filtering State
     const [filterForm] = Form.useForm();
@@ -96,6 +97,11 @@ const DataProcessing: React.FC = () => {
 
             const result = await response.json();
             if (result.success) {
+                setImputationResult({
+                    method: values.method,
+                    columns: values.columns,
+                    timestamp: new Date().toLocaleTimeString()
+                });
                 message.success('Imputation successful');
                 // Update file info with new processed file
                 setFileInfo(prev => ({
@@ -577,20 +583,71 @@ const DataProcessing: React.FC = () => {
                                             </div>
                                         </Col>
                                         <Col xs={24} md={10} style={{ textAlign: 'center' }}>
-                                            <div style={{ position: 'relative', display: 'inline-block' }}>
-                                                <div style={{
-                                                    position: 'absolute',
-                                                    top: '50%',
-                                                    left: '50%',
-                                                    transform: 'translate(-50%, -50%)',
-                                                    width: '300px',
-                                                    height: '300px',
-                                                    background: 'radial-gradient(circle, rgba(24,144,255,0.1) 0%, rgba(255,255,255,0) 70%)',
-                                                    borderRadius: '50%',
-                                                    zIndex: 0
-                                                }} />
-                                                <MedicineBoxOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(24, 144, 255, 0.2)', zIndex: 1 }} />
-                                            </div>
+                                            {imputationResult ? (
+                                                <div className="glass-card" style={{
+                                                    padding: '32px',
+                                                    background: 'rgba(255, 255, 255, 0.4)',
+                                                    textAlign: 'left'
+                                                }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
+                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#1890ff', marginRight: '12px' }} />
+                                                        <Title level={4} style={{ margin: 0 }}>{t('dataProcessing.imputation.title')} Results</Title>
+                                                    </div>
+
+                                                    <Space direction="vertical" style={{ width: '100%' }} size="large">
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Method Applied</Text>
+                                                            <Tag color="blue" style={{ fontSize: '16px', padding: '4px 12px' }}>
+                                                                {imputationResult.method.toUpperCase()}
+                                                            </Tag>
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Columns Processed</Text>
+                                                            <Text strong style={{ fontSize: '18px' }}>{imputationResult.columns.length}</Text>
+                                                        </div>
+
+                                                        <Divider style={{ margin: '8px 0' }} />
+
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <Text type="secondary">Processed At</Text>
+                                                            <Text type="secondary">{imputationResult.timestamp}</Text>
+                                                        </div>
+
+                                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
+                                                            <Button
+                                                                type="primary"
+                                                                icon={<DownloadOutlined />}
+                                                                onClick={handleDownload}
+                                                                size="large"
+                                                                style={{
+                                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                                    border: 'none',
+                                                                    borderRadius: '20px',
+                                                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                                                }}
+                                                            >
+                                                                {t('dataProcessing.filtering.downloadData', { defaultValue: 'Download Processed Data' })}
+                                                            </Button>
+                                                        </div>
+                                                    </Space>
+                                                </div>
+                                            ) : (
+                                                <div style={{ position: 'relative', display: 'inline-block' }}>
+                                                    <div style={{
+                                                        position: 'absolute',
+                                                        top: '50%',
+                                                        left: '50%',
+                                                        transform: 'translate(-50%, -50%)',
+                                                        width: '300px',
+                                                        height: '300px',
+                                                        background: 'radial-gradient(circle, rgba(24,144,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+                                                        borderRadius: '50%',
+                                                        zIndex: 0
+                                                    }} />
+                                                    <MedicineBoxOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(24, 144, 255, 0.2)', zIndex: 1 }} />
+                                                </div>
+                                            )}
                                         </Col>
                                     </Row>
                                 </div>
@@ -699,9 +756,6 @@ const DataProcessing: React.FC = () => {
                                                             }}
                                                         >
                                                             {t('dataProcessing.filtering.applyFilter')}
-                                                        </Button>
-                                                        <Button size="large" onClick={() => message.info("Preview count logic coming soon")}>
-                                                            {t('dataProcessing.filtering.previewCohort')}
                                                         </Button>
                                                     </Space>
                                                 </Form>

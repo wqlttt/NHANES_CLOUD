@@ -43,7 +43,12 @@ def get_temp_path(original_path, suffix):
     path = Path(original_path)
     # Use a unique ID to avoid conflicts
     unique_id = str(uuid.uuid4())[:8]
-    return str(path.parent / f"{path.stem}_{suffix}_{unique_id}.csv")
+    
+    # Ensure temp directory exists
+    if not TEMP_UPLOAD_DIR.exists():
+        TEMP_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+        
+    return str(TEMP_UPLOAD_DIR / f"{path.stem}_{suffix}_{unique_id}.csv")
 
 def get_file_stats(df):
     """Calculate file statistics similar to file_operations"""

@@ -851,11 +851,14 @@ export const zhTranslations = {
             configuration: '填补配置',
             selectColumns: '选择目标列',
             selectMethod: '选择填补方法',
-            startBtn: '开始填补'
+            startBtn: '开始填补',
+            success: '填补完成！',
+            downloadProcessed: '下载处理后数据'
         },
         filtering: {
             title: '队列选择与筛选',
             description: '通过应用包含和排除标准定义您的研究人群。基于人口统计学、实验室结果或问卷调查进行筛选。',
+            previewCohort: '预览队列',
             steps: {
                 selectVariables: '选择变量',
                 selectVariablesDesc: '选择目标列',
@@ -877,7 +880,8 @@ export const zhTranslations = {
                 lte: '小于等于 (<=)',
                 contains: '包含'
             },
-            createBtn: '创建筛选器'
+            createBtn: '创建筛选器',
+            downloadData: '下载数据'
         },
         calculation: {
             title: '自定义变量计算',
@@ -1769,11 +1773,14 @@ export const enTranslations = {
             configuration: 'Configuration',
             selectColumns: 'Select Target Columns',
             selectMethod: 'Select Imputation Method',
-            startBtn: 'Start Imputation'
+            startBtn: 'Start Imputation',
+            success: 'Imputation Complete!',
+            downloadProcessed: 'Download Processed Data'
         },
         filtering: {
             title: 'Cohort Selection & Filtering',
             description: 'Define your study population by applying inclusion and exclusion criteria. Filter based on demographics, lab results, or questionnaire responses.',
+            previewCohort: 'Preview Cohort',
             steps: {
                 selectVariables: 'Select Variables',
                 selectVariablesDesc: 'Choose target columns',
@@ -1795,7 +1802,8 @@ export const enTranslations = {
                 lte: 'Less Than or Equal (<=)',
                 contains: 'Contains'
             },
-            createBtn: 'Create Filter'
+            createBtn: 'Create Filter',
+            downloadData: 'Download Data'
         },
         calculation: {
             title: 'Custom Variable Calculation',

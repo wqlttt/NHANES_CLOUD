@@ -175,3 +175,9 @@
     padding: 40px 0;
   }
 }
+
+/* Navigation Menu Stabilization */
+.nav-menu-wrapper .ant-menu-horizontal .ant-menu-item {
+  min-width: 180px;
+  text-align: center;
+}
