@@ -14,7 +14,8 @@ import {
     PlusOutlined,
     MinusCircleOutlined,
     DownloadOutlined,
-    ReloadOutlined
+    ReloadOutlined,
+    LockOutlined
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { message, Upload, UploadProps, Table, Tag, Empty, Divider, Form, Select, Radio, Checkbox, Input, Modal } from 'antd';
@@ -723,7 +724,36 @@ const DataProcessing: React.FC = () => {
                             ),
                             key: 'calculation',
                             children: (
-                                <div className="glass-card static-card" style={{ padding: '32px' }}>
+                                <div className="glass-card static-card" style={{ padding: '32px', position: 'relative', overflow: 'hidden' }}>
+                                    {/* Overlay for Under Development */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        right: 0,
+                                        bottom: 0,
+                                        background: 'rgba(255, 255, 255, 0.4)',
+                                        backdropFilter: 'blur(4px)',
+                                        zIndex: 1000,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        borderRadius: 'inherit'
+                                    }}>
+                                        <div style={{
+                                            padding: '40px',
+                                            background: 'rgba(255,255,255,0.8)',
+                                            borderRadius: '24px',
+                                            boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
+                                            textAlign: 'center',
+                                            border: '1px solid rgba(255,255,255,0.9)'
+                                        }}>
+                                            <LockOutlined style={{ fontSize: '48px', color: '#8c8c8c', marginBottom: '24px' }} />
+                                            <Title level={3} style={{ color: '#262626', margin: '0 0 8px 0' }}>功能开发中</Title>
+                                            <Text type="secondary" style={{ fontSize: '16px' }}>此模块正在开发中，敬请期待。</Text>
+                                        </div>
+                                    </div>
                                     <Row gutter={[48, 32]} align="middle">
                                         <Col xs={24} md={14}>
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
