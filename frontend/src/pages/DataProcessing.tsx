@@ -814,8 +814,8 @@ const DataProcessing: React.FC = () => {
                                             border: '1px solid rgba(255,255,255,0.9)'
                                         }}>
                                             <LockOutlined style={{ fontSize: '48px', color: '#8c8c8c', marginBottom: '24px' }} />
-                                            <Title level={3} style={{ color: '#262626', margin: '0 0 8px 0' }}>功能开发中</Title>
-                                            <Text type="secondary" style={{ fontSize: '16px' }}>此模块正在开发中，敬请期待。</Text>
+                                            <Title level={3} style={{ color: '#262626', margin: '0 0 8px 0' }}>{t('dataProcessing.underDevelopment.title')}</Title>
+                                            <Text type="secondary" style={{ fontSize: '16px' }}>{t('dataProcessing.underDevelopment.description')}</Text>
                                         </div>
                                     </div>
                                     <Row gutter={[48, 32]} align="middle">

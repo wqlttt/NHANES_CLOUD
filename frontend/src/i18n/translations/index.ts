@@ -41,7 +41,8 @@ export const zhTranslations = {
         home: '首页',
         dataExtraction: '数据提取',
         dataVisualization: '数据可视化',
-        dataAnalysis: '数据分析'
+        dataAnalysis: '数据分析',
+        dataProcessing: '数据处理'
     },
     home: {
         hero: {
@@ -474,6 +475,7 @@ export const zhTranslations = {
             }
         }
     },
+
     dataAnalysis: {
         title: '数据分析',
         subtitle: '上传数据文件，选择统计分析方法，配置参数并查看分析结果',
@@ -887,6 +889,10 @@ export const zhTranslations = {
             formulaPlaceholder: '例如: weight / (height/100)**2',
             defineBtn: '定义变量'
         },
+        underDevelopment: {
+            title: '功能开发中',
+            description: '此模块正在开发中，敬请期待。'
+        },
         upload: {
             title: '数据源',
             dragText: '点击或拖拽文件到此区域上传',
@@ -952,7 +958,8 @@ export const enTranslations = {
         home: 'Home',
         dataExtraction: 'Data Extraction',
         dataVisualization: 'Data Visualization',
-        dataAnalysis: 'Data Analysis'
+        dataAnalysis: 'Data Analysis',
+        dataProcessing: 'Data Processing',
     },
     home: {
         hero: {
@@ -1386,6 +1393,7 @@ export const enTranslations = {
             }
         }
     },
+
     dataAnalysis: {
         title: 'Data Analysis',
         subtitle: 'Upload data file, select statistical analysis method, configure parameters and view analysis results',
@@ -1799,10 +1807,17 @@ export const enTranslations = {
             formulaPlaceholder: 'e.g., weight / (height/100)**2',
             defineBtn: 'Define Variable'
         },
+        underDevelopment: {
+            title: 'Under Development',
+            description: 'This module is under development, please stay tuned.'
+        },
         upload: {
             title: 'Data Source',
             dragText: 'Click or drag file to this area to upload',
             hint: 'Supported Format: CSV file, max 50MB',
+            demoSuccess: 'Demo data loaded successfully!',
+            demoFailed: 'Failed to load demo data',
+            loadDemo: 'Experience Demo Data',
             uploading: 'Uploading...',
             success: 'File uploaded successfully',
             error: 'File upload failed',

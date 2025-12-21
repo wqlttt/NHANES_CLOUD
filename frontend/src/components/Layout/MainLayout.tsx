@@ -60,7 +60,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     {
       key: '/processing',
       icon: <ToolOutlined />,
-      label: 'Data Processing',
+      label: t('nav.dataProcessing'),
     },
     {
       key: '/visualization',
