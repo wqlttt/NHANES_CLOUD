@@ -7,6 +7,10 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
+    
+# Configure Fonts Globally
+plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
+plt.rcParams['axes.unicode_minus'] = False
 
 def ttest_analysis(csv_data, group_col, value_col):
     """

@@ -284,7 +284,13 @@ const DataVisualization: React.FC = () => {
         setLoadingTimeout(timeout);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
         formData.append('chart_type', chartType);
 
         if (xVar) formData.append('x_var', xVar);

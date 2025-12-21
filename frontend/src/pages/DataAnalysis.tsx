@@ -444,7 +444,13 @@ const DataAnalysis: React.FC = () => {
         setAnalysisTimeout(timeout);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
 
         // 添加协变量（多个值）
         covariateVars.forEach((covar: string) => {
@@ -548,7 +554,13 @@ const DataAnalysis: React.FC = () => {
         setProgress(20);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
 
         // 支持多变量回归
         if (Array.isArray(xVars)) {
@@ -619,7 +631,13 @@ const DataAnalysis: React.FC = () => {
         setProgress(20);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
         formData.append('x_var', xVar);
         formData.append('y_var', yVar);
 
@@ -686,7 +704,13 @@ const DataAnalysis: React.FC = () => {
         setProgress(20);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
 
         // 支持多变量分析
         if (Array.isArray(xVars)) {
@@ -762,7 +786,13 @@ const DataAnalysis: React.FC = () => {
         setProgress(20);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
 
         if (endpoint === API_ENDPOINTS.CHI_SQUARE) {
             formData.append('col1', col1);
@@ -837,7 +867,13 @@ const DataAnalysis: React.FC = () => {
         setProgress(20);
 
         const formData = new FormData();
-        formData.append('file', uploadedFile);
+        // @ts-ignore
+        if (uploadedFile.url) {
+            // @ts-ignore
+            formData.append('filepath', uploadedFile.url);
+        } else {
+            formData.append('file', uploadedFile);
+        }
         formData.append('model_type', modelType);
         formData.append('x_var', xVar);
         formData.append('y_var', yVar);
@@ -1240,7 +1276,7 @@ const DataAnalysis: React.FC = () => {
 
                 const linearColumns = [
                     { title: t('dataAnalysis.results.linear.columns.variable'), dataIndex: 'variable', key: 'variable' },
-                    { title: t('dataAnalysis.results.linear.columns.coefficient'), dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => val.toFixed(4) },
+                    { title: t('dataAnalysis.results.linear.columns.coefficient'), dataIndex: 'coefficient', key: 'coefficient', render: (val: number) => (typeof val === 'number' ? val.toFixed(4) : 'N/A') },
                     { title: t('dataAnalysis.results.linear.columns.description'), dataIndex: 'description', key: 'description' },
                 ];
 
@@ -1395,8 +1431,8 @@ const DataAnalysis: React.FC = () => {
                             message={t('dataAnalysis.results.linear.summary.title')}
                             description={t('dataAnalysis.results.linear.summary.description', {
                                 type: t(`dataAnalysis.results.linear.summary.types.${linearResult.regression_type === 'linear_simple' ? 'simple' : 'multiple'}`),
-                                r2: linearResult.r2_score.toFixed(4),
-                                variance: (linearResult.r2_score * 100).toFixed(2),
+                                r2: typeof linearResult.r2_score === 'number' ? linearResult.r2_score.toFixed(4) : 'N/A',
+                                variance: typeof linearResult.r2_score === 'number' ? (linearResult.r2_score * 100).toFixed(2) : 'N/A',
                                 sampleSize: linearResult.sample_size
                             })}
                             type="success"

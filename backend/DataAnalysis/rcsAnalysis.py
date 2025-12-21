@@ -55,7 +55,7 @@ def rcs_analysis(csv_data, model_type, x_var, y_var, covariates=None, knots=4):
     else:
         formula_rhs = f"cr({x_var}, df={knots})"
     
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     plt.figure(figsize=(10, 6))
 
@@ -223,7 +223,7 @@ def rcs_cox_analysis(csv_data, time_var, event_var, x_var, covariates=None, knot
     # CI is tricky without manual delta method or bootstrap here for the difference
     # For MVP, just plot the line first
     
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     
     plt.figure(figsize=(10, 6))

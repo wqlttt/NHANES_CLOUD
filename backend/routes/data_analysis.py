@@ -3,6 +3,7 @@
 """
 from flask import Blueprint, request, jsonify
 import sys
+import os
 from DataAnalysis.logisticRegression import logistic_regression_analysis, multinomial_logistic_regression_analysis
 from DataAnalysis.linearRegression import linear_regression_analysis, multiple_linear_regression_analysis
 from DataAnalysis.coxRegression import cox_regression_analysis
@@ -13,14 +14,31 @@ from utils.serialization import convert_to_serializable
 analysis_bp = Blueprint('data_analysis', __name__)
 
 
+def get_file_input():
+    """获取文件输入，支持上传文件和服务器文件路径"""
+    # 优先检查是否有文件路径参数 (用于演示数据)
+    filepath = request.form.get('filepath')
+    if filepath:
+        if not os.path.exists(filepath):
+             return None, jsonify({"success": False, "error": f"找不到文件: {filepath}"}), 404
+        return filepath, None, None
+
+    if 'file' not in request.files:
+        return None, jsonify({"success": False, "error": "No file uploaded"}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return None, jsonify({"success": False, "error": "No file selected"}), 400
+        
+    return file, None, None
+
+
 @analysis_bp.route('/logisticRegression', methods=["POST"])
 def logistic_regression():
     """逻辑回归分析"""
-    if 'file' not in request.files:
-        return jsonify({"success": False, "error": "No file uploaded"}), 400
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"success": False, "error": "No file selected"}), 400
+    file, error_resp, status_code = get_file_input()
+    if error_resp:
+        return error_resp, status_code
     
     x_var = request.form.get('x_var')
     if not x_var:
@@ -59,12 +77,9 @@ def multinomial_logistic_regression():
         print("Files:", list(request.files.keys()))
         print("Form data:", dict(request.form))
         
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         x_vars = request.form.getlist('x_vars')
         y_var = request.form.get('y_var')
@@ -108,33 +123,62 @@ def multinomial_logistic_regression():
 
 
 @analysis_bp.route('/linearRegression', methods=["POST"])
+@analysis_bp.route('/linearRegression', methods=["POST"])
 def linear_regression():
-    """线性回归分析"""
-    if 'file' not in request.files:
-        return jsonify({"success": False, "error": "No file uploaded"}), 400
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"success": False, "error": "No file selected"}), 400
+    """线性回归分析 (Generic handler for both Simple and Multiple)"""
+    file, error_resp, status_code = get_file_input()
+    if error_resp:
+        return error_resp, status_code
     
-    x_var = request.form.get('x_var')
-    if not x_var:
-        return jsonify({"success": False, "error": "Please select independent variable"}), 400
+    # Try to get parameters
     y_var = request.form.get('y_var')
     if not y_var:
         return jsonify({"success": False, "error": "Please select dependent variable"}), 400
+
+    # Handling x variables (could be single 'x_var' or list 'x_vars')
+    x_vars = request.form.getlist('x_vars')
+    if not x_vars:
+        x_var_single = request.form.get('x_var')
+        if x_var_single:
+            x_vars = [x_var_single]
     
+    if not x_vars:
+         return jsonify({"success": False, "error": "Please select independent variable(s)"}), 400
+
     try:
-        result = linear_regression_analysis(file, x_var, y_var)
-        response_data = {
-            "success": True,
-            "plot": f"data:image/png;base64,{result['plot']}",
-            "x_var": str(result['x_var']),
-            "y_var": str(result['y_var']),
-            "r_squared": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
-            "coefficients": [convert_to_serializable(coef) for coef in result["coefficients"]],
-            "intercept": convert_to_serializable(result["intercept"]),
-            "regression_type": "linear"
-        }
+        # Decide between Simple and Multiple Linear Regression based on number of X variables
+        if len(x_vars) == 1:
+            # Simple Linear Regression
+            x_var = x_vars[0]
+            result = linear_regression_analysis(file, x_var, y_var)
+            response_data = {
+                "success": True,
+                "plot": f"data:image/png;base64,{result['plot']}",
+                "x_var": str(result['x_var']),
+                "y_var": str(result['y_var']),
+                "r_squared": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "coefficients": [convert_to_serializable(coef) for coef in result["coefficients"]],
+                "intercept": convert_to_serializable(result["intercept"]),
+                "regression_type": "linear_simple", # Updated to match frontend expectation
+                "sample_size": convert_to_serializable(result.get("sample_size"))
+            }
+        else:
+            # Multiple Linear Regression
+            result = multiple_linear_regression_analysis(file, x_vars, y_var)
+            response_data = {
+                "success": True,
+                "plot": f"data:image/png;base64,{result['plot']}",
+                "x_vars": x_vars,
+                "y_var": y_var,
+                "r_squared": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "adjusted_r_squared": convert_to_serializable(result.get("adjusted_r_squared")),
+                # Handle coefficients dict vs list
+                "coefficients": {k: convert_to_serializable(v) for k, v in result.get("coefficients", {}).items()} if isinstance(result.get("coefficients"), dict) else [convert_to_serializable(c) for c in result.get("coefficients", [])],
+                "intercept": convert_to_serializable(result.get("intercept")),
+                "regression_type": "linear_multiple", # Updated to match frontend expectation
+                 "sample_size": convert_to_serializable(result.get("sample_size"))
+            }
+
         return jsonify(response_data)
     except ValueError as e:
         return jsonify({"success": False, "error": str(e)}), 400
@@ -147,18 +191,16 @@ def linear_regression():
 
 @analysis_bp.route('/multipleLinearRegression', methods=["POST"])
 def multiple_linear_regression():
-    """多元线性回归分析"""
+    """多元线性回归分析 (Unified Handler)"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         x_vars = request.form.getlist('x_vars')
         y_var = request.form.get('y_var')
         
+        # Fallback for single var passed to multiple endpoint (unlikely but robust)
         if not x_vars:
             x_var = request.form.get('x_var')
             if x_var:
@@ -180,7 +222,8 @@ def multiple_linear_regression():
             "adjusted_r_squared": convert_to_serializable(result.get("adjusted_r_squared")),
             "coefficients": {k: convert_to_serializable(v) for k, v in result.get("coefficients", {}).items()} if isinstance(result.get("coefficients"), dict) else [convert_to_serializable(c) for c in result.get("coefficients", [])],
             "intercept": convert_to_serializable(result.get("intercept")),
-            "regression_type": "multiple_linear"
+            "regression_type": "linear_multiple", # Updated to match frontend
+             "sample_size": convert_to_serializable(result.get("sample_size"))
         }
         
         return jsonify(response_data)
@@ -198,12 +241,9 @@ def multiple_linear_regression():
 def cox_regression():
     """Cox回归分析"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         duration_col = request.form.get('duration_col')
         event_col = request.form.get('event_col')
@@ -251,12 +291,9 @@ def cox_regression():
 def ttest_route():
     """Two-sample T-test"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         group_col = request.form.get('group_col')
         value_col = request.form.get('value_col')
@@ -284,13 +321,11 @@ def ttest_route():
 @analysis_bp.route('/chisquare', methods=["POST"])
 def chisquare_route():
     """Chi-square Test"""
+    """Chi-square Test"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         col1 = request.form.get('col1')
         col2 = request.form.get('col2')
@@ -318,12 +353,9 @@ def chisquare_route():
 def anova_route():
     """One-way ANOVA"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         group_col = request.form.get('group_col')
         value_col = request.form.get('value_col')
@@ -355,12 +387,9 @@ def anova_route():
 def ranksum_route():
     """Mann-Whitney U Test (Rank-sum)"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         group_col = request.form.get('group_col')
         value_col = request.form.get('value_col')
@@ -391,13 +420,11 @@ def ranksum_route():
 @analysis_bp.route('/rcs', methods=["POST"])
 def rcs_route():
     """Restricted Cubic Spline (RCS) Analysis"""
+    """Restricted Cubic Spline (RCS) Analysis"""
     try:
-        if 'file' not in request.files:
-            return jsonify({"success": False, "error": "No file uploaded"}), 400
-        
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"success": False, "error": "No file selected"}), 400
+        file, error_resp, status_code = get_file_input()
+        if error_resp:
+            return error_resp, status_code
         
         model_type = request.form.get('model_type') # linear, logistic, cox
         x_var = request.form.get('x_var')

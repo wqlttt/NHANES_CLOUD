@@ -89,7 +89,7 @@ def logistic_regression_analysis(csv_data, x_var, y_var):
     accuracy = accuracy_score(y_test, y_pred)
 
     # Create plot with Chinese font support
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams['font.size'] = 10
     
@@ -193,7 +193,8 @@ def multinomial_logistic_regression_analysis(csv_data, x_vars, y_var):
     accuracy = accuracy_score(y_test, y_pred)
 
     # Create comprehensive plot
-    plt.rcParams['font.sans-serif'] = ['Microsoft YaHei', 'SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+    # Create comprehensive plot
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams['font.size'] = 10
 

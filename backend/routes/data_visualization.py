@@ -29,20 +29,29 @@ def generate_visualization():
     - correlation_heatmap: 相关性矩阵热图
     - qqplot: QQ图
     """
-    if 'file' not in request.files:
-        return jsonify({
-            "success": False,
-            "error": "没有上传文件",
-            "error_code": "NO_FILE"
-        }), 400
+    # 优先检查是否有文件路径参数 (用于演示数据)
+    filepath = request.form.get('filepath')
+    temp_path = None
+    
+    # 如果没有文件路径，则检查是否有上传文件
+    if not filepath:
+        if 'file' not in request.files:
+            return jsonify({
+                "success": False,
+                "error": "没有上传文件或提供文件路径",
+                "error_code": "NO_FILE"
+            }), 400
 
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({
-            "success": False,
-            "error": "没有选择文件",
-            "error_code": "NO_FILENAME"
-        }), 400
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                "success": False,
+                "error": "没有选择文件",
+                "error_code": "NO_FILENAME"
+            }), 400
+    
+    # 获取文件名 (用于返回)
+    filename = os.path.basename(filepath) if filepath else file.filename
 
     # 获取图表配置参数
     chart_type = request.form.get('chart_type', 'histogram')
@@ -67,21 +76,29 @@ def generate_visualization():
     # 条形图的额外参数
     show_percentage = request.form.get('show_percentage', 'true').lower() == 'true'
 
-    temp_path = None
     try:
-        # 保存文件到临时位置
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_file:
-            file.save(tmp_file.name)
-            temp_path = tmp_file.name
+        # 准备文件路径
+        if filepath:
+            # 如果是服务器上的文件(演示数据)，直接使用
+            if not os.path.exists(filepath):
+                 return jsonify({
+                    "success": False,
+                    "error": f"找不到文件: {filepath}",
+                    "error_code": "FILE_NOT_FOUND"
+                }), 404
+            target_path = filepath
+        else:
+            # 如果是上传的文件，保存到临时位置
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_file:
+                file.save(tmp_file.name)
+                temp_path = tmp_file.name
+                target_path = temp_path
         
         result = None
         
         # 根据图表类型调用相应的生成函数
         if chart_type == 'histogram':
-            columns_list = None
-            if columns_str:
-                columns_list = [col.strip() for col in columns_str.split(',') if col.strip()]
-            
+            # columns_list is already parsed from request logic above
             target_var = columns_list if columns_list else x_var
             
             if not target_var:
@@ -90,7 +107,7 @@ def generate_visualization():
                     "error": "直方图需要选择至少一个数值变量",
                     "error_code": "MISSING_VAR"
                 }), 400
-            result = generate_histogram(temp_path, target_var, color, title or None)
+            result = generate_histogram(target_path, target_var, color, title or None)
             
         elif chart_type == 'jointplot':
             if not x_var or not y_var:
@@ -99,7 +116,7 @@ def generate_visualization():
                     "error": "联合分布图需要选择X轴和Y轴变量",
                     "error_code": "MISSING_VARS"
                 }), 400
-            result = generate_jointplot(temp_path, x_var, y_var, color, title or None)
+            result = generate_jointplot(target_path, x_var, y_var, color, title or None)
             
         elif chart_type == 'scatter':
             if not x_var or not y_var:
@@ -108,7 +125,7 @@ def generate_visualization():
                     "error": "散点图需要选择X轴和Y轴变量",
                     "error_code": "MISSING_VARS"
                 }), 400
-            result = generate_scatterplot(temp_path, x_var, y_var, color, title or None)
+            result = generate_scatterplot(target_path, x_var, y_var, color, title or None)
             
         elif chart_type == 'boxplot':
             if not y_var:
@@ -117,7 +134,7 @@ def generate_visualization():
                     "error": "箱线图需要选择一个数值变量",
                     "error_code": "MISSING_Y_VAR"
                 }), 400
-            result = generate_boxplot(temp_path, y_var, x_var or None, color, title or None)
+            result = generate_boxplot(target_path, y_var, x_var or None, color, title or None)
             
         elif chart_type == 'violinplot':
             if not y_var:
@@ -126,7 +143,7 @@ def generate_visualization():
                     "error": "小提琴图需要选择一个数值变量",
                     "error_code": "MISSING_Y_VAR"
                 }), 400
-            result = generate_violinplot(temp_path, y_var, x_var or None, color, title or None)
+            result = generate_violinplot(target_path, y_var, x_var or None, color, title or None)
             
         elif chart_type == 'barplot':
             if not x_var:
@@ -135,11 +152,11 @@ def generate_visualization():
                     "error": "条形图需要选择一个分类变量",
                     "error_code": "MISSING_X_VAR"
                 }), 400
-            result = generate_barplot(temp_path, x_var, color, title or None, show_percentage)
+            result = generate_barplot(target_path, x_var, color, title or None, show_percentage)
             
         elif chart_type == 'correlation_heatmap':
             # columns_list 已在上面处理过
-            result = generate_correlation_heatmap(temp_path, columns_list, method, title or None)
+            result = generate_correlation_heatmap(target_path, columns_list, method, title or None)
             
         elif chart_type == 'qqplot':
             if not x_var:
@@ -148,7 +165,7 @@ def generate_visualization():
                     "error": "QQ图需要选择一个数值变量",
                     "error_code": "MISSING_X_VAR"
                 }), 400
-            result = generate_qqplot(temp_path, x_var, distribution, color, title or None)
+            result = generate_qqplot(target_path, x_var, distribution, color, title or None)
             
         else:
             return jsonify({
@@ -166,7 +183,8 @@ def generate_visualization():
             "success": True,
             "chart_type": chart_type,
             "plot": f"data:image/png;base64,{result['plot']}",
-            "filename": file.filename,
+            "plot": f"data:image/png;base64,{result['plot']}",
+            "filename": filename,
             "variables_used": {
                 "x_var": x_var,
                 "y_var": y_var

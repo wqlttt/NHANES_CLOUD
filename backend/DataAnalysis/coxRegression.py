@@ -117,6 +117,9 @@ def cox_regression_analysis(csv_data, covariate_cols, time_col, event_col):
     ci_upper = [clean_value(x) for x in ci_upper]
 
     # Create forest plot
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
+    
     plt.figure(figsize=(10, max(len(covariates) * 0.5 + 2, 4)))
 
     # 过滤有效的数据点用于绘图
