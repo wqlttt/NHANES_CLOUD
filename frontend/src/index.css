@@ -129,7 +129,8 @@ code {
 
 /* Navigation - Floating Liquid Pill */
 .nav-menu-wrapper {
-  padding: 6px 20px;
+  /* 调整上下内边距，使胶囊高度更接近导航栏高度 */
+  padding: 4px 20px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -154,11 +155,14 @@ code {
 }
 
 .app-header .ant-menu-horizontal>.ant-menu-item {
-  padding-inline: 20px;
+  padding-inline: 18px;
   margin-inline: 4px;
   border-radius: 999px;
   transition: all 0.4s var(--ease-spring);
   color: var(--text-secondary);
+  /* 显式控制菜单项高度，使其与胶囊视觉高度更接近 */
+  height: 44px;
+  line-height: 44px;
 }
 
 .app-header .ant-menu-horizontal>.ant-menu-item::after {
@@ -367,6 +371,43 @@ code {
     padding: 0 16px !important;
     height: 64px;
     line-height: 64px;
+  }
+
+  /* Mobile navigation drawer menu styling */
+  .mobile-nav-menu {
+    border-right: none !important;
+    background: transparent !important;
+  }
+
+  .mobile-nav-menu .ant-menu-item {
+    margin: 6px 16px !important;
+    border-radius: 999px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    padding-inline: 16px !important;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .mobile-nav-menu .ant-menu-item .ant-menu-item-icon {
+    font-size: 18px;
+  }
+
+  .mobile-nav-menu .ant-menu-item-selected {
+    background: rgba(99, 102, 241, 0.1) !important;
+    color: var(--primary-color) !important;
+  }
+
+  .mobile-nav-menu .ant-menu-item:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+  }
+
+  .mobile-nav-menu .ant-menu-item-icon,
+  .mobile-nav-menu .ant-menu-title-content {
+    display: inline-flex;
+    align-items: center;
   }
 }
 

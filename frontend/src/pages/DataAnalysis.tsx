@@ -22,6 +22,7 @@ import {
     Upload,
     message,
     Image,
+    Tooltip,
 } from 'antd';
 import {
     CalculatorOutlined,
@@ -3122,12 +3123,26 @@ const DataAnalysis: React.FC = () => {
                                                         {`${getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name} ${t('dataAnalysis.results.title')}`}
                                                     </Title>
                                                     <Space>
-                                                        <Button icon={<DownloadOutlined />} size="middle" style={{ borderRadius: '20px' }}>
-                                                            {t('dataAnalysis.results.export')}
-                                                        </Button>
-                                                        <Button icon={<FileTextOutlined />} size="middle" style={{ borderRadius: '20px' }}>
-                                                            {t('dataAnalysis.results.generateReport')}
-                                                        </Button>
+                                                        <Tooltip title={t('common.comingSoon') || '功能开发中，敬请期待'}>
+                                                            <Button
+                                                                icon={<DownloadOutlined />}
+                                                                size="middle"
+                                                                style={{ borderRadius: '20px' }}
+                                                                disabled
+                                                            >
+                                                                {t('dataAnalysis.results.export')}
+                                                            </Button>
+                                                        </Tooltip>
+                                                        <Tooltip title={t('common.comingSoon') || '功能开发中，敬请期待'}>
+                                                            <Button
+                                                                icon={<FileTextOutlined />}
+                                                                size="middle"
+                                                                style={{ borderRadius: '20px' }}
+                                                                disabled
+                                                            >
+                                                                {t('dataAnalysis.results.generateReport')}
+                                                            </Button>
+                                                        </Tooltip>
                                                     </Space>
                                                 </div>
                                                 <div style={{

@@ -24,6 +24,7 @@ import {
     Input,
     Checkbox,
     Result,
+    Tooltip,
 } from 'antd';
 import {
     BarChartOutlined,
@@ -1065,12 +1066,24 @@ const DataVisualization: React.FC = () => {
                                         title={t('dataVisualization.result.display')}
                                         extra={
                                             <Space>
-                                                <Button icon={<DownloadOutlined />} size="small" disabled={!chartResult}>
-                                                    {t('dataVisualization.result.download.image')}
-                                                </Button>
-                                                <Button icon={<DownloadOutlined />} size="small" disabled={!fileInfo}>
-                                                    {t('dataVisualization.result.download.data')}
-                                                </Button>
+                                                <Tooltip title={t('common.comingSoon')}>
+                                                    <Button
+                                                        icon={<DownloadOutlined />}
+                                                        size="small"
+                                                        disabled
+                                                    >
+                                                        {t('dataVisualization.result.download.image')}
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip title={t('common.comingSoon')}>
+                                                    <Button
+                                                        icon={<DownloadOutlined />}
+                                                        size="small"
+                                                        disabled
+                                                    >
+                                                        {t('dataVisualization.result.download.data')}
+                                                    </Button>
+                                                </Tooltip>
                                             </Space>
                                         }
                                     >

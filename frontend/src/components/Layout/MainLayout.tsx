@@ -179,6 +179,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Menu
           mode="inline"
           selectedKeys={[currentPath]}
+          className="mobile-nav-menu"
           items={menuItems.map(item => ({
             ...item,
             style: {

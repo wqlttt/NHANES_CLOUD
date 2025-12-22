@@ -24,6 +24,7 @@ export const zhTranslations = {
         error: '错误',
         warning: '警告',
         info: '提示',
+        comingSoon: '功能开发中，敬请期待',
         pagination: {
             total: '共 {{total}} 条',
             pageSize: '每页显示',
@@ -945,6 +946,7 @@ export const enTranslations = {
         error: 'Error',
         warning: 'Warning',
         info: 'Info',
+        comingSoon: 'Coming soon',
         pagination: {
             total: 'Total {{total}} items',
             pageSize: 'Items per page',
