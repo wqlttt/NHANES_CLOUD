@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Row, Col, Card, Space, Button, Tabs, Steps } from 'antd';
 import {
     ToolOutlined,
@@ -286,6 +286,8 @@ const DataProcessing: React.FC = () => {
         window.open(downloadUrl, '_blank');
     };
 
+    const [isVisible, setIsVisible] = useState(false);
+
     const handleReset = () => {
         if (!originalFileInfo) return;
         setFileInfo(originalFileInfo);
@@ -293,8 +295,13 @@ const DataProcessing: React.FC = () => {
         message.success('Data reset to original state');
     };
 
+    // Page enter animation
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
     return (
-        <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
+        <div className={`page-entry ${isVisible ? 'visible' : ''}`} style={{ paddingBottom: '60px' }}>
             {/* Hero Section */}
             <div className="hero-section">
                 <div style={{
@@ -303,12 +310,12 @@ const DataProcessing: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    color: '#f59e0b',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    color: '#6366f1',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(245, 158, 11, 0.2)'
+                    border: '1px solid rgba(99, 102, 241, 0.2)'
                 }}>
                     <RocketOutlined /> {t('dataProcessing.hero.tag')}
                 </div>

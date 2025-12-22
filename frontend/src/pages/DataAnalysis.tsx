@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 import {
@@ -2056,8 +2056,14 @@ const DataAnalysis: React.FC = () => {
         }
     };
 
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        setIsVisible(true);
+    }, []);
+
     return (
-        <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
+        <div className={`page-entry ${isVisible ? 'visible' : ''}`} style={{ paddingBottom: '60px' }}>
             <div className="hero-section">
                 <div style={{
                     display: 'inline-flex',

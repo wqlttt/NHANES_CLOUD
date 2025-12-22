@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getApiUrl, API_ENDPOINTS } from '../utils/api';
 import {
@@ -115,9 +115,10 @@ const DataVisualization: React.FC = () => {
     const [chartGenerated, setChartGenerated] = useState(false);
     const [activeTab, setActiveTab] = useState('config');
     const [isMobile, setIsMobile] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     // 检测屏幕尺寸
-    React.useEffect(() => {
+    useEffect(() => {
         const checkScreenSize = () => {
             setIsMobile(window.innerWidth <= 768);
         };
@@ -128,6 +129,11 @@ const DataVisualization: React.FC = () => {
         return () => {
             window.removeEventListener('resize', checkScreenSize);
         };
+    }, []);
+
+    // Page enter animation
+    useEffect(() => {
+        setIsVisible(true);
     }, []);
 
     // 文件相关状态
@@ -464,7 +470,7 @@ const DataVisualization: React.FC = () => {
     };
 
     return (
-        <div className="page-entry visible" style={{ paddingBottom: '60px' }}>
+        <div className={`page-entry ${isVisible ? 'visible' : ''}`} style={{ paddingBottom: '60px' }}>
             <div className="hero-section">
                 <div style={{
                     display: 'inline-flex',
@@ -472,12 +478,12 @@ const DataVisualization: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(59, 130, 246, 0.1)',
-                    color: '#3b82f6',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    color: '#6366f1',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(59, 130, 246, 0.2)'
+                    border: '1px solid rgba(99, 102, 241, 0.2)'
                 }}>
                     <BarChartOutlined /> NHANES Visualization Lab
                 </div>
