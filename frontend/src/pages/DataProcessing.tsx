@@ -232,20 +232,22 @@ const DataProcessing: React.FC = () => {
                 message.success(t('dataProcessing.upload.demoSuccess', { defaultValue: 'Demo data loaded successfully!' }));
 
                 // Construct file info object
-                const demoFileInfo = {
+                // 注意：后端 /load_demo_data 已经返回了和上传文件一致的结构（含 file_stats / columns_info）
+                const demoFileInfo: FileInfo = {
                     filename: data.filename,
                     filepath: data.filepath, // Important for backend processing
-                    file_stats: {
+                    file_stats: data.file_stats || {
                         total_rows: data.total_rows,
                         total_columns: data.total_columns,
-                        numeric_columns_count: data.numeric_columns.length,
-                        categorical_columns_count: data.categorical_columns.length,
-                        file_size: 0
+                        numeric_columns_count: data.numeric_columns?.length || 0,
+                        categorical_columns_count: data.categorical_columns?.length || 0,
+                        file_size: data.file_stats?.file_size || 0
                     },
                     columns: data.columns,
                     numeric_columns: data.numeric_columns,
                     categorical_columns: data.categorical_columns,
-                    columns_info: [], // Default empty array
+                    // 这里直接使用后端解析好的 columns_info，这样插补列选择时才能显示缺失值数量
+                    columns_info: data.columns_info || [],
                     preview_data: data.preview_data,
                     last_updated: new Date().toLocaleTimeString()
                 };
