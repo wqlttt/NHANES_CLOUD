@@ -15,7 +15,7 @@ module.exports = function (app) {
         })
     );
 
-    // 代理之前在 nginx-dev.conf 中定义的其他 API 路径
+    // 代理之前在 nginx-dev.conf/nginx.conf 中定义的其他 API 路径
     const otherPaths = [
         '/search_variables',
         '/process_nhanes',
@@ -29,10 +29,19 @@ module.exports = function (app) {
         '/draw_histogram',
         '/draw_heatmap',
         '/draw_scatterplot',
+        // 回归与统计分析
         '/logisticRegression',
         '/multinomialLogisticRegression',
         '/linearRegression',
-        '/CoxRegression'
+        // 修正大小写，确保与后端路由一致
+        '/coxRegression',
+        // 统计检验
+        '/ttest',
+        '/chisquare',
+        '/anova',
+        '/ranksum',
+        // RCS 分析
+        '/rcs'
     ];
 
     otherPaths.forEach(path => {
