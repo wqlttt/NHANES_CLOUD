@@ -123,7 +123,6 @@ def multinomial_logistic_regression():
 
 
 @analysis_bp.route('/linearRegression', methods=["POST"])
-@analysis_bp.route('/linearRegression', methods=["POST"])
 def linear_regression():
     """线性回归分析 (Generic handler for both Simple and Multiple)"""
     file, error_resp, status_code = get_file_input()

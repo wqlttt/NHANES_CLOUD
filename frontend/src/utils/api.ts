@@ -55,7 +55,7 @@ export const API_ENDPOINTS = {
     LOGISTIC_REGRESSION: '/logisticRegression',
     MULTINOMIAL_LOGISTIC_REGRESSION: '/multinomialLogisticRegression',
     LINEAR_REGRESSION: '/linearRegression',
-    COX_REGRESSION: '/CoxRegression',
+    COX_REGRESSION: '/coxRegression',
     T_TEST: '/ttest',
     CHI_SQUARE: '/chisquare',
     ANOVA: '/anova',
