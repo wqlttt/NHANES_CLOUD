@@ -3116,9 +3116,18 @@ const DataAnalysis: React.FC = () => {
                             ) : results ? (
                                 <div>
                                     <Row gutter={24}>
-                                        <Col span={selectedAnalysis === 'cox_regression' ? 24 : 18}>
+                                        <Col xs={24} lg={selectedAnalysis === 'cox_regression' ? 24 : 18}>
                                             <div style={{ marginBottom: 24 }}>
-                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        flexWrap: 'wrap',
+                                                        gap: 8,
+                                                        marginBottom: 16
+                                                    }}
+                                                >
                                                     <Title level={5} style={{ margin: 0 }}>
                                                         {`${getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name} ${t('dataAnalysis.results.title')}`}
                                                     </Title>
@@ -3149,7 +3158,7 @@ const DataAnalysis: React.FC = () => {
                                                     background: 'rgba(255,255,255,0.4)',
                                                     borderRadius: '12px',
                                                     padding: '24px',
-                                                    minHeight: '400px'
+                                                    minHeight: '320px'
                                                 }}>
                                                     {renderResults()}
                                                 </div>
@@ -3157,7 +3166,7 @@ const DataAnalysis: React.FC = () => {
                                         </Col>
 
                                         {selectedAnalysis !== 'cox_regression' && (
-                                            <Col span={6}>
+                                            <Col xs={24} lg={6}>
                                                 <div style={{ marginBottom: 24 }}>
                                                     <Title level={5} style={{ marginBottom: 16 }}>{t('dataAnalysis.results.info.title')}</Title>
                                                     <div style={{

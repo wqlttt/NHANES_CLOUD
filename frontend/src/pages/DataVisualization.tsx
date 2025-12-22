@@ -1061,30 +1061,39 @@ const DataVisualization: React.FC = () => {
 
                         <TabPane tab={t('dataVisualization.result.tab')} key="result">
                             <Row gutter={24}>
-                                <Col span={18}>
+                                <Col xs={24} lg={18}>
                                     <Card
                                         title={t('dataVisualization.result.display')}
                                         extra={
-                                            <Space>
-                                                <Tooltip title={t('common.comingSoon')}>
-                                                    <Button
-                                                        icon={<DownloadOutlined />}
-                                                        size="small"
-                                                        disabled
-                                                    >
-                                                        {t('dataVisualization.result.download.image')}
-                                                    </Button>
-                                                </Tooltip>
-                                                <Tooltip title={t('common.comingSoon')}>
-                                                    <Button
-                                                        icon={<DownloadOutlined />}
-                                                        size="small"
-                                                        disabled
-                                                    >
-                                                        {t('dataVisualization.result.download.data')}
-                                                    </Button>
-                                                </Tooltip>
-                                            </Space>
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    flexWrap: 'wrap',
+                                                    gap: 8,
+                                                    justifyContent: 'flex-end'
+                                                }}
+                                            >
+                                                <Space>
+                                                    <Tooltip title={t('common.comingSoon')}>
+                                                        <Button
+                                                            icon={<DownloadOutlined />}
+                                                            size="small"
+                                                            disabled
+                                                        >
+                                                            {t('dataVisualization.result.download.image')}
+                                                        </Button>
+                                                    </Tooltip>
+                                                    <Tooltip title={t('common.comingSoon')}>
+                                                        <Button
+                                                            icon={<DownloadOutlined />}
+                                                            size="small"
+                                                            disabled
+                                                        >
+                                                            {t('dataVisualization.result.download.data')}
+                                                        </Button>
+                                                    </Tooltip>
+                                                </Space>
+                                            </div>
                                         }
                                     >
                                         {loading ? (
@@ -1139,7 +1148,7 @@ const DataVisualization: React.FC = () => {
                                     </Card>
                                 </Col>
 
-                                <Col span={6}>
+                                <Col xs={24} lg={6}>
                                     <Card title={t('dataVisualization.result.info.title')} size="small">
                                         <Space direction="vertical" style={{ width: '100%' }}>
                                             <div>

@@ -757,7 +757,7 @@ export const zhTranslations = {
                 },
                 summary: {
                     title: '线性回归分析结果',
-                    description: '{type}线性回归分析完成。R² = {r2}，表示模型解释了因变量 {variance}% 的方差。样本量：{sampleSize}',
+                    description: '{{type}}线性回归分析完成。R² = {{r2}}，表示模型解释了因变量 {{variance}}% 的方差。样本量：{{sampleSize}}',
                     types: {
                         simple: '单变量',
                         multiple: '多变量'
@@ -1680,7 +1680,7 @@ export const enTranslations = {
                 },
                 summary: {
                     title: 'Linear Regression Analysis Results',
-                    description: '{type} linear regression completed. R² = {r2}, indicating the model explains {variance}% of the variance in the dependent variable. Sample size: {sampleSize}',
+                    description: '{{type}} linear regression completed. R² = {{r2}}, indicating the model explains {{variance}}% of the variance in the dependent variable. Sample size: {{sampleSize}}',
                     types: {
                         simple: 'Univariate',
                         multiple: 'Multivariate'

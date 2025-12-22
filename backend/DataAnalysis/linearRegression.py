@@ -86,7 +86,7 @@ def linear_regression_analysis(csv_data, x_var, y_var):
     r2 = r2_score(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
 
-    # Create plot with Chinese font support
+    # Create plot with font config that supports both English and Chinese
     plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams['font.size'] = 10
@@ -94,28 +94,28 @@ def linear_regression_analysis(csv_data, x_var, y_var):
     plt.figure(figsize=(10, 6))
     
     # Scatter plot of actual data
-    plt.scatter(X, y, alpha=0.6, color='blue', label='数据点')
+    plt.scatter(X, y, alpha=0.6, color='blue', label='Data points')
     
     # Plot regression line
     x_range = np.linspace(X.min(), X.max(), 100).reshape(-1, 1)
     y_pred_line = model.predict(x_range)
-    plt.plot(x_range, y_pred_line, 'r-', linewidth=2, label='回归直线')
+    plt.plot(x_range, y_pred_line, 'r-', linewidth=2, label='Regression line')
     
     # Calculate equation
     slope = model.coef_[0]
     intercept = model.intercept_
     equation = f'y = {slope:.3f}x + {intercept:.3f}'
     
-    # Add equation and metrics to plot
-    plt.title(f'线性回归分析\nR² = {r2:.3f}, MSE = {mse:.3f}\n{equation}', fontsize=14)
+    # Add equation and metrics to plot (default English)
+    plt.title(f'Linear Regression Analysis\nR² = {r2:.3f}, MSE = {mse:.3f}\n{equation}', fontsize=14)
     plt.xlabel(x_var, fontsize=12)
     plt.ylabel(y_var, fontsize=12)
     plt.legend()
     plt.grid(True, alpha=0.3)
     
-    # Add correlation coefficient
+    # Add correlation coefficient (default English label)
     correlation = np.corrcoef(X.flatten(), y)[0, 1]
-    plt.text(0.05, 0.95, f'相关系数: {correlation:.3f}', 
+    plt.text(0.05, 0.95, f'Correlation: {correlation:.3f}', 
              transform=plt.gca().transAxes, 
              bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5),
              verticalalignment='top')
@@ -221,18 +221,18 @@ def multiple_linear_regression_analysis(csv_data, x_vars, y_var):
     # Predicted vs Actual
     ax1.scatter(y, y_pred, alpha=0.6)
     ax1.plot([y.min(), y.max()], [y.min(), y.max()], 'r--', lw=2)
-    ax1.set_xlabel(f'实际值 ({y_var})')
-    ax1.set_ylabel(f'预测值 ({y_var})')
-    ax1.set_title(f'预测值 vs 实际值\nR² = {r2:.3f}')
+    ax1.set_xlabel(f'Actual ({y_var})')
+    ax1.set_ylabel(f'Predicted ({y_var})')
+    ax1.set_title(f'Predicted vs Actual\nR² = {r2:.3f}')
     ax1.grid(True, alpha=0.3)
     
     # Residual plot
     residuals = y - y_pred
     ax2.scatter(y_pred, residuals, alpha=0.6)
     ax2.axhline(y=0, color='r', linestyle='--')
-    ax2.set_xlabel('预测值')
-    ax2.set_ylabel('残差')
-    ax2.set_title('残差图')
+    ax2.set_xlabel('Predicted values')
+    ax2.set_ylabel('Residuals')
+    ax2.set_title('Residual Plot')
     ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()

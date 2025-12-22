@@ -88,22 +88,23 @@ def logistic_regression_analysis(csv_data, x_var, y_var):
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
 
-    # Create plot with Chinese font support
+    # Create plot with font config that supports both English and Chinese
     plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
     plt.rcParams['font.size'] = 10
     
     plt.figure(figsize=(10, 6))
-    plt.scatter(X_scaled, y, c=y, cmap='RdYlBu', alpha=0.6, label='数据点')
+    plt.scatter(X_scaled, y, c=y, cmap='RdYlBu', alpha=0.6, label='Data points')
 
     # Plot decision boundary
     x_range = np.linspace(X_scaled.min(), X_scaled.max(), 300).reshape(-1, 1)
     y_prob = model.predict_proba(x_range)[:, 1]
-    plt.plot(x_range, y_prob, 'k-', linewidth=2, label='决策边界（概率）')
+    plt.plot(x_range, y_prob, 'k-', linewidth=2, label='Decision boundary (probability)')
 
-    plt.title(f'二分类逻辑回归分析\n准确率: {accuracy:.3f}', fontsize=14)
-    plt.xlabel(f'标准化 {x_var}', fontsize=12)
-    plt.ylabel(f'{y_var} (概率)', fontsize=12)
+    # Default English titles/labels; user-provided labels can still be any language via data
+    plt.title(f'Binary Logistic Regression\nAccuracy: {accuracy:.3f}', fontsize=14)
+    plt.xlabel(f'Standardized {x_var}', fontsize=12)
+    plt.ylabel(f'{y_var} (probability)', fontsize=12)
     plt.legend()
     plt.grid(True, alpha=0.3)
 
@@ -205,9 +206,9 @@ def multinomial_logistic_regression_analysis(csv_data, x_vars, y_var):
         
         # Scatter plot of data
         scatter = ax1.scatter(X_scaled[:, 0], y, c=y, cmap='viridis', alpha=0.6)
-        ax1.set_xlabel(f'标准化 {x_vars[0]}')
+        ax1.set_xlabel(f'Standardized {x_vars[0]}')
         ax1.set_ylabel(f'{y_var}')
-        ax1.set_title('数据分布')
+        ax1.set_title('Data Distribution')
         ax1.grid(True, alpha=0.3)
         plt.colorbar(scatter, ax=ax1)
         
@@ -216,11 +217,11 @@ def multinomial_logistic_regression_analysis(csv_data, x_vars, y_var):
         probabilities = model.predict_proba(x_range)
         
         for i, class_val in enumerate(unique_classes):
-            ax2.plot(x_range, probabilities[:, i], label=f'类别 {class_val}', linewidth=2)
+            ax2.plot(x_range, probabilities[:, i], label=f'Class {class_val}', linewidth=2)
         
-        ax2.set_xlabel(f'标准化 {x_vars[0]}')
-        ax2.set_ylabel('预测概率')
-        ax2.set_title('各类别预测概率')
+        ax2.set_xlabel(f'Standardized {x_vars[0]}')
+        ax2.set_ylabel('Predicted probability')
+        ax2.set_title('Predicted Probability by Class')
         ax2.legend()
         ax2.grid(True, alpha=0.3)
         
@@ -232,20 +233,20 @@ def multinomial_logistic_regression_analysis(csv_data, x_vars, y_var):
         cm = confusion_matrix(y_test, y_pred)
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax1,
                     xticklabels=unique_classes, yticklabels=unique_classes)
-        ax1.set_title('混淆矩阵')
-        ax1.set_xlabel('预测值')
-        ax1.set_ylabel('真实值')
+        ax1.set_title('Confusion Matrix')
+        ax1.set_xlabel('Predicted')
+        ax1.set_ylabel('Actual')
         
         # Feature importance (coefficients magnitude)
         if hasattr(model, 'coef_'):
             # Calculate average magnitude of coefficients across all classes
             coef_importance = np.mean(np.abs(model.coef_), axis=0)
             ax2.barh(x_vars, coef_importance)
-            ax2.set_xlabel('特征重要性（系数绝对值平均）')
-            ax2.set_title('特征重要性')
+            ax2.set_xlabel('Feature Importance (mean |coefficient|)')
+            ax2.set_title('Feature Importance')
             ax2.grid(True, alpha=0.3)
 
-    plt.suptitle(f'多分类逻辑回归分析\n准确率: {accuracy:.3f}, 类别数: {n_classes}', fontsize=14)
+    plt.suptitle(f'Multinomial Logistic Regression\nAccuracy: {accuracy:.3f}, Classes: {n_classes}', fontsize=14)
     plt.tight_layout()
 
     # Convert to base64

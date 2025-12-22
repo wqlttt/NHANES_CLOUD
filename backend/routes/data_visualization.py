@@ -290,11 +290,11 @@ def draw_boxplot():
         
         if group_by and group_by in df.columns:
             sns.boxplot(data=df, x=group_by, y=column)
-            plt.title(f'{column} 按 {group_by} 分组的箱型图')
+            plt.title(f'{column} Box Plot by {group_by}')
             plt.xticks(rotation=45)
         else:
             sns.boxplot(y=df[column])
-            plt.title(f'{column} 的箱型图')
+            plt.title(f'{column} Box Plot')
         
         plt.ylabel(column)
         plt.tight_layout()
