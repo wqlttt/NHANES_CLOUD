@@ -49,12 +49,6 @@ def linear_regression_analysis(csv_data, x_var, y_var):
     if len(clean_data) < 2:
         raise ValueError("Not enough valid data points for regression analysis")
     
-    X = clean_data[[x_var]].values
-    y = clean_data[y_var].values
-
-    # Check if X and y are numeric
-    print(f"检查数据类型 - {x_var}: {clean_data[x_var].dtype}, {y_var}: {clean_data[y_var].dtype}")
-    print(f"因变量 {y_var} 的唯一值: {clean_data[y_var].unique()[:10]}")  # 显示前10个唯一值
     
     if not pd.api.types.is_numeric_dtype(clean_data[x_var]):
         raise ValueError(f"自变量 {x_var} 必须是数值类型才能进行线性回归。当前类型: {clean_data[x_var].dtype}")
@@ -67,6 +61,14 @@ def linear_regression_analysis(csv_data, x_var, y_var):
             print(f"已将因变量 {y_var} 转换为数值类型")
         except:
             raise ValueError(f"因变量 {y_var} 必须是连续型数值变量才能进行线性回归。当前类型: {clean_data[y_var].dtype}。提示：如果这是分类变量(如性别、是否通过等)，请使用逻辑回归。")
+
+    # Extract features and target AFTER conversion
+    X = clean_data[[x_var]].values
+    y = clean_data[y_var].values
+
+    # Check if we have valid data left after potential coercions that created NaNs (handled by dropna earlier, but good to be safe if Logic changes)
+    if len(clean_data) < 2:
+        raise ValueError("Not enough valid data points for regression analysis")
 
     # Split into train and test sets
     if len(clean_data) > 10:  # Only split if we have enough data
@@ -85,6 +87,11 @@ def linear_regression_analysis(csv_data, x_var, y_var):
     y_pred = model.predict(X_test)
     r2 = r2_score(y_test, y_pred)
     mse = mean_squared_error(y_test, y_pred)
+    
+    # Handle NaN/Inf R2 (e.g., constant outcome)
+    if np.isnan(r2) or np.isinf(r2):
+        print(f"Warning: R2 score is {r2}, setting to 0.0")
+        r2 = 0.0
 
     # Create plot with font config that supports both English and Chinese
     plt.rcParams['font.sans-serif'] = ['SimHei', 'WenQuanYi Micro Hei', 'DejaVu Sans', 'Arial Unicode MS', 'Microsoft YaHei', 'sans-serif']
@@ -166,13 +173,6 @@ def multiple_linear_regression_analysis(csv_data, x_vars, y_var):
 
     # Extract features and target, remove missing values
     clean_data = data[x_vars + [y_var]].dropna()
-    
-    if len(clean_data) < len(x_vars) + 1:
-        raise ValueError("Not enough valid data points for multiple regression analysis")
-    
-    X = clean_data[x_vars].values
-    y = clean_data[y_var].values
-
     # Check if all variables are numeric
     print(f"多变量回归数据类型检查:")
     for var in x_vars + [y_var]:
@@ -201,6 +201,14 @@ def multiple_linear_regression_analysis(csv_data, x_vars, y_var):
                 except:
                     raise ValueError(f"变量 {var} 必须是数值类型才能进行线性回归。当前类型: {clean_data[var].dtype}")
 
+    # Extract features and target AFTER conversion
+    X = clean_data[x_vars].values
+    y = clean_data[y_var].values
+    
+    # Final check
+    if len(clean_data) < len(x_vars) + 1:
+        raise ValueError("Not enough valid data points for multiple regression analysis")
+
     # Train model
     model = LinearRegression()
     model.fit(X, y)
@@ -209,6 +217,11 @@ def multiple_linear_regression_analysis(csv_data, x_vars, y_var):
     y_pred = model.predict(X)
     r2 = r2_score(y, y_pred)
     mse = mean_squared_error(y, y_pred)
+    
+    # Handle NaN/Inf R2
+    if np.isnan(r2) or np.isinf(r2):
+        print(f"Warning: Multiple regression R2 score is {r2}, setting to 0.0")
+        r2 = 0.0
 
     # Create residual plot
     # Create residual plot

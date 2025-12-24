@@ -150,12 +150,14 @@ def linear_regression():
             # Simple Linear Regression
             x_var = x_vars[0]
             result = linear_regression_analysis(file, x_var, y_var)
+            
             response_data = {
                 "success": True,
                 "plot": f"data:image/png;base64,{result['plot']}",
                 "x_var": str(result['x_var']),
                 "y_var": str(result['y_var']),
-                "r_squared": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "r2_score": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "mse": convert_to_serializable(result.get("mse")),
                 "coefficients": [convert_to_serializable(coef) for coef in result["coefficients"]],
                 "intercept": convert_to_serializable(result["intercept"]),
                 "regression_type": "linear_simple", # Updated to match frontend expectation
@@ -169,7 +171,8 @@ def linear_regression():
                 "plot": f"data:image/png;base64,{result['plot']}",
                 "x_vars": x_vars,
                 "y_var": y_var,
-                "r_squared": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "r2_score": convert_to_serializable(result.get("r2_score", result.get("r_squared"))),
+                "mse": convert_to_serializable(result.get("mse")),
                 "adjusted_r_squared": convert_to_serializable(result.get("adjusted_r_squared")),
                 # Handle coefficients dict vs list
                 "coefficients": {k: convert_to_serializable(v) for k, v in result.get("coefficients", {}).items()} if isinstance(result.get("coefficients"), dict) else [convert_to_serializable(c) for c in result.get("coefficients", [])],
