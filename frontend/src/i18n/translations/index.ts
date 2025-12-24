@@ -47,7 +47,7 @@ export const zhTranslations = {
     },
     home: {
         hero: {
-            platformName: 'NHANES 云平台 v2.0',
+            platformName: 'NHANES 云平台 v1.0',
             getStarted: '开始使用',
             viewDocs: '查看可视化文档'
         },
@@ -780,7 +780,7 @@ export const zhTranslations = {
                 coefficients: '回归系数',
                 summary: {
                     title: '逻辑回归分析结果',
-                    description: '二分类逻辑回归分析完成。模型准确率：{accuracy}%。自变量 {xVar} 对因变量 {yVar} 的预测效果{performance}。',
+                    description: '二分类逻辑回归分析完成。模型准确率：{{accuracy}}%。自变量 {{xVar}} 对因变量 {{yVar}} 的预测效果{{performance}}。',
                     performance: {
                         good: '较好',
                         fair: '一般'
@@ -804,7 +804,7 @@ export const zhTranslations = {
                 },
                 summary: {
                     title: '多分类逻辑回归分析结果',
-                    description: '多分类逻辑回归分析完成。模型准确率：{accuracy}%。成功分类 {classes} 个类别（{labels}）。适用于CKMStage等多分类因变量的分析。'
+                    description: '多分类逻辑回归分析完成。模型准确率：{{accuracy}}%。成功分类 {{classes}} 个类别（{{labels}}）。'
                 }
             },
             rcs: {
@@ -1703,7 +1703,7 @@ export const enTranslations = {
                 coefficients: 'Regression Coefficients',
                 summary: {
                     title: 'Logistic Regression Analysis Results',
-                    description: 'Binary logistic regression completed. Model accuracy: {accuracy}%. The predictive effect of independent variable {xVar} on dependent variable {yVar} is {performance}.',
+                    description: 'Binary logistic regression completed. Model accuracy: {{accuracy}}%. The predictive effect of independent variable {{xVar}} on dependent variable {{yVar}} is {{performance}}.',
                     performance: {
                         good: 'good',
                         fair: 'fair'
@@ -1727,7 +1727,7 @@ export const enTranslations = {
                 },
                 summary: {
                     title: 'Multinomial Logistic Regression Analysis Results',
-                    description: 'Multinomial logistic regression completed. Model accuracy: {accuracy}%. Successfully classified {classes} classes ({labels}). Suitable for multi-class dependent variables like CKMStage.'
+                    description: 'Multinomial logistic regression completed. Model accuracy: {{accuracy}}%. Successfully classified {{classes}} classes ({{labels}}).'
                 }
             },
             rcs: {

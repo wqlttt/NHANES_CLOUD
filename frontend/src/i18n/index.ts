@@ -6,7 +6,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const zhTranslations = {
     home: {
         hero: {
-            platformName: 'NHANES 云平台 v2.0',
+            platformName: 'NHANES 云平台 v1.0',
             getStarted: '开始使用',
             viewDocs: '查看可视化文档'
         },
