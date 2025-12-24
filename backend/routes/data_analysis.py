@@ -98,15 +98,21 @@ def multinomial_logistic_regression():
         print(f"因变量: {y_var}")
         
         result = multinomial_logistic_regression_analysis(file, x_vars, y_var)
-        
+
         response_data = {
             "success": True,
             "plot": f"data:image/png;base64,{result['plot']}",
             "x_vars": x_vars,
             "y_var": y_var,
+            # 关键统计量
             "accuracy": convert_to_serializable(result.get("accuracy")),
-            "coefficients": result.get("coefficients", {}),
-            "classes": result.get("classes", []),
+            "n_classes": convert_to_serializable(result.get("n_classes")),
+            "class_labels": result.get("class_labels", []),
+            "sample_size": convert_to_serializable(result.get("sample_size")),
+            # 模型参数
+            "coefficients": result.get("coefficients", []),
+            "intercept": result.get("intercept", []),
+            # 回归类型标识（前端依赖）
             "regression_type": "multinomial_logistic"
         }
         

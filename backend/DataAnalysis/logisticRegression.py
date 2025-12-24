@@ -48,8 +48,11 @@ def logistic_regression_analysis(csv_data, x_var, y_var):
     if len(clean_data) < 5:
         raise ValueError("Not enough valid data points for logistic regression analysis")
     
+    # 自变量：始终保持二维 (n_samples, n_features)
     X = clean_data[[x_var]].values
+    # 因变量：确保是一维数组 (n_samples,)
     y = clean_data[y_var].values
+    y = np.asarray(y).ravel()
 
     # Check for binary classification
     unique_values = np.unique(y)
