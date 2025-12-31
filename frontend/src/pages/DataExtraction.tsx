@@ -600,6 +600,18 @@ const DataExtraction: React.FC = () => {
             const data = await fetchIndicatorData(groupName, page, currentPageSize);
 
             if (data) {
+                // Update pagination state for preset groups
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const apiData = data as any;
+                if (apiData.pagination) {
+                    setPresetPaginationState(prev => ({
+                        ...prev,
+                        currentPage: apiData.pagination.page,
+                        pageSize: apiData.pagination.limit,
+                        total: apiData.pagination.total,
+                        totalPages: apiData.pagination.total_pages
+                    }));
+                }
                 setCurrentPresetData(data);
                 setTimeout(() => {
                     // 使用琥珀色主题
