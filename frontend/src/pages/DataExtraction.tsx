@@ -37,7 +37,7 @@ import {
 import { ListTable } from '@visactor/vtable';
 
 const { Title, Text } = Typography;
-    const { Option } = Select;
+const { Option } = Select;
 const { TextArea } = Input;
 
 
@@ -94,10 +94,7 @@ const DataExtraction: React.FC = () => {
     ], [t]);
 
     const presetVariableGroups = React.useMemo(() => [
-        { value: 'basic_demographics', label: t('dataExtraction.presetGroupLabels.basic_demographics.label'), description: t('dataExtraction.presetGroupLabels.basic_demographics.desc'), variables: ['SEQN', 'RIAGENDR', 'RIDAGEYR', 'RIDRETH1', 'DMDEDUC2'] },
-        { value: 'metabolic_syndrome', label: t('dataExtraction.presetGroupLabels.metabolic_syndrome.label'), description: t('dataExtraction.presetGroupLabels.metabolic_syndrome.desc'), variables: ['SEQN', 'BMI', 'Glucose', 'BP', 'HDL'] },
-        { value: 'cardiovascular', label: t('dataExtraction.presetGroupLabels.cardiovascular.label'), description: t('dataExtraction.presetGroupLabels.cardiovascular.desc'), variables: ['SEQN', 'CVD'] },
-        { value: 'diabetes', label: t('dataExtraction.presetGroupLabels.diabetes.label'), description: t('dataExtraction.presetGroupLabels.diabetes.desc'), variables: ['SEQN', 'Diabetes'] }
+        { value: 'covariates', label: t('dataExtraction.presetGroupLabels.basic_demographics.label'), description: t('dataExtraction.presetGroupLabels.basic_demographics.desc'), variables: ['SEQN', 'RIAGENDR', 'RIDAGEYR', 'DMDEDUC3', 'DMDEDUC2', 'DMDMARTL', 'INDFMPIR', 'RACE', 'SMQ020', 'ALQ130'] }
     ], [t]);
 
     const mockCommonIndicatorData = React.useMemo(() => ({
@@ -154,30 +151,16 @@ const DataExtraction: React.FC = () => {
         CKMStage: { columns: [{ field: 'SEQN', title: t('dataExtraction.columns.seqn'), width: 100 }, { field: 'CKMStage', title: t('dataExtraction.columns.ckm'), width: 100 }], records: [] }
     }), [t]);
 
-    const mockPresetGroupData = React.useMemo(() => ({
-        basic_demographics: {
-            columns: [
-                { field: 'SEQN', title: t('dataExtraction.columns.seqn'), width: 100 },
-                { field: 'RIAGENDR', title: t('dataExtraction.columns.gender'), width: 100 },
-                { field: 'RIDAGEYR', title: t('dataExtraction.columns.age'), width: 100 },
-                { field: 'RIDRETH1', title: t('dataExtraction.columns.race'), width: 150 },
-                { field: 'DMDEDUC2', title: t('dataExtraction.columns.category'), width: 150 }
-            ],
-            records: [{ SEQN: '109263', RIAGENDR: 'Male', RIDAGEYR: '45', RIDRETH1: 'Mexican American', DMDEDUC2: 'Some college' }]
-        },
-        metabolic_syndrome: {
-            columns: [
-                { field: 'SEQN', title: t('dataExtraction.columns.seqn'), width: 100 },
-                { field: 'BMI', title: t('dataExtraction.columns.bmi'), width: 100 },
-                { field: 'Glu', title: t('dataExtraction.columns.glucose'), width: 100 },
-                { field: 'BP', title: t('dataExtraction.columns.sysbp'), width: 100 },
-                { field: 'HDL', title: t('dataExtraction.columns.hdl'), width: 100 }
-            ],
-            records: []
-        },
-        cardiovascular: { columns: [{ field: 'SEQN', title: t('dataExtraction.columns.seqn'), width: 100 }, { field: 'CVD', title: t('dataExtraction.columns.cvdRisk'), width: 100 }], records: [] },
-        diabetes: { columns: [{ field: 'SEQN', title: t('dataExtraction.columns.seqn'), width: 100 }, { field: 'Diabetes', title: t('dataExtraction.columns.diabetesRel'), width: 100 }], records: [] }
-    }), [t]);
+    // 移除 mockPresetGroupData，改用 state 存储真实数据
+    const [presetPaginationState, setPresetPaginationState] = useState({
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        totalPages: 0
+    });
+    const [currentPresetData, setCurrentPresetData] = useState<any>(null);
+    const [loadingPresetData, setLoadingPresetData] = useState(false);
+
     const [customExtractions, setCustomExtractions] = useState<CustomExtractionItem[]>([]);
     const [editingItem, setEditingItem] = useState<string | null>(null); // 正在编辑的项目key
     const [editForm, setEditForm] = useState<{
@@ -599,17 +582,59 @@ const DataExtraction: React.FC = () => {
         }
     }, [mortalityPaginationState.currentPage]);
 
-    useEffect(() => {
-        if (selectedPresetGroup) {
-            const data = mockPresetGroupData[selectedPresetGroup as keyof typeof mockPresetGroupData];
+    // 加载预设组数据
+    const loadPresetPage = async (groupName: string, page: number = 1, pageSize?: number) => {
+        if (!groupName) return;
+
+        setLoadingPresetData(true);
+        console.log(`加载预设组数据: ${groupName}, page=${page}`);
+
+        const loadingContainer = document.getElementById('preset-group-table');
+        if (loadingContainer) {
+            loadingContainer.innerHTML = `<div style="text-align: center; padding: 20px;">${t('common.loading')}</div>`;
+        }
+
+        try {
+            const currentPageSize = pageSize || presetPaginationState.pageSize;
+            // 复用 get_indicator_data 接口，因为后端已经修改为支持预设组名称
+            const data = await fetchIndicatorData(groupName, page, currentPageSize);
+
             if (data) {
+                setCurrentPresetData(data);
                 setTimeout(() => {
-                    const table = createVTable('preset-group-table', data, 'rgba(245, 158, 11, 0.85)', 'rgba(245, 158, 11, 0.1)'); // Amber theme
+                    // 使用琥珀色主题
+                    const table = createVTable('preset-group-table', data, 'rgba(245, 158, 11, 0.85)', 'rgba(245, 158, 11, 0.1)');
                     setPresetTable(table);
+                    setLoadingPresetData(false);
                 }, 100);
             }
+        } catch (error) {
+            console.error('加载预设组数据失败:', error);
+            setLoadingPresetData(false);
+            if (loadingContainer) {
+                loadingContainer.innerHTML = `<div style="text-align: center; padding: 20px; color: red;">加载失败，请重试</div>`;
+            }
+        }
+    };
+
+    // 监听预设组选择变化
+    useEffect(() => {
+        if (selectedPresetGroup) {
+            setPresetPaginationState(prev => ({
+                ...prev,
+                currentPage: 1
+            }));
+            loadPresetPage(selectedPresetGroup, 1);
         }
     }, [selectedPresetGroup]);
+
+    // 监听预设组分页
+    useEffect(() => {
+        if (selectedPresetGroup && presetPaginationState.currentPage > 1) {
+            loadPresetPage(selectedPresetGroup, presetPaginationState.currentPage);
+        }
+    }, [presetPaginationState.currentPage]);
+
 
     // 组件卸载时清理表格实例和观察器
     useEffect(() => {
@@ -921,32 +946,51 @@ const DataExtraction: React.FC = () => {
         }
     };
 
-    // 下载预设变量组
-    const downloadPresetGroup = () => {
+    // 下载预设变量组 - 改为真实下载
+    const downloadPresetGroup = async () => {
         if (!selectedPresetGroup) return;
 
         setDownloadingState('preset', true);
 
-        const selectedItem = presetVariableGroups.find(item => item.value === selectedPresetGroup);
-        console.log('下载预设变量组:', {
-            type: 'preset_group',
-            data: {
-                group: selectedPresetGroup,
-                label: selectedItem?.label,
-                variables: selectedItem?.variables,
-                description: selectedItem?.description
-            }
-        });
+        try {
+            const groupName = selectedPresetGroup;
+            // 同样复用 fetchIndicatorData 的逻辑，带上 export_all=true
+            // 注意：fetchIndicatorData 是内部 helper，这里直接构造请求
+            const response = await fetch(getApiUrl(API_ENDPOINTS.INDICATOR_DATA(groupName)) + '?export_all=true');
 
-        // 模拟API调用
-        setTimeout(() => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const apiData = await response.json();
+
+            if (apiData.success && apiData.columns && apiData.records) {
+                const selectedItem = presetVariableGroups.find(item => item.value === selectedPresetGroup);
+                const label = selectedItem?.label || selectedPresetGroup;
+
+                const exportData = {
+                    columns: apiData.columns.map((col: any) => ({
+                        field: col.field,
+                        title: col.title || col.field,
+                        width: 'auto'
+                    })),
+                    records: apiData.records
+                };
+
+                exportToCSV(exportData, `${label}_全部数据.csv`);
+                message.success(t('dataExtraction.messages.downloadSuccess'));
+            } else {
+                message.error(t('dataExtraction.messages.fetchDataFailed'));
+            }
+
+        } catch (error) {
+            console.error('下载预设组失败:', error);
+            message.error(t('dataExtraction.messages.exportFailed'));
+        } finally {
             setDownloadingState('preset', false);
-            Modal.success({
-                title: t('dataExtraction.messages.downloadSuccess'),
-                content: t('dataExtraction.messages.downloadSuccessContent')
-            });
-        }, 1800);
+        }
     };
+
 
     // 批量下载所有自定义文件（后端按 seqn 合并，返回单一文件）
     const downloadAllCustomFiles = async () => {
