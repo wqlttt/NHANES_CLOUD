@@ -2282,13 +2282,60 @@ const DataExtraction: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
+                            {/* Pagination and Table Info */}
+                            {presetPaginationState.total > 0 && (
+                                <div style={{
+                                    marginBottom: 16,
+                                    padding: '16px',
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: '8px',
+                                    border: '1px solid rgba(0,0,0,0.05)'
+                                }}>
+                                    <Row justify="space-between" align="middle">
+                                        <Col>
+                                            <Space split={<Divider type="vertical" />}>
+                                                <Text>{t('common.pagination.total', { total: presetPaginationState.total })}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#f59e0b' }}>{presetPaginationState.currentPage}</strong> / {presetPaginationState.totalPages}</Text>
+                                            </Space>
+                                        </Col>
+                                        <Col>
+                                            <Space>
+                                                <Text>{t('common.pagination.pageSize')}:</Text>
+                                                <Select
+                                                    size="small"
+                                                    value={presetPaginationState.pageSize}
+                                                    onChange={(value) => {
+                                                        setPresetPaginationState(prev => ({
+                                                            ...prev,
+                                                            currentPage: 1,
+                                                            pageSize: value
+                                                        }));
+                                                        if (selectedPresetGroup) {
+                                                            loadPresetPage(selectedPresetGroup, 1, value);
+                                                        }
+                                                    }}
+                                                    disabled={loadingPresetData}
+                                                    style={{ width: 100 }}
+                                                >
+                                                    <Option value={10}>10 / page</Option>
+                                                    <Option value={20}>20 / page</Option>
+                                                    <Option value={50}>50 / page</Option>
+                                                    <Option value={100}>100 / page</Option>
+                                                    <Option value={200}>200 / page</Option>
+                                                </Select>
+                                            </Space>
+                                        </Col>
+                                    </Row>
+                                </div>
+                            )}
+
                             <div
                                 id="preset-group-table"
                                 style={{
                                     width: '100%',
                                     height: 'auto',
                                     minHeight: '300px',
-                                    maxHeight: '500px',
+                                    maxHeight: presetPaginationState.pageSize <= 10 ? '550px' : '850px',
                                     borderRadius: '12px',
                                     overflow: 'hidden',
                                     resize: 'vertical',
@@ -2297,6 +2344,96 @@ const DataExtraction: React.FC = () => {
                                     marginBottom: '16px'
                                 }}
                             />
+
+                            {/* Pagination */}
+                            {presetPaginationState.totalPages > 1 && (
+                                <div style={{
+                                    marginTop: 24,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Space size="middle">
+                                        <Button
+                                            disabled={presetPaginationState.currentPage <= 1 || loadingPresetData}
+                                            onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: 1 }))}
+                                        >
+                                            {t('common.pagination.first')}
+                                        </Button>
+                                        <Button
+                                            disabled={presetPaginationState.currentPage <= 1 || loadingPresetData}
+                                            onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: prev.currentPage - 1 }))}
+                                        >
+                                            {t('common.pagination.prev')}
+                                        </Button>
+
+                                        {/* Page Numbers */}
+                                        <Space>
+                                            {(() => {
+                                                const { currentPage, totalPages } = presetPaginationState;
+                                                const pageNumbers = [];
+                                                const maxDisplayPages = 5;
+
+                                                let startPage = Math.max(1, currentPage - Math.floor(maxDisplayPages / 2));
+                                                let endPage = Math.min(totalPages, startPage + maxDisplayPages - 1);
+
+                                                if (endPage - startPage + 1 < maxDisplayPages) {
+                                                    startPage = Math.max(1, endPage - maxDisplayPages + 1);
+                                                }
+
+                                                for (let i = startPage; i <= endPage; i++) {
+                                                    pageNumbers.push(
+                                                        <Button
+                                                            key={i}
+                                                            type={i === currentPage ? 'primary' : 'default'}
+                                                            className={i !== currentPage ? 'glass-button' : ''}
+                                                            disabled={loadingPresetData}
+                                                            onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: i }))}
+                                                            size="small"
+                                                            style={i === currentPage ? { background: '#f59e0b' } : {}}
+                                                        >
+                                                            {i}
+                                                        </Button>
+                                                    );
+                                                }
+                                                return pageNumbers;
+                                            })()}
+                                        </Space>
+
+                                        <Button
+                                            disabled={presetPaginationState.currentPage >= presetPaginationState.totalPages || loadingPresetData}
+                                            onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: prev.currentPage + 1 }))}
+                                        >
+                                            {t('common.pagination.next')}
+                                        </Button>
+                                        <Button
+                                            disabled={presetPaginationState.currentPage >= presetPaginationState.totalPages || loadingPresetData}
+                                            onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: prev.totalPages }))}
+                                        >
+                                            {t('common.pagination.last')}
+                                        </Button>
+
+                                        {/* Jump */}
+                                        <Space>
+                                            <Text>{t('common.pagination.jump')}</Text>
+                                            <InputNumber
+                                                size="small"
+                                                min={1}
+                                                max={presetPaginationState.totalPages}
+                                                value={presetPaginationState.currentPage}
+                                                onChange={(value) => {
+                                                    if (value && value !== presetPaginationState.currentPage) {
+                                                        setPresetPaginationState(prev => ({ ...prev, currentPage: value }));
+                                                    }
+                                                }}
+                                                disabled={loadingPresetData}
+                                                style={{ width: 60 }}
+                                            />
+                                            <Text>{t('common.pagination.page')}</Text>
+                                        </Space>
+                                    </Space>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
