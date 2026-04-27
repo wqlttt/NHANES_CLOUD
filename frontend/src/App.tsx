@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { Spin } from 'antd';
+import { Spin, ConfigProvider } from 'antd';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainLayout from './components/Layout/MainLayout';
 import './App.css';
@@ -14,7 +14,18 @@ const App: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <MainLayout>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#00693F',
+          colorSuccess: '#65A38B',
+          colorError: '#CA2127',
+          colorInfo: '#00693F',
+          borderRadius: 8,
+        },
+      }}
+    >
+      <MainLayout>
       <Suspense fallback={
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '400px' }}>
           <Spin size="large" tip="Loading..." />
@@ -30,6 +41,7 @@ const App: React.FC = () => {
         </Routes>
       </Suspense>
     </MainLayout>
+    </ConfigProvider>
   );
 };
 

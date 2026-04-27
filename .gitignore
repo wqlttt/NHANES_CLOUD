@@ -191,3 +191,7 @@ convert_var_label.py
 # Local config
 backend/get_nhanes/nhanes_config.json
 backend/temp_uploads/
+
+# SSL 证书
+ssl证书/
+.agent

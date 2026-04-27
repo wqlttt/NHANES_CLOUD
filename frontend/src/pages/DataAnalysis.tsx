@@ -1075,12 +1075,12 @@ const DataAnalysis: React.FC = () => {
                                 width: '32px',
                                 height: '32px',
                                 borderRadius: '8px',
-                                background: 'linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%)',
+                                background: 'linear-gradient(135deg, #65A38B 0%, #65A38B 100%)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginRight: '12px',
-                                boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                             }}>
                                 <LineChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                             </div>
@@ -1114,12 +1114,12 @@ const DataAnalysis: React.FC = () => {
                                 width: '32px',
                                 height: '32px',
                                 borderRadius: '8px',
-                                background: 'linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%)',
+                                background: 'linear-gradient(135deg, #00693F 0%, #4d8a73 100%)',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 marginRight: '12px',
-                                boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                                boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                             }}>
                                 <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                             </div>
@@ -1170,12 +1170,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1209,12 +1209,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1296,12 +1296,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #4d8a73 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(6, 182, 212, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FundOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1345,12 +1345,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1404,12 +1404,12 @@ const DataAnalysis: React.FC = () => {
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '8px',
-                                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                    background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                 }}>
                                     <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
                                 </div>
@@ -1483,12 +1483,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <CalculatorOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1532,12 +1532,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1576,12 +1576,12 @@ const DataAnalysis: React.FC = () => {
                                     width: '32px',
                                     height: '32px',
                                     borderRadius: '8px',
-                                    background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                                    background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                 }}>
                                     <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
                                 </div>
@@ -1633,12 +1633,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1682,12 +1682,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1755,12 +1755,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                         }}>
                                             <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1787,12 +1787,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1807,7 +1807,7 @@ const DataAnalysis: React.FC = () => {
                                         padding: '24px',
                                     }}>
                                         <Statistic title="T-Statistic" value={ttestResult.statistic} precision={4} />
-                                        <Statistic title="P-Value" value={ttestResult.p_value} precision={4} valueStyle={{ color: ttestResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Statistic title="P-Value" value={ttestResult.p_value} precision={4} valueStyle={{ color: ttestResult.p_value < 0.05 ? '#a51b20' : '#3f8600' }} />
                                         <Divider />
                                         <Paragraph>Groups: {ttestResult.groups.join(', ')}</Paragraph>
                                         <Text strong>Means:</Text>
@@ -1866,12 +1866,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1886,7 +1886,7 @@ const DataAnalysis: React.FC = () => {
                                         padding: '24px',
                                     }}>
                                         <Statistic title="Chi-Square Statistic" value={chisquareResult.statistic} precision={4} />
-                                        <Statistic title="P-Value" value={chisquareResult.p_value} precision={4} valueStyle={{ color: chisquareResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Statistic title="P-Value" value={chisquareResult.p_value} precision={4} valueStyle={{ color: chisquareResult.p_value < 0.05 ? '#a51b20' : '#3f8600' }} />
                                         <Statistic title="Degrees of Freedom" value={chisquareResult.dof} />
                                     </div>
                                 </div>
@@ -1906,12 +1906,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                         }}>
                                             <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1938,12 +1938,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -1958,7 +1958,7 @@ const DataAnalysis: React.FC = () => {
                                         padding: '24px',
                                     }}>
                                         <Statistic title="F-Statistic" value={anovaResult.statistic} precision={4} />
-                                        <Statistic title="P-Value" value={anovaResult.p_value} precision={4} valueStyle={{ color: anovaResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Statistic title="P-Value" value={anovaResult.p_value} precision={4} valueStyle={{ color: anovaResult.p_value < 0.05 ? '#a51b20' : '#3f8600' }} />
                                         <Divider />
                                         <Paragraph>Groups: {anovaResult.groups.join(', ')}</Paragraph>
                                     </div>
@@ -1979,12 +1979,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+                                            background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                         }}>
                                             <BarChartOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -2011,12 +2011,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #10b981 0%, #3b82f6 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #00693F 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <FileTextOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -2031,7 +2031,7 @@ const DataAnalysis: React.FC = () => {
                                         padding: '24px',
                                     }}>
                                         <Statistic title="U-Statistic" value={rankSumResult.statistic} precision={4} />
-                                        <Statistic title="P-Value" value={rankSumResult.p_value} precision={4} valueStyle={{ color: rankSumResult.p_value < 0.05 ? '#cf1322' : '#3f8600' }} />
+                                        <Statistic title="P-Value" value={rankSumResult.p_value} precision={4} valueStyle={{ color: rankSumResult.p_value < 0.05 ? '#a51b20' : '#3f8600' }} />
                                         <Divider />
                                         <Paragraph>Groups: {rankSumResult.groups.join(', ')}</Paragraph>
                                     </div>
@@ -2071,12 +2071,12 @@ const DataAnalysis: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: '#6366f1',
+                    background: 'rgba(0, 105, 63, 0.1)',
+                    color: '#00693F',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    border: '1px solid rgba(0, 105, 63, 0.2)'
                 }}>
                     <ExperimentOutlined /> Data Analysis Engine
                 </div>
@@ -2100,12 +2100,12 @@ const DataAnalysis: React.FC = () => {
                                                 width: '32px',
                                                 height: '32px',
                                                 borderRadius: '8px',
-                                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                                background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 marginRight: '12px',
-                                                boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                                                boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                             }}>
                                                 <CloudUploadOutlined style={{ color: 'white', fontSize: '18px' }} />
                                             </div>
@@ -2138,7 +2138,7 @@ const DataAnalysis: React.FC = () => {
                                                         disabled={uploadLoading}
                                                     >
                                                         <p className="ant-upload-drag-icon">
-                                                            <InboxOutlined style={{ color: '#1890ff' }} />
+                                                            <InboxOutlined style={{ color: '#00693F' }} />
                                                         </p>
                                                         <p className="ant-upload-text">{t('dataProcessing.upload.dragText')}</p>
                                                         <p className="ant-upload-hint">
@@ -2196,12 +2196,12 @@ const DataAnalysis: React.FC = () => {
                                                         width: '32px',
                                                         height: '32px',
                                                         borderRadius: '8px',
-                                                        background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                                        background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                                         display: 'flex',
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
                                                         marginRight: '12px',
-                                                        boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                                        boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                                     }}>
                                                         <TableOutlined style={{ color: 'white', fontSize: '18px' }} />
                                                     </div>
@@ -2284,12 +2284,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                            background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                         }}>
                                             <ExperimentOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -2320,14 +2320,14 @@ const DataAnalysis: React.FC = () => {
                                                                 ? 'rgba(255, 255, 255, 0.8)'
                                                                 : 'rgba(255, 255, 255, 0.2)',
                                                             border: selectedAnalysis === item.key
-                                                                ? '1px solid #1890ff'
+                                                                ? '1px solid #00693F'
                                                                 : '1px solid transparent',
                                                             borderRadius: '12px',
                                                             padding: '12px',
                                                             height: '100%',
                                                             transition: 'all 0.3s ease',
                                                             backdropFilter: selectedAnalysis === item.key ? 'blur(5px)' : 'none',
-                                                            boxShadow: selectedAnalysis === item.key ? '0 4px 12px rgba(24, 144, 255, 0.15)' : 'none',
+                                                            boxShadow: selectedAnalysis === item.key ? '0 4px 12px rgba(0, 105, 63, 0.15)' : 'none',
                                                             display: 'flex',
                                                             alignItems: 'center'
                                                         }}
@@ -2338,7 +2338,7 @@ const DataAnalysis: React.FC = () => {
                                                             width: '36px',
                                                             height: '36px',
                                                             borderRadius: '8px',
-                                                            background: selectedAnalysis === item.key ? 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)' : '#f0f2f5',
+                                                            background: selectedAnalysis === item.key ? 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)' : '#f0f2f5',
                                                             display: 'flex',
                                                             alignItems: 'center',
                                                             justifyContent: 'center',
@@ -2378,12 +2378,12 @@ const DataAnalysis: React.FC = () => {
                                             width: '32px',
                                             height: '32px',
                                             borderRadius: '8px',
-                                            background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                            background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             marginRight: '12px',
-                                            boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
+                                            boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                         }}>
                                             <SettingOutlined style={{ color: 'white', fontSize: '18px' }} />
                                         </div>
@@ -2972,7 +2972,7 @@ const DataAnalysis: React.FC = () => {
                                             width: '40px',
                                             height: '40px',
                                             borderRadius: '10px',
-                                            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                                            background: 'linear-gradient(135deg, #00693F 0%, #4f46e5 100%)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -2984,7 +2984,7 @@ const DataAnalysis: React.FC = () => {
                                         <div>
                                             <Title level={4} style={{ margin: 0 }}>{t('dataAnalysis.analysis.start')}</Title>
                                             <Text type="secondary">
-                                                {t('dataAnalysis.analysis.currentMethod')}: <Text strong style={{ color: '#6366f1' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
+                                                {t('dataAnalysis.analysis.currentMethod')}: <Text strong style={{ color: '#00693F' }}>{getAnalysisTypes(t).find(type => type.key === selectedAnalysis)?.name}</Text>
                                             </Text>
                                         </div>
                                     </div>
@@ -3029,9 +3029,9 @@ const DataAnalysis: React.FC = () => {
                                             disabled={!fileInfo && (selectedAnalysis === 'cox_regression' || selectedAnalysis === 'multinomial_logistic_regression') || analyzing}
                                             loading={analyzing && !showAnalysisTimeoutWarning}
                                             style={{
-                                                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                                                background: 'linear-gradient(135deg, #00693F 0%, #4f46e5 100%)',
                                                 border: 'none',
-                                                boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
+                                                boxShadow: '0 4px 15px rgba(0, 105, 63, 0.4)',
                                                 height: '48px',
                                                 padding: '0 32px',
                                                 borderRadius: '24px',

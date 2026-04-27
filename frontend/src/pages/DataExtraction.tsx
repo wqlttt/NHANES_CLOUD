@@ -244,7 +244,7 @@ const DataExtraction: React.FC = () => {
     };
 
     // 创建VTable实例
-    const createVTable = (containerId: string, data: any, headerBgColor: string = 'rgba(99, 102, 241, 0.85)', hoverBgColor: string = 'rgba(99, 102, 241, 0.1)') => {
+    const createVTable = (containerId: string, data: any, headerBgColor: string = 'rgba(0, 105, 63, 0.85)', hoverBgColor: string = 'rgba(0, 105, 63, 0.1)') => {
         const container = document.getElementById(containerId);
         if (!container || !data) return null;
 
@@ -465,7 +465,7 @@ const DataExtraction: React.FC = () => {
             if (data) {
                 setCurrentMortalityData(data);
                 setTimeout(() => {
-                    const table = createVTable('mortality-table', data, 'rgba(245, 34, 45, 0.85)', 'rgba(245, 34, 45, 0.1)'); // Red theme
+                    const table = createVTable('mortality-table', data, 'rgba(202, 33, 39, 0.85)', 'rgba(202, 33, 39, 0.1)'); // Red theme
                     setMortalityTable(table);
                     setLoadingMortalityData(false);
                 }, 100);
@@ -533,7 +533,7 @@ const DataExtraction: React.FC = () => {
             if (data) {
                 setCurrentIndicatorData(data);
                 setTimeout(() => {
-                    const table = createVTable('common-indicator-table', data, 'rgba(24, 144, 255, 0.85)', 'rgba(24, 144, 255, 0.1)'); // Blue theme
+                    const table = createVTable('common-indicator-table', data, 'rgba(0, 105, 63, 0.85)', 'rgba(0, 105, 63, 0.1)'); // Blue theme
                     setCommonTable(table);
                     setLoadingIndicatorData(false);
                 }, 100);
@@ -615,7 +615,7 @@ const DataExtraction: React.FC = () => {
                 setCurrentPresetData(data);
                 setTimeout(() => {
                     // 使用琥珀色主题
-                    const table = createVTable('preset-group-table', data, 'rgba(245, 158, 11, 0.85)', 'rgba(245, 158, 11, 0.1)');
+                    const table = createVTable('preset-group-table', data, 'rgba(202, 33, 39, 0.85)', 'rgba(202, 33, 39, 0.1)');
                     setPresetTable(table);
                     setLoadingPresetData(false);
                 }, 100);
@@ -1376,12 +1376,12 @@ const DataExtraction: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: '#6366f1',
+                    background: 'rgba(0, 105, 63, 0.1)',
+                    color: '#00693F',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    border: '1px solid rgba(0, 105, 63, 0.2)'
                 }}>
                     <DatabaseOutlined /> NHANES Data Extraction
                 </div>
@@ -1399,12 +1399,12 @@ const DataExtraction: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                         <div style={{
                             width: '40px', height: '40px',
-                            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                            background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                             borderRadius: '10px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             color: 'white', fontSize: '1.2rem',
                             marginRight: '16px',
-                            boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                            boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                         }}>
                             <SearchOutlined />
                         </div>
@@ -1577,12 +1577,12 @@ const DataExtraction: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                         <div style={{
                             width: '40px', height: '40px',
-                            background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                            background: 'linear-gradient(135deg, #00693F 0%, #65A38B 100%)',
                             borderRadius: '10px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             color: 'white', fontSize: '1.2rem',
                             marginRight: '16px',
-                            boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)'
+                            boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                         }}>
                             <PlusOutlined />
                         </div>
@@ -1677,9 +1677,9 @@ const DataExtraction: React.FC = () => {
                                     size={isMobile ? 'middle' : 'large'}
                                     style={{
                                         borderRadius: '6px',
-                                        background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                                        background: 'linear-gradient(135deg, #00693F 0%, #65A38B 100%)',
                                         border: 'none',
-                                        boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)'
+                                        boxShadow: '0 4px 15px rgba(0, 105, 63, 0.4)'
                                     }}
                                 >
                                     {t('dataExtraction.customExtraction.addToList')}
@@ -1713,9 +1713,9 @@ const DataExtraction: React.FC = () => {
                                     size="large"
                                     style={{
                                         borderRadius: '6px',
-                                        background: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
+                                        background: 'linear-gradient(135deg, #65A38B 0%, #81c7ad 100%)',
                                         border: 'none',
-                                        boxShadow: '0 4px 15px rgba(16, 185, 129, 0.4)'
+                                        boxShadow: '0 4px 15px rgba(101, 163, 139, 0.4)'
                                     }}
                                 >
                                     {t('dataExtraction.customExtraction.batchDownload')}
@@ -1762,12 +1762,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <div style={{
                                     width: '36px', height: '36px',
-                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                    background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                 }}>
                                     <TableOutlined />
                                 </div>
@@ -1804,12 +1804,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <div style={{
                                     width: '36px', height: '36px',
-                                    background: 'linear-gradient(135deg, #f5222d 0%, #cf1322 100%)',
+                                    background: 'linear-gradient(135deg, #CA2127 0%, #a51b20 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(245, 34, 45, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                 }}>
                                     <TagOutlined style={{ transform: 'rotate(45deg)' }} />
                                 </div>
@@ -1845,12 +1845,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
                                 <div style={{
                                     width: '36px', height: '36px',
-                                    background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                                    background: 'linear-gradient(135deg, #CA2127 0%, #d94646 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                 }}>
                                     <DatabaseOutlined />
                                 </div>
@@ -1893,12 +1893,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
                                 <div style={{
                                     width: '40px', height: '40px',
-                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                    background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '16px',
-                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                 }}>
                                     <TableOutlined />
                                 </div>
@@ -1932,7 +1932,7 @@ const DataExtraction: React.FC = () => {
                                         <Col>
                                             <Space split={<Divider type="vertical" />}>
                                                 <Text>{t('common.pagination.total', { total: paginationState.total })}</Text>
-                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#1890ff' }}>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#00693F' }}>{paginationState.currentPage}</strong> / {paginationState.totalPages}</Text>
                                             </Space>
                                         </Col>
                                         <Col>
@@ -2025,7 +2025,7 @@ const DataExtraction: React.FC = () => {
                                                             disabled={loadingIndicatorData}
                                                             onClick={() => setPaginationState(prev => ({ ...prev, currentPage: i }))}
                                                             size="small"
-                                                            style={i === currentPage ? { background: '#1890ff' } : {}}
+                                                            style={i === currentPage ? { background: '#00693F' } : {}}
                                                         >
                                                             {i}
                                                         </Button>
@@ -2078,12 +2078,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
                                 <div style={{
                                     width: '40px', height: '40px',
-                                    background: 'linear-gradient(135deg, #f5222d 0%, #cf1322 100%)',
+                                    background: 'linear-gradient(135deg, #CA2127 0%, #a51b20 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '16px',
-                                    boxShadow: '0 4px 10px rgba(245, 34, 45, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                 }}>
                                     <TagOutlined style={{ transform: 'rotate(45deg)' }} />
                                 </div>
@@ -2117,7 +2117,7 @@ const DataExtraction: React.FC = () => {
                                         <Col>
                                             <Space split={<Divider type="vertical" />}>
                                                 <Text>{t('common.pagination.total', { total: mortalityPaginationState.total })}</Text>
-                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#f5222d' }}>{mortalityPaginationState.currentPage}</strong> / {mortalityPaginationState.totalPages}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#CA2127' }}>{mortalityPaginationState.currentPage}</strong> / {mortalityPaginationState.totalPages}</Text>
                                             </Space>
                                         </Col>
                                         <Col>
@@ -2211,7 +2211,7 @@ const DataExtraction: React.FC = () => {
                                                             disabled={loadingMortalityData}
                                                             onClick={() => setMortalityPaginationState(prev => ({ ...prev, currentPage: i }))}
                                                             size="small"
-                                                            style={i === currentPage ? { background: '#f5222d' } : {}}
+                                                            style={i === currentPage ? { background: '#CA2127' } : {}}
                                                         >
                                                             {i}
                                                         </Button>
@@ -2264,12 +2264,12 @@ const DataExtraction: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '16px' }}>
                                 <div style={{
                                     width: '40px', height: '40px',
-                                    background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                                    background: 'linear-gradient(135deg, #CA2127 0%, #d94646 100%)',
                                     borderRadius: '10px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1.2rem',
                                     marginRight: '16px',
-                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                 }}>
                                     <DatabaseOutlined />
                                 </div>
@@ -2307,7 +2307,7 @@ const DataExtraction: React.FC = () => {
                                         <Col>
                                             <Space split={<Divider type="vertical" />}>
                                                 <Text>{t('common.pagination.total', { total: presetPaginationState.total })}</Text>
-                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#f59e0b' }}>{presetPaginationState.currentPage}</strong> / {presetPaginationState.totalPages}</Text>
+                                                <Text>{t('common.pagination.page')} <strong style={{ color: '#CA2127' }}>{presetPaginationState.currentPage}</strong> / {presetPaginationState.totalPages}</Text>
                                             </Space>
                                         </Col>
                                         <Col>
@@ -2402,7 +2402,7 @@ const DataExtraction: React.FC = () => {
                                                             disabled={loadingPresetData}
                                                             onClick={() => setPresetPaginationState(prev => ({ ...prev, currentPage: i }))}
                                                             size="small"
-                                                            style={i === currentPage ? { background: '#f59e0b' } : {}}
+                                                            style={i === currentPage ? { background: '#CA2127' } : {}}
                                                         >
                                                             {i}
                                                         </Button>

@@ -313,13 +313,13 @@ const DataVisualization: React.FC = () => {
 
         // 处理颜色主题
         const colorMap = {
-            'blue': '#1890ff',
-            'green': '#52c41a',
-            'orange': '#fa8c16',
-            'purple': '#722ed1'
+            'blue': '#00693F',
+            'green': '#65A38B',
+            'orange': '#CA2127',
+            'purple': '#4d8a73'
         };
         // @ts-ignore
-        formData.append('color', colorMap[colorTheme] || '#1890ff');
+        formData.append('color', colorMap[colorTheme] || '#00693F');
 
         // 处理图表标题
         if (chartTitleType === 'custom' && customTitle?.trim()) {
@@ -478,12 +478,12 @@ const DataVisualization: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: '#6366f1',
+                    background: 'rgba(0, 105, 63, 0.1)',
+                    color: '#00693F',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    border: '1px solid rgba(0, 105, 63, 0.2)'
                 }}>
                     <BarChartOutlined /> NHANES Visualization Lab
                 </div>
@@ -507,12 +507,12 @@ const DataVisualization: React.FC = () => {
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
-                                                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                                                background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                 borderRadius: '8px',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: 'white', fontSize: '1rem',
                                                 marginRight: '12px',
-                                                boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+                                                boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                             }}>
                                                 <CloudUploadOutlined />
                                             </div>
@@ -524,7 +524,7 @@ const DataVisualization: React.FC = () => {
                                             backdropFilter: 'blur(10px)',
                                             padding: '24px',
                                             borderRadius: '16px',
-                                            border: '1px dashed rgba(59, 130, 246, 0.4)',
+                                            border: '1px dashed rgba(0, 105, 63, 0.4)',
                                             textAlign: 'center',
                                             transition: 'all 0.3s ease'
                                         }}>
@@ -546,7 +546,7 @@ const DataVisualization: React.FC = () => {
                                                     disabled={uploadLoading}
                                                 >
                                                     <p className="ant-upload-drag-icon">
-                                                        <InboxOutlined style={{ color: '#3b82f6' }} />
+                                                        <InboxOutlined style={{ color: '#00693F' }} />
                                                     </p>
                                                     <p className="ant-upload-text">{t('dataProcessing.upload.dragText')}</p>
                                                     <p className="ant-upload-hint">
@@ -563,7 +563,7 @@ const DataVisualization: React.FC = () => {
                                                         textAlign: 'left'
                                                     }}>
                                                         <Space align="start">
-                                                            <FileTextOutlined style={{ fontSize: '24px', color: '#3b82f6' }} />
+                                                            <FileTextOutlined style={{ fontSize: '24px', color: '#00693F' }} />
                                                             <div>
                                                                 <Text strong style={{ display: 'block', fontSize: '16px' }}>{fileInfo.filename}</Text>
                                                                 <Space split={<Divider type="vertical" />} style={{ fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>
@@ -599,12 +599,12 @@ const DataVisualization: React.FC = () => {
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                                 <div style={{
                                                     width: '32px', height: '32px',
-                                                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                                                    background: 'linear-gradient(135deg, #00693F 0%, #65A38B 100%)',
                                                     borderRadius: '8px',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                     color: 'white', fontSize: '1rem',
                                                     marginRight: '12px',
-                                                    boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)'
+                                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                                 }}>
                                                     <EyeOutlined />
                                                 </div>
@@ -621,10 +621,10 @@ const DataVisualization: React.FC = () => {
                                                 {/* Stats Tags */}
                                                 <div style={{ marginBottom: 16 }}>
                                                     <Space>
-                                                        <Tag color="blue" style={{ borderRadius: '6px', border: 'none', background: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}>
+                                                        <Tag color="blue" style={{ borderRadius: '6px', border: 'none', background: 'rgba(0, 105, 63, 0.1)', color: '#004d2e' }}>
                                                             {t('dataVisualization.upload.numeric')}: {fileInfo.file_stats.numeric_columns_count}
                                                         </Tag>
-                                                        <Tag color="green" style={{ borderRadius: '6px', border: 'none', background: 'rgba(16, 185, 129, 0.1)', color: '#059669' }}>
+                                                        <Tag color="green" style={{ borderRadius: '6px', border: 'none', background: 'rgba(101, 163, 139, 0.1)', color: '#4d8a73' }}>
                                                             {t('dataVisualization.upload.categorical')}: {fileInfo.file_stats.categorical_columns_count}
                                                         </Tag>
                                                     </Space>
@@ -672,12 +672,12 @@ const DataVisualization: React.FC = () => {
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
-                                                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                                                background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                                 borderRadius: '8px',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: 'white', fontSize: '1rem',
                                                 marginRight: '12px',
-                                                boxShadow: '0 4px 10px rgba(139, 92, 246, 0.3)'
+                                                boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                             }}>
                                                 <AppstoreOutlined />
                                             </div>
@@ -709,9 +709,9 @@ const DataVisualization: React.FC = () => {
                                                                     padding: '12px',
                                                                     borderRadius: '12px',
                                                                     border: chartType === type.value ? 'none' : '1px solid rgba(0,0,0,0.06)',
-                                                                    background: chartType === type.value ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' : 'rgba(255,255,255,0.6)',
+                                                                    background: chartType === type.value ? 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)' : 'rgba(255,255,255,0.6)',
                                                                     color: chartType === type.value ? 'white' : 'inherit',
-                                                                    boxShadow: chartType === type.value ? '0 4px 12px rgba(124, 58, 237, 0.3)' : 'none',
+                                                                    boxShadow: chartType === type.value ? '0 4px 12px rgba(101, 163, 139, 0.3)' : 'none',
                                                                     display: 'flex',
                                                                     flexDirection: 'column',
                                                                     alignItems: 'center',
@@ -735,8 +735,8 @@ const DataVisualization: React.FC = () => {
                                                     style={{
                                                         borderRadius: '8px',
                                                         border: 'none',
-                                                        background: 'rgba(59, 130, 246, 0.05)',
-                                                        color: '#1e40af'
+                                                        background: 'rgba(0, 105, 63, 0.05)',
+                                                        color: '#004d2e'
                                                     }}
                                                 />
                                             </div>
@@ -749,12 +749,12 @@ const DataVisualization: React.FC = () => {
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
-                                                background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                                background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                                 borderRadius: '8px',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: 'white', fontSize: '1rem',
                                                 marginRight: '12px',
-                                                boxShadow: '0 4px 10px rgba(16, 185, 129, 0.3)'
+                                                boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                             }}>
                                                 <SettingOutlined />
                                             </div>
@@ -875,12 +875,12 @@ const DataVisualization: React.FC = () => {
                                         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                             <div style={{
                                                 width: '32px', height: '32px',
-                                                background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+                                                background: 'linear-gradient(135deg, #CA2127 0%, #d94646 100%)',
                                                 borderRadius: '8px',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 color: 'white', fontSize: '1rem',
                                                 marginRight: '12px',
-                                                boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                                boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                             }}>
                                                 <ToolOutlined />
                                             </div>
@@ -945,7 +945,7 @@ const DataVisualization: React.FC = () => {
                                                                 <div style={{
                                                                     width: 12,
                                                                     height: 12,
-                                                                    backgroundColor: '#1890ff',
+                                                                    backgroundColor: '#00693F',
                                                                     borderRadius: 2
                                                                 }} />
                                                                 {t('dataVisualization.settings.colorTheme.blue')}
@@ -956,7 +956,7 @@ const DataVisualization: React.FC = () => {
                                                                 <div style={{
                                                                     width: 12,
                                                                     height: 12,
-                                                                    backgroundColor: '#52c41a',
+                                                                    backgroundColor: '#65A38B',
                                                                     borderRadius: 2
                                                                 }} />
                                                                 {t('dataVisualization.settings.colorTheme.green')}
@@ -967,7 +967,7 @@ const DataVisualization: React.FC = () => {
                                                                 <div style={{
                                                                     width: 12,
                                                                     height: 12,
-                                                                    backgroundColor: '#fa8c16',
+                                                                    backgroundColor: '#CA2127',
                                                                     borderRadius: 2
                                                                 }} />
                                                                 {t('dataVisualization.settings.colorTheme.orange')}
@@ -978,7 +978,7 @@ const DataVisualization: React.FC = () => {
                                                                 <div style={{
                                                                     width: 12,
                                                                     height: 12,
-                                                                    backgroundColor: '#722ed1',
+                                                                    backgroundColor: '#4d8a73',
                                                                     borderRadius: 2
                                                                 }} />
                                                                 {t('dataVisualization.settings.colorTheme.purple')}
@@ -1002,9 +1002,9 @@ const DataVisualization: React.FC = () => {
                                                     size="large"
                                                     disabled={!fileInfo || loading}
                                                     style={{
-                                                        background: !fileInfo || loading ? undefined : 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                        background: !fileInfo || loading ? undefined : 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                         border: 'none',
-                                                        boxShadow: !fileInfo || loading ? 'none' : '0 4px 15px rgba(24, 144, 255, 0.4)',
+                                                        boxShadow: !fileInfo || loading ? 'none' : '0 4px 15px rgba(0, 105, 63, 0.4)',
                                                         height: '48px',
                                                         padding: '0 32px',
                                                         borderRadius: '24px',

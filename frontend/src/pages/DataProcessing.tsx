@@ -310,12 +310,12 @@ const DataProcessing: React.FC = () => {
                     gap: '8px',
                     padding: '6px 16px',
                     borderRadius: '20px',
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: '#6366f1',
+                    background: 'rgba(0, 105, 63, 0.1)',
+                    color: '#00693F',
                     fontWeight: 600,
                     fontSize: '0.9rem',
                     marginBottom: '24px',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    border: '1px solid rgba(0, 105, 63, 0.2)'
                 }}>
                     <RocketOutlined /> {t('dataProcessing.hero.tag')}
                 </div>
@@ -334,10 +334,10 @@ const DataProcessing: React.FC = () => {
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                         <div style={{
                             width: '32px', height: '32px',
-                            background: 'rgba(24, 144, 255, 0.1)',
+                            background: 'rgba(0, 105, 63, 0.1)',
                             borderRadius: '8px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            color: '#1890ff', fontSize: '1.2rem',
+                            color: '#00693F', fontSize: '1.2rem',
                             marginRight: '12px'
                         }}>
                             <FileTextOutlined />
@@ -359,7 +359,7 @@ const DataProcessing: React.FC = () => {
                         disabled={uploadLoading}
                     >
                         <p className="ant-upload-drag-icon">
-                            <InboxOutlined style={{ color: '#1890ff' }} />
+                            <InboxOutlined style={{ color: '#00693F' }} />
                         </p>
                         <p className="ant-upload-text">{t('dataProcessing.upload.dragText')}</p>
                         <p className="ant-upload-hint">
@@ -382,12 +382,12 @@ const DataProcessing: React.FC = () => {
                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
                                 <div style={{
                                     width: '32px', height: '32px',
-                                    background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                                    background: 'linear-gradient(135deg, #00693F 0%, #65A38B 100%)',
                                     borderRadius: '8px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: 'white', fontSize: '1rem',
                                     marginRight: '12px',
-                                    boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)'
+                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                 }}>
                                     <EyeOutlined />
                                 </div>
@@ -419,17 +419,17 @@ const DataProcessing: React.FC = () => {
                                         <Text strong style={{ fontSize: '16px' }}>{fileInfo.filename}</Text>
                                         <Text type="secondary">({(fileInfo.file_stats.file_size / 1024 / 1024).toFixed(2)} MB)</Text>
                                         <Divider type="vertical" />
-                                        <Tag color="blue" style={{ borderRadius: '6px', border: 'none', background: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}>
+                                        <Tag color="blue" style={{ borderRadius: '6px', border: 'none', background: 'rgba(0, 105, 63, 0.1)', color: '#004d2e' }}>
                                             Numeric: {fileInfo.file_stats.numeric_columns_count}
                                         </Tag>
-                                        <Tag color="green" style={{ borderRadius: '6px', border: 'none', background: 'rgba(16, 185, 129, 0.1)', color: '#059669' }}>
+                                        <Tag color="green" style={{ borderRadius: '6px', border: 'none', background: 'rgba(101, 163, 139, 0.1)', color: '#4d8a73' }}>
                                             Categorical: {fileInfo.file_stats.categorical_columns_count}
                                         </Tag>
                                         <Text type="secondary" style={{ fontSize: '12px' }}>
                                             {t('dataProcessing.preview.totalData')}: {fileInfo.file_stats.total_rows}
                                         </Text>
                                         {fileInfo.last_updated && (
-                                            <Tag color="purple" style={{ borderRadius: '6px', border: 'none', background: 'rgba(139, 92, 246, 0.1)', color: '#7c3aed' }}>
+                                            <Tag color="purple" style={{ borderRadius: '6px', border: 'none', background: 'rgba(101, 163, 139, 0.1)', color: '#4d8a73' }}>
                                                 Updated: {fileInfo.last_updated}
                                             </Tag>
                                         )}
@@ -497,12 +497,12 @@ const DataProcessing: React.FC = () => {
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                                                 <div style={{
                                                     width: '40px', height: '40px',
-                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                    background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                     borderRadius: '10px',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                     color: 'white', fontSize: '1.2rem',
                                                     marginRight: '16px',
-                                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                                 }}>
                                                     <MedicineBoxOutlined />
                                                 </div>
@@ -578,9 +578,9 @@ const DataProcessing: React.FC = () => {
                                                         onClick={handleImputation}
                                                         style={{
                                                             marginTop: '20px',
-                                                            background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                            background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                             border: 'none',
-                                                            boxShadow: '0 4px 15px rgba(24, 144, 255, 0.4)',
+                                                            boxShadow: '0 4px 15px rgba(0, 105, 63, 0.4)',
                                                             padding: '0 40px',
                                                             height: '48px',
                                                             borderRadius: '24px'
@@ -599,7 +599,7 @@ const DataProcessing: React.FC = () => {
                                                     textAlign: 'left'
                                                 }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#1890ff', marginRight: '12px' }} />
+                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#00693F', marginRight: '12px' }} />
                                                         <Title level={4} style={{ margin: 0 }}>{t('dataProcessing.imputation.title')} Results</Title>
                                                     </div>
 
@@ -630,10 +630,10 @@ const DataProcessing: React.FC = () => {
                                                                 onClick={handleDownload}
                                                                 size="large"
                                                                 style={{
-                                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                                    background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                                     border: 'none',
                                                                     borderRadius: '20px',
-                                                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                                                 }}
                                                             >
                                                                 {t('dataProcessing.filtering.downloadData', { defaultValue: 'Download Processed Data' })}
@@ -654,7 +654,7 @@ const DataProcessing: React.FC = () => {
                                                         borderRadius: '50%',
                                                         zIndex: 0
                                                     }} />
-                                                    <MedicineBoxOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(24, 144, 255, 0.2)', zIndex: 1 }} />
+                                                    <MedicineBoxOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(0, 105, 63, 0.2)', zIndex: 1 }} />
                                                 </div>
                                             )}
                                         </Col>
@@ -677,12 +677,12 @@ const DataProcessing: React.FC = () => {
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                                                 <div style={{
                                                     width: '40px', height: '40px',
-                                                    background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                    background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                                     borderRadius: '10px',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                     color: 'white', fontSize: '1.2rem',
                                                     marginRight: '16px',
-                                                    boxShadow: '0 4px 10px rgba(82, 196, 26, 0.3)'
+                                                    boxShadow: '0 4px 10px rgba(101, 163, 139, 0.3)'
                                                 }}>
                                                     <FilterOutlined />
                                                 </div>
@@ -757,9 +757,9 @@ const DataProcessing: React.FC = () => {
                                                             disabled={!fileInfo}
                                                             onClick={handleFilter}
                                                             style={{
-                                                                background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                                background: 'linear-gradient(135deg, #65A38B 0%, #4d8a73 100%)',
                                                                 border: 'none',
-                                                                boxShadow: '0 4px 15px rgba(82, 196, 26, 0.4)',
+                                                                boxShadow: '0 4px 15px rgba(101, 163, 139, 0.4)',
                                                                 borderRadius: '24px',
                                                                 padding: '0 32px'
                                                             }}
@@ -778,7 +778,7 @@ const DataProcessing: React.FC = () => {
                                                     textAlign: 'left'
                                                 }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
-                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#52c41a', marginRight: '12px' }} />
+                                                        <CheckCircleOutlined style={{ fontSize: '24px', color: '#65A38B', marginRight: '12px' }} />
                                                         <Title level={4} style={{ margin: 0 }}>Filtering Results</Title>
                                                     </div>
 
@@ -799,7 +799,7 @@ const DataProcessing: React.FC = () => {
 
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                             <Text type="secondary">Final Cohort</Text>
-                                                            <Text strong style={{ fontSize: '24px', color: '#52c41a' }}>
+                                                            <Text strong style={{ fontSize: '24px', color: '#65A38B' }}>
                                                                 {filterResult.remaining.toLocaleString()}
                                                             </Text>
                                                         </div>
@@ -810,10 +810,10 @@ const DataProcessing: React.FC = () => {
                                                                 icon={<DownloadOutlined />}
                                                                 onClick={handleDownload}
                                                                 style={{
-                                                                    background: 'linear-gradient(135deg, #1890ff 0%, #096dd9 100%)',
+                                                                    background: 'linear-gradient(135deg, #00693F 0%, #004d2e 100%)',
                                                                     border: 'none',
                                                                     borderRadius: '20px',
-                                                                    boxShadow: '0 4px 10px rgba(24, 144, 255, 0.3)'
+                                                                    boxShadow: '0 4px 10px rgba(0, 105, 63, 0.3)'
                                                                 }}
                                                             >
                                                                 Download Data
@@ -834,7 +834,7 @@ const DataProcessing: React.FC = () => {
                                                         borderRadius: '50%',
                                                         zIndex: 0
                                                     }} />
-                                                    <FilterOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(82, 196, 26, 0.2)', zIndex: 1 }} />
+                                                    <FilterOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(101, 163, 139, 0.2)', zIndex: 1 }} />
                                                 </div>
                                             )}
                                         </Col>
@@ -886,12 +886,12 @@ const DataProcessing: React.FC = () => {
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '24px' }}>
                                                 <div style={{
                                                     width: '40px', height: '40px',
-                                                    background: 'linear-gradient(135deg, #f59e0b 0%, #d46b08 100%)',
+                                                    background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                                     borderRadius: '10px',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                     color: 'white', fontSize: '1.2rem',
                                                     marginRight: '16px',
-                                                    boxShadow: '0 4px 10px rgba(245, 158, 11, 0.3)'
+                                                    boxShadow: '0 4px 10px rgba(202, 33, 39, 0.3)'
                                                 }}>
                                                     <CalculatorOutlined />
                                                 </div>
@@ -943,9 +943,9 @@ const DataProcessing: React.FC = () => {
                                                         disabled={!fileInfo}
                                                         onClick={() => message.info("Calculation logic connected in next step")}
                                                         style={{
-                                                            background: 'linear-gradient(135deg, #f59e0b 0%, #d46b08 100%)',
+                                                            background: 'linear-gradient(135deg, #CA2127 0%, #b31b1b 100%)',
                                                             border: 'none',
-                                                            boxShadow: '0 4px 15px rgba(245, 158, 11, 0.4)',
+                                                            boxShadow: '0 4px 15px rgba(202, 33, 39, 0.4)',
                                                             padding: '0 40px',
                                                             height: '48px',
                                                             borderRadius: '24px'
@@ -969,7 +969,7 @@ const DataProcessing: React.FC = () => {
                                                     borderRadius: '50%',
                                                     zIndex: 0
                                                 }} />
-                                                <CalculatorOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(245, 158, 11, 0.2)', zIndex: 1 }} />
+                                                <CalculatorOutlined style={{ position: 'relative', fontSize: '200px', opacity: 0.8, color: 'rgba(202, 33, 39, 0.2)', zIndex: 1 }} />
                                             </div>
                                         </Col>
                                     </Row>

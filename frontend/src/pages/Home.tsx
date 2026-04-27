@@ -37,9 +37,9 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             description: t('home.features.dataExtraction.description'),
             icon: <DatabaseOutlined style={{ fontSize: '36px', color: '#fff' }} />,
             bgIcon: <DatabaseOutlined />,
-            color: '#6366f1', // Indigo
-            gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-            bg: 'rgba(99, 102, 241, 0.1)',
+            color: '#00693F', // Indigo
+            gradient: 'linear-gradient(135deg, #00693F 0%, #65A38B 100%)',
+            bg: 'rgba(0, 105, 63, 0.1)',
             stats: {
                 samples: t('home.features.dataExtraction.stats.samples'),
                 variables: t('home.features.dataExtraction.stats.variables'),
@@ -53,9 +53,9 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             description: t('home.features.visualization.description'),
             icon: <BarChartOutlined style={{ fontSize: '36px', color: '#fff' }} />,
             bgIcon: <BarChartOutlined />,
-            color: '#10b981', // Emerald
-            gradient: 'linear-gradient(135deg, #10b981 0%, #34d399 100%)',
-            bg: 'rgba(16, 185, 129, 0.1)',
+            color: '#65A38B', // Emerald
+            gradient: 'linear-gradient(135deg, #65A38B 0%, #81c7ad 100%)',
+            bg: 'rgba(101, 163, 139, 0.1)',
             stats: {
                 charts: t('home.features.visualization.stats.charts'),
                 formats: t('home.features.visualization.stats.formats'),
@@ -69,9 +69,9 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             description: t('home.features.analysis.description'),
             icon: <FundOutlined style={{ fontSize: '36px', color: '#fff' }} />,
             bgIcon: <FundOutlined />,
-            color: '#f59e0b', // Amber
-            gradient: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
-            bg: 'rgba(245, 158, 11, 0.1)',
+            color: '#CA2127', // Amber
+            gradient: 'linear-gradient(135deg, #CA2127 0%, #d94646 100%)',
+            bg: 'rgba(202, 33, 39, 0.1)',
             stats: {
                 models: t('home.features.analysis.stats.models'),
                 precision: t('home.features.analysis.stats.precision')
@@ -86,7 +86,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             {/* Hero Section */}
             <div className="hero-section">
                 <div className="hero-content">
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', fontWeight: 600, fontSize: '0.9rem', marginBottom: '24px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '20px', background: 'rgba(0, 105, 63, 0.1)', color: '#00693F', fontWeight: 600, fontSize: '0.9rem', marginBottom: '24px', border: '1px solid rgba(0, 105, 63, 0.2)' }}>
                         <RocketOutlined /> {t('home.hero.platformName')}
                     </div>
 
@@ -110,7 +110,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                                 background: 'var(--gradient-primary)',
                                 color: 'white',
                                 cursor: 'pointer',
-                                boxShadow: '0 4px 15px rgba(99, 102, 241, 0.4)',
+                                boxShadow: '0 4px 15px rgba(0, 105, 63, 0.4)',
                                 transition: 'all 0.3s ease',
                                 display: 'flex',
                                 alignItems: 'center',
